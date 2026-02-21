@@ -1,13 +1,13 @@
-<section class="page-testimonials">
+<section class="page-testimonials" [class.active-page]="active">
   <div class="pin">
-    <div class="slabel">
+    <div class="slabel au d0">
       <span class="sn">06</span><span class="st">/ what people say</span>
       <div class="shr"></div>
     </div>
-    <h2 class="exph">Testimonials.</h2>
+    <h2 class="exph au d1">Testimonials.</h2>
     <div class="tmg">
       @for (tm of data.testimonials; track tm.name; let i = $index) {
-        <div class="tmc">
+        <div class="tmc as" [ngClass]="i === 0 ? 'd2' : i === 1 ? 'd3' : 'd4'">
           <p class="tmq">{{ tm.quote }}</p>
           <div class="tma">
             <div class="tmav">{{ tm.initial }}</div>

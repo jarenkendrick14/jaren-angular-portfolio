@@ -1,6 +1,6 @@
-/* ADD THIS to the top of the file, right below .page-home */
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
+/* Changed to relative so canvas sizes against content height */
 .page-home {
   position: relative;
   width: 100%;
@@ -38,7 +38,6 @@
   color: var(--white);
   font-size: clamp(4rem, 8vw, 5.5rem);
   margin-bottom: .8rem;
-  animation: fadeUp .5s .1s ease both;
 }
 
 .accent-name { margin-bottom: 1.2rem; }
@@ -49,7 +48,6 @@
   color: var(--acc);
   margin-bottom: 1.5rem;
   display: block;
-  animation: fadeUp .5s .17s ease both;
 }
 
 .hdesc {
@@ -58,7 +56,6 @@
   line-height: 1.75;
   margin-bottom: 2rem;
   font-weight: 300;
-  animation: fadeUp .5s .24s ease both;
 }
 .hdesc strong { color: var(--white); font-weight: 600; }
 
@@ -68,7 +65,6 @@
   gap: 1.5rem;
   flex-wrap: wrap;
   margin-bottom: 2.5rem;
-  animation: fadeUp .5s .31s ease both;
 }
 
 .hloc {
@@ -88,14 +84,12 @@
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  animation: fadeUp .5s .42s ease both;
 }
 
 .h-photo {
   width: 220px;
   height: 220px;
   flex-shrink: 0;
-  animation: fadeUp .5s .17s ease both;
 }
 
 .h-photo-placeholder {
@@ -116,7 +110,6 @@
 .feat-section {
   position: relative;
   z-index: 1;
-  animation: fadeUp .5s .42s ease both;
 }
 
 .feat-label {
@@ -210,11 +203,6 @@
 .btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 4rem; }

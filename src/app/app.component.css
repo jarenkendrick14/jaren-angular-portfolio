@@ -16,6 +16,7 @@
 }
 
 /* ══════════ PAGE SLIDER LOGIC (DESKTOP) ══════════ */
+/* ══════════ PAGE SLIDER LOGIC ══════════ */
 .page-slider {
   position: relative;
   width: 100%;
@@ -31,28 +32,15 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--bg);
   will-change: transform;
   transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
-  /* Default state is below */
   transform: translateY(100%);
   z-index: 10;
 }
 
-.page-section.active {
-  transform: translateY(0);
-  z-index: 20;
-}
-
-.page-section.prev {
-  transform: translateY(-100%);
-  z-index: 10;
-}
-
-.page-section.next {
-  transform: translateY(100%);
-  z-index: 10;
-}
+.page-section.active { transform: translateY(0); }
+.page-section.prev { transform: translateY(-100%); }
+.page-section.next { transform: translateY(100%); }
 
 /* ══════════ FIX INNER COMPONENT SCROLLING ══════════ */
 :host ::ng-deep .page-home,

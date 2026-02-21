@@ -1,10 +1,12 @@
 import { Component, inject, output, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { BlogPost } from '../../models/portfolio.models';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.css',
 })

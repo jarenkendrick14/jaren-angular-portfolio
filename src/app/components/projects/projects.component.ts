@@ -1,9 +1,11 @@
 import { Component, inject, output, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.css',
 })

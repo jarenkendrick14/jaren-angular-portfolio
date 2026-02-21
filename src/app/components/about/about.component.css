@@ -20,13 +20,18 @@
   margin-bottom: 3rem;
 }
 
-/* Base states for entrance animations */
-.apull, .abio, .blk, .slabel { opacity: 0; }
+/*
+  Base opacity is now handled entirely by the global utility classes
+  (.au, .al, .ar, .as) in styles.css. We do NOT set opacity:0 here
+  directly, because Angular's scoped attribute selector gives these rules
+  higher specificity, which caused content to snap invisible on slide-out
+  even when the global .prev fix tried to keep it visible.
+*/
 
 /* Active Page Animations (Retriggered by [active] input) */
 .active-page .slabel { animation: fadeUp .5s .04s ease both; }
-.active-page .apull { animation: fadeLeft .5s .1s ease both; }
-.active-page .abio { animation: fadeUp .5s .17s ease both; }
+.active-page .apull  { animation: fadeLeft .5s .1s ease both; }
+.active-page .abio   { animation: fadeUp .5s .17s ease both; }
 .active-page .blk.ar.d2 { animation: fadeRight .5s .17s ease both; }
 .active-page .blk.ar.d3 { animation: fadeRight .5s .24s ease both; }
 
@@ -120,7 +125,6 @@
   display: flex; align-items: center; justify-content: center; color: var(--sub);
   font-size: 1.2rem; cursor: none; flex-shrink: 0; transition: border-color .2s, color .2s;
   background: var(--bg);
-  /* Added these two lines to perfectly center the angle brackets */
   line-height: 0;
   padding-bottom: 2px; 
 }

@@ -42,13 +42,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   readonly mobileMenuOpen = signal(false);
   readonly totalPages = this.data.navItems.length;
 
-  // Custom Cursor & Preview State
   readonly cursorHover = signal(false);
   readonly previewActive = signal<number | null>(null);
   
-  private mx = 0; private my = 0; // Mouse Pos
-  private rx = 0; private ry = 0; // Ring Pos (lerped)
-  private prx = 0; private pry = 0; // Preview Pos (lerped)
+  private mx = 0; private my = 0;
+  private rx = 0; private ry = 0;
+  private prx = 0; private pry = 0;
   private animId = 0;
 
   openProject(index: number) {
@@ -66,14 +65,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   goTo(index: number) {
     if (window.innerWidth < 960) {
-      // On mobile, native scroll behavior to match vanilla version
       const sections = document.querySelectorAll('.page-section');
-      if (sections[index]) {
-        sections[index].scrollIntoView({ behavior: 'smooth' });
-      }
+      if (sections[index]) sections[index].scrollIntoView({ behavior: 'smooth' });
       this.nav.currentPage.set(index);
     } else {
-      // On desktop, use the film-strip slide logic
       this.nav.goTo(index, this.totalPages);
     }
     this.mobileMenuOpen.set(false);
@@ -81,14 +76,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     const lerp = () => {
-      // Smoothly move cursor ring
       this.rx += (this.mx - this.rx) * 0.11;
       this.ry += (this.my - this.ry) * 0.11;
       if (this.cring) {
         this.cring.nativeElement.style.left = `${this.rx}px`;
         this.cring.nativeElement.style.top = `${this.ry}px`;
       }
-      // Smoothly move project preview
       if (this.previewActive() !== null && this.prvw) {
         this.prx += (this.mx - this.prx) * 0.1;
         this.pry += (this.my - this.pry) * 0.1;
@@ -100,9 +93,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     lerp();
   }
 
-  ngOnDestroy() {
-    cancelAnimationFrame(this.animId);
-  }
+  ngOnDestroy() { cancelAnimationFrame(this.animId); }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e: MouseEvent) {
@@ -112,9 +103,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.cdot.nativeElement.style.left = `${this.mx}px`;
       this.cdot.nativeElement.style.top = `${this.my}px`;
     }
-    // Check if hovering over interactive elements for cursor "big" state
+    // Improved hover detection
     const target = e.target as HTMLElement;
-    const isHoverable = target.closest('a, button, .btn, .sdw, .pi, .bc, .tmc, .feat-card, .term-trigger');
+    const isHoverable = target.closest('a, button, .btn, .sdw, .pi, .bc, .tmc, .feat-card, .term-trigger, .skill-toggle-btn, .cert-nav, .cert-card');
     this.cursorHover.set(!!isHoverable);
   }
 
@@ -136,15 +127,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private wheelTimer: any = null;
   @HostListener('wheel', ['$event'])
   onWheel(e: WheelEvent) {
-    if (window.innerWidth < 960) return; // Disable custom wheel scrolling on mobile
+    if (window.innerWidth < 960) return;
     if (this.activeProject() || this.activeBlogPost() || this.wheelTimer) return;
     if (this.mobileMenuOpen()) return;
 
-    // Find the currently active page in the DOM to check its scroll position
     const activePage = document.querySelector('.page-section.active') as HTMLElement;
     if (!activePage) return;
 
-    // Boundary check: only navigate if at the top/bottom of internal content
     const atTop = activePage.scrollTop <= 5;
     const atBottom = Math.ceil(activePage.scrollTop + activePage.clientHeight) >= activePage.scrollHeight - 5;
 

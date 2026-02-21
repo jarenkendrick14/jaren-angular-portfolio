@@ -1,5 +1,6 @@
-import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input } from '@angular/core';
+import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input, effect } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
+import { NavigationService } from '../../data/navigation.service'; // Needed for theme
 import { DecryptDirective } from '../../directives/decrypt.directive';
 
 @Component({
@@ -10,9 +11,10 @@ import { DecryptDirective } from '../../directives/decrypt.directive';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
-  @Input() active = false; // Trigger for glitch effect
+  @Input() active = false;
   
   data = inject(PortfolioDataService);
+  nav = inject(NavigationService);
   projectOpened = output<number>();
   previewHover = output<number | null>();
 
@@ -55,7 +57,11 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private resize() {
-    const { offsetWidth: W, offsetHeight: H } = this.canvas;
+    // Fix: Use scrollHeight to fill the full scrollable area, not just viewport
+    const container = this.canvas.parentElement;
+    const W = container ? container.offsetWidth : window.innerWidth;
+    const H = container ? Math.max(container.scrollHeight, window.innerHeight) : window.innerHeight;
+    
     this.canvas.width = W;
     this.canvas.height = H;
     this.pts = [];
@@ -92,7 +98,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       p.y += this.vy[i];
     });
 
-    ctx.strokeStyle = 'rgba(42,42,64,0.65)';
+    // Fix: Adjust grid line color based on theme
+    const isDark = this.nav.isDark();
+    ctx.strokeStyle = isDark ? 'rgba(42,42,64,0.65)' : 'rgba(200,195,224,0.55)';
     ctx.lineWidth = 0.8;
     ctx.beginPath();
     this.pts.forEach((p, i) => {

@@ -1,13 +1,14 @@
 <section class="page-projects" [class.active-page]="active">
   <div class="pin">
-    <div class="pheader">
+    <div class="pheader au d0">
       <h2 class="ph2">Selected Work</h2>
       <span class="pcnt">05 projects</span>
       <div class="phr" aria-hidden="true"></div>
     </div>
     <ul class="plist" role="list">
       @for (proj of data.projects; track proj.num; let i = $index) {
-        <li class="pi" 
+        <li class="pi al" 
+            [class.d1]="i === 0" [class.d2]="i === 1" [class.d3]="i === 2" [class.d4]="i === 3" [class.d5]="i === 4"
             (click)="projectOpened.emit(i)" 
             (mouseenter)="previewHover.emit(i)" 
             (mouseleave)="previewHover.emit(null)"

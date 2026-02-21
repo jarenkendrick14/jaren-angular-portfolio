@@ -1,8 +1,8 @@
-<section class="page-contact">
+<section class="page-contact" [class.active-page]="active">
   <div class="pin">
-    <h2 class="cho">Hire Me.</h2>
+    <h2 class="cho au d0">Hire Me.</h2>
     <div class="cgg">
-      <div>
+      <div class="au d1">
         <p class="cp">I'm actively looking for a full-stack internship. If you're building something and need someone who understands both the database and the interface — reach out. I prioritize clean code and prompt communication.</p>
         <ul class="socl" role="list">
           <li>
@@ -32,32 +32,24 @@
         </ul>
       </div>
 
-      <div class="cform">
+      <div class="cform au d2">
         <div class="frow">
           <div class="fg">
             <label for="fn">Name</label>
-            <input type="text" id="fn" placeholder="Your name"
-                   [value]="formData().name"
-                   (input)="updateField('name', $any($event.target).value)" autocomplete="name"/>
+            <input type="text" id="fn" placeholder="Your name" [value]="formData().name" (input)="updateField('name', $any($event.target).value)" autocomplete="name"/>
           </div>
           <div class="fg">
             <label for="fe">Email</label>
-            <input type="email" id="fe" placeholder="you@company.com"
-                   [value]="formData().email"
-                   (input)="updateField('email', $any($event.target).value)" autocomplete="email"/>
+            <input type="email" id="fe" placeholder="you@company.com" [value]="formData().email" (input)="updateField('email', $any($event.target).value)" autocomplete="email"/>
           </div>
         </div>
         <div class="fg">
           <label for="fs">Subject</label>
-          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..."
-                 [value]="formData().subject"
-                 (input)="updateField('subject', $any($event.target).value)"/>
+          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..." [value]="formData().subject" (input)="updateField('subject', $any($event.target).value)"/>
         </div>
         <div class="fg">
           <label for="fm">Message</label>
-          <textarea id="fm" placeholder="Tell me about what you're building..."
-                    [value]="formData().message"
-                    (input)="updateField('message', $any($event.target).value)"></textarea>
+          <textarea id="fm" placeholder="Tell me about what you're building..." [value]="formData().message" (input)="updateField('message', $any($event.target).value)"></textarea>
         </div>
         <button type="button" class="btn btn-fill" (click)="submit()" style="width:100%;">Send Message</button>
         @if (submitted()) {

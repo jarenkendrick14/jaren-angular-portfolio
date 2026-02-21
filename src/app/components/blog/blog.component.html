@@ -1,17 +1,18 @@
-<section class="page-blog">
+<section class="page-blog" [class.active-page]="active">
   <div class="pin">
-    <div class="pheader">
+    <div class="pheader au d0">
       <h2 class="ph2">From the desk.</h2>
       <span class="pcnt">02 posts</span>
       <div class="phr"></div>
     </div>
     <div class="blog-grid">
       @for (post of data.blogPosts; track post.title; let i = $index) {
-        <article class="bc" (click)="postOpened.emit(post)" role="button" tabindex="0"
-                 (keydown.enter)="postOpened.emit(post)" [attr.aria-label]="'Read: ' + post.title">
+        <article class="bc as" [ngClass]="i === 0 ? 'd1' : 'd2'"
+                 (click)="postOpened.emit(post)" role="button" tabindex="0"
+                 (keydown.enter)="postOpened.emit(post)">
           <div class="bc-img">
             @if (i === 0) {
-              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
                 <rect width="400" height="190" fill="var(--bg)"/>
                 <defs><radialGradient id="b1g" cx="30%" cy="50%"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".2"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient></defs>
                 <rect width="400" height="190" fill="url(#b1g)"/>
@@ -20,7 +21,7 @@
                 <text x="220" y="82" fill="#a78bfa" font-family="monospace" font-size="10" letter-spacing="1.5" opacity=".4">GAME DEV → WEB DEV</text>
               </svg>
             } @else {
-              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
                 <rect width="400" height="190" fill="var(--bg)"/>
                 <defs><radialGradient id="b2g" cx="70%" cy="50%"><stop offset="0%" stop-color="#60a5fa" stop-opacity=".18"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></radialGradient></defs>
                 <rect width="400" height="190" fill="url(#b2g)"/>

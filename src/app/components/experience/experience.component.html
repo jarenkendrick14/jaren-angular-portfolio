@@ -1,13 +1,13 @@
-<section class="page-experience">
+<section class="page-experience" [class.active-page]="active">
   <div class="pin">
-    <div class="slabel">
+    <div class="slabel au d0">
       <span class="sn">04</span><span class="st">/ experience &amp; education</span>
       <div class="shr"></div>
     </div>
-    <h2 class="exph">Where I've been.</h2>
+    <h2 class="exph au d1">Where I've been.</h2>
     <div class="tl">
-      @for (entry of entries; track entry.title) {
-        <div class="tlr">
+      @for (entry of entries; track entry.title; let i = $index) {
+        <div class="tlr" [ngClass]="i === 0 ? 'al d2' : 'ar d3'">
           <div>
             <p class="tlpd">{{ entry.period }}</p>
             <p class="tlorg">{{ entry.org }}</p>

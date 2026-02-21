@@ -79,6 +79,7 @@ body {
   height: 100vh;
   width: 100vw;
   transition: background-color .35s ease, color .35s ease;
+  cursor: none;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -89,33 +90,55 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transition: background-color .35s ease, border-color .35s ease, color .35s ease;
 }
 
-/* Focus styles */
 a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
   outline: 2px solid var(--acc);
   outline-offset: 2px;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
 @media (max-width: 960px) {
-  body {
-    overflow: auto;
-    height: auto;
-  }
+  body { overflow: auto; height: auto; cursor: auto; }
+  button, a { cursor: pointer !important; }
 }
-
-
-body { cursor: none; }
-button, a { cursor: none !important; }
 
 .decrypting { color: var(--acc) !important; }
 
-@media (max-width: 960px) {
-  body { cursor: auto; }
-  button, a { cursor: pointer !important; }
+/* ══════════ GLOBAL ANIMATIONS ══════════ */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+
+/* 
+   BASE STATE (Hidden)
+   transition-delay: 0.6s -> THIS IS THE FIX.
+   When you leave a page, it waits 0.6s (the duration of the page slide) 
+   before resetting opacity to 0. This keeps content visible while sliding out.
+*/
+.au, .al, .ar, .as { 
+  opacity: 0; 
+  transition: opacity 0.1s ease 0.6s; 
 }
+
+/* 
+   ACTIVE STATE (Visible + Animated)
+   When active, we remove the transition so the animation takes over immediately.
+   We support both .active (host) and .active-page (section) selectors.
+*/
+.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp .5s ease both; }
+.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .5s ease both; }
+.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .5s ease both; }
+.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .45s ease both; }
+
+/* Stagger Delays */
+.active .d0, .active-page .d0 { animation-delay: .04s !important; }
+.active .d1, .active-page .d1 { animation-delay: .1s !important; }
+.active .d2, .active-page .d2 { animation-delay: .17s !important; }
+.active .d3, .active-page .d3 { animation-delay: .24s !important; }
+.active .d4, .active-page .d4 { animation-delay: .31s !important; }
+.active .d5, .active-page .d5 { animation-delay: .42s !important; }
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\app.component.ts === 
 import {
   Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy
@@ -161,13 +184,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   readonly mobileMenuOpen = signal(false);
   readonly totalPages = this.data.navItems.length;
 
-  // Custom Cursor & Preview State
   readonly cursorHover = signal(false);
   readonly previewActive = signal<number | null>(null);
   
-  private mx = 0; private my = 0; // Mouse Pos
-  private rx = 0; private ry = 0; // Ring Pos (lerped)
-  private prx = 0; private pry = 0; // Preview Pos (lerped)
+  private mx = 0; private my = 0;
+  private rx = 0; private ry = 0;
+  private prx = 0; private pry = 0;
   private animId = 0;
 
   openProject(index: number) {
@@ -184,20 +206,24 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   goTo(index: number) {
-    this.nav.goTo(index, this.totalPages);
+    if (window.innerWidth < 960) {
+      const sections = document.querySelectorAll('.page-section');
+      if (sections[index]) sections[index].scrollIntoView({ behavior: 'smooth' });
+      this.nav.currentPage.set(index);
+    } else {
+      this.nav.goTo(index, this.totalPages);
+    }
     this.mobileMenuOpen.set(false);
   }
 
   ngAfterViewInit() {
     const lerp = () => {
-      // Smoothly move cursor ring
       this.rx += (this.mx - this.rx) * 0.11;
       this.ry += (this.my - this.ry) * 0.11;
       if (this.cring) {
         this.cring.nativeElement.style.left = `${this.rx}px`;
         this.cring.nativeElement.style.top = `${this.ry}px`;
       }
-      // Smoothly move project preview
       if (this.previewActive() !== null && this.prvw) {
         this.prx += (this.mx - this.prx) * 0.1;
         this.pry += (this.my - this.pry) * 0.1;
@@ -209,9 +235,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     lerp();
   }
 
-  ngOnDestroy() {
-    cancelAnimationFrame(this.animId);
-  }
+  ngOnDestroy() { cancelAnimationFrame(this.animId); }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e: MouseEvent) {
@@ -221,9 +245,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.cdot.nativeElement.style.left = `${this.mx}px`;
       this.cdot.nativeElement.style.top = `${this.my}px`;
     }
-    // Check if hovering over interactive elements for cursor "big" state
+    // Improved hover detection
     const target = e.target as HTMLElement;
-    const isHoverable = target.closest('a, button, .btn, .sdw, .pi, .bc, .tmc, .feat-card, .term-trigger');
+    const isHoverable = target.closest('a, button, .btn, .sdw, .pi, .bc, .tmc, .feat-card, .term-trigger, .skill-toggle-btn, .cert-nav, .cert-card');
     this.cursorHover.set(!!isHoverable);
   }
 
@@ -239,20 +263,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') return;
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') this.goTo(Math.min(this.nav.currentPage() + 1, this.totalPages - 1));
     if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') this.goTo(Math.max(this.nav.currentPage() - 1, 0));
-    if (e.key === 'Escape' && this.terminal?.isOpen()) this.terminal.close();
+    if (e.key === 'Escape' && this.nav.terminalOpen()) this.nav.terminalOpen.set(false);
   }
 
   private wheelTimer: any = null;
   @HostListener('wheel', ['$event'])
   onWheel(e: WheelEvent) {
+    if (window.innerWidth < 960) return;
     if (this.activeProject() || this.activeBlogPost() || this.wheelTimer) return;
     if (this.mobileMenuOpen()) return;
 
-    // Find the currently active page in the DOM to check its scroll position
     const activePage = document.querySelector('.page-section.active') as HTMLElement;
     if (!activePage) return;
 
-    // Boundary check: only navigate if at the top/bottom of internal content
     const atTop = activePage.scrollTop <= 5;
     const atBottom = Math.ceil(activePage.scrollTop + activePage.clientHeight) >= activePage.scrollHeight - 5;
 
@@ -390,6 +413,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   overflow: hidden;
 }
 
+/* ══════════ PAGE SLIDER LOGIC (DESKTOP) ══════════ */
 /* ══════════ PAGE SLIDER LOGIC ══════════ */
 .page-slider {
   position: relative;
@@ -398,39 +422,25 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   overflow: hidden;
 }
 
-/* The host element for each page (e.g., app-home) */
 .page-section {
   display: block;
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow-y: auto;       /* This element handles the scroll */
+  overflow-y: auto;
   overflow-x: hidden;
   will-change: transform;
   transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
-  background: var(--bg);  /* Opaque background to cover pages behind */
-  z-index: 10;
-  
-  /* Default state: hidden below viewport */
   transform: translateY(100%);
-}
-
-/* Active Page: On screen */
-.page-section.active {
-  transform: translateY(0);
-  z-index: 20;
-}
-
-/* Previous Pages: Hidden above viewport */
-.page-section.prev {
-  transform: translateY(-100%);
   z-index: 10;
 }
+
+.page-section.active { transform: translateY(0); }
+.page-section.prev { transform: translateY(-100%); }
+.page-section.next { transform: translateY(100%); }
 
 /* ══════════ FIX INNER COMPONENT SCROLLING ══════════ */
-/* Crucial: We disable scrolling on the inner divs (.page-home, etc) 
-   so only the .page-section scrolls. This prevents double scrollbars. */
 :host ::ng-deep .page-home,
 :host ::ng-deep .page-about,
 :host ::ng-deep .page-projects,
@@ -440,7 +450,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 :host ::ng-deep .page-contact {
   position: static !important;
   height: auto !important;
-  min-height: auto !important;
+  min-height: 100% !important;
   overflow: visible !important;
   width: 100% !important;
 }
@@ -494,44 +504,54 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ══════════ MOBILE STACKING (VANILLA PARITY) ══════════ */
 @media (max-width: 960px) {
-  .main-content { left: 0; top: 70px; }
+  .main-content { left: 0; top: 70px; overflow: visible; }
   .mobnav { display: flex; }
   .app-root { overflow: auto; height: auto; display: block; }
   
-  /* Reset slider logic on mobile to just stack normally */
-  .page-slider { height: auto; overflow: visible; }
-  .page-section { 
-    position: relative; height: auto; transform: none !important; 
-    opacity: 1; min-height: 100vh; overflow: visible; display: none; 
+  .page-slider { 
+    height: auto; 
+    overflow: visible; 
+    display: flex; 
+    flex-direction: column; 
   }
-  .page-section.active { display: block; }
+  
+  .page-section { 
+    position: relative !important; 
+    height: auto !important; 
+    transform: none !important; 
+    transition: none !important; 
+    opacity: 1 !important; 
+    min-height: 100vh !important; 
+    overflow: visible !important; 
+    display: block !important; 
+  }
   
   #cdot, #cring, #prvw { display: none !important; }
 }.
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\about\about.component.ts === 
-import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { Certificate } from '../../models/portfolio.models';
-import { DecryptDirective } from '../../directives/decrypt.directive';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [DecryptDirective, CommonModule],
+  imports: [CommonModule],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
 })
 export class AboutComponent implements AfterViewInit, OnDestroy {
+  @Input() active = false; 
   data = inject(PortfolioDataService);
+
   @ViewChild('sphereContainer') sphereContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('sphereWrap') sphereWrap!: ElementRef<HTMLDivElement>;
 
   readonly skillsExpanded = signal(false);
   readonly certIndex = signal(0);
-  
-  // Controls the animation class (cert-in or cert-in-r)
   readonly certAnimClass = signal('');
 
   readonly skills = [
@@ -570,13 +590,8 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   }
   
   certNav(dir: number) {
-    // 1. Remove class to reset animation
     this.certAnimClass.set('');
-    
-    // 2. Update index
     this.certIndex.update(i => (i + dir + this.certTotal) % this.certTotal);
-    
-    // 3. Add class back next tick to trigger CSS animation
     setTimeout(() => {
       this.certAnimClass.set(dir > 0 ? 'cert-in' : 'cert-in-r');
     }, 10);
@@ -597,17 +612,19 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
       const el = document.createElement('span');
       
-      // APPLYING STYLES HERE FOR SPHERE TAGS (READABILITY FIX)
       el.className = 'sphere-tag';
       el.textContent = tag.text;
       el.style.color = tag.color;
       el.style.position = 'absolute';
-      el.style.background = 'var(--surf)';     // Background for readability
-      el.style.padding = '4px 8px';             // Padding
-      el.style.borderRadius = '4px';            // Rounded
-      el.style.border = '1px solid var(--bord)';// Border
+      el.style.background = 'var(--surf)';
+      el.style.padding = '4px 8px';
+      el.style.borderRadius = '4px';
+      el.style.border = '1px solid var(--bord)';
       el.style.cursor = 'grab';
       el.style.userSelect = 'none';
+      el.style.fontFamily = "'JetBrains Mono', monospace";
+      el.style.fontSize = "12px";
+      el.style.whiteSpace = "nowrap";
       
       if (this.sphereContainer?.nativeElement) {
         this.sphereContainer.nativeElement.appendChild(el);
@@ -636,7 +653,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
         item.el.style.transform = `translate(-50%,-50%) translate(${px}px,${py}px)`;
         item.el.style.opacity = Math.max(0.1, scale).toString();
         item.el.style.zIndex = Math.round(scale * 20).toString();
-        // Highlight border when close to front
         item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250, 0.6)' : 'var(--bord)';
       });
     };
@@ -666,7 +682,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   }
 }.
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\about\about.component.html === 
-<section class="page-about">
+<section class="page-about" [class.active-page]="active">
   <div class="pin">
     <div class="slabel au d0">
       <span class="sn">02</span><span class="st">/ about me</span>
@@ -675,7 +691,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
 
     <div class="ag">
       <div>
-        <h2 class="apull al d1" [appDecrypt]="'A builder who actually ships.'" [trigger]="true" [delay]="500">A builder who actually <em>ships</em>.</h2>
+        <h2 class="apull al d1">A builder who actually <em>ships</em>.</h2>
         <div class="abio au d2">
           <p>I'm a Full Stack Developer specializing in <strong>Angular, Node.js, and MongoDB</strong>. I build complete systems: from designing secure database schemas and REST APIs to crafting intuitive frontend interfaces.</p>
           <p>While I currently work as a Game Developer, programming complex systems in <strong>C# (Unity)</strong> has deeply reinforced my backend logic, object-oriented design, and architectural skills.</p>
@@ -703,25 +719,24 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
             </button>
           </div>
 
-          <!-- 3D SPHERE -->
+          <!-- 3D SPHERE (Centered Container) -->
           <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
-            <div #sphereContainer style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; min-height: 220px;"></div>
+            <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
             <div class="sphere-hint">drag to spin</div>
           </div>
 
-          <!-- SKILL BARS (Animated) -->
+          <!-- SKILL BARS -->
           @if (skillsExpanded()) {
             <ul class="skl" role="list">
               @for (sk of skills; track sk.name; let i = $index) {
-                <!-- Added animation class 'au' and staggered delay 'd-stagger' -->
                 <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
                   <div class="sk-info">
                     <span>{{ sk.name }}</span>
                     <span class="sk-time">{{ sk.time }}</span>
                   </div>
                   <div class="sk-bar">
-                    <!-- Animation triggered by being in DOM -->
-                    <div class="sk-fill" [style.width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
+                    <!-- Pass the target width via custom property to prevent flashing -->
+                    <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
                   </div>
                 </li>
               }
@@ -737,8 +752,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
           </div>
           <div class="cert-carousel">
             <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
-            
-            <!-- Bind animation class here -->
             <div class="cert-card-wrap" [ngClass]="certAnimClass()">
               <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
                 <div class="cert-top" [style.background]="currentCert.color + '22'">
@@ -754,7 +767,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
                 </div>
               </a>
             </div>
-            
             <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
           </div>
           <div class="cert-dots">
@@ -771,7 +783,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   </div>
 </section>.
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\about\about.component.css === 
-/* FULL HEIGHT & BACKGROUND FIX */
 :host {
   display: block;
   min-height: 100vh;
@@ -793,6 +804,17 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   gap: 1rem;
   margin-bottom: 3rem;
 }
+
+/* Base states for entrance animations */
+.apull, .abio, .blk, .slabel { opacity: 0; }
+
+/* Active Page Animations (Retriggered by [active] input) */
+.active-page .slabel { animation: fadeUp .5s .04s ease both; }
+.active-page .apull { animation: fadeLeft .5s .1s ease both; }
+.active-page .abio { animation: fadeUp .5s .17s ease both; }
+.active-page .blk.ar.d2 { animation: fadeRight .5s .17s ease both; }
+.active-page .blk.ar.d3 { animation: fadeRight .5s .24s ease both; }
+
 .sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
@@ -839,27 +861,12 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
 }
 .skill-toggle-btn:hover { background: rgba(167,139,250,.1); }
 
-/* SPHERE TAGS - Readability Fixes */
+/* SPHERE TAGS - Fixed Centering */
 .skill-sphere-wrap {
   position: relative; min-height: 268px; display: flex; 
   align-items: center; justify-content: center;
   border: 1px solid var(--bord); border-radius: 8px; background: var(--bg);
   padding: 1.5rem; overflow: hidden;
-}
-
-/* These are injected via JS but styled here */
-::ng-deep .sphere-tag {
-  font-family: 'JetBrains Mono', monospace; 
-  font-weight: 500; 
-  letter-spacing: .04em;
-  white-space: nowrap; 
-  padding: .22rem .55rem; 
-  border-radius: 4px;
-  background: var(--surf) !important; /* Forces background for readability */
-  border: 1px solid var(--bord);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  user-select: none;
-  pointer-events: none;
 }
 
 .sphere-hint {
@@ -868,22 +875,19 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   letter-spacing: .08em; opacity: .5; pointer-events: none; width: max-content;
 }
 
-/* PROFICIENCY LIST ANIMATION */
+/* PROFICIENCY LIST */
 .skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; }
-.sk-item { 
-  display: flex; 
-  flex-direction: column; 
-  gap: .4rem; 
-  opacity: 0; 
-  animation: fadeUp 0.5s ease forwards; 
-}
+.sk-item { display: flex; flex-direction: column; gap: .4rem; opacity: 0; animation: fadeUp 0.5s ease forwards; }
 
 .sk-info { display: flex; justify-content: space-between; align-items: center; font-size: .92rem; font-weight: 500; color: var(--text); }
 .sk-time { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--muted); }
 .sk-bar { width: 100%; height: 5px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--bord); }
 
-/* BAR GROWTH ANIMATION */
-@keyframes fillUp { from { width: 0; } }
+/* BAR GROWTH ANIMATION (Variable width fixed) */
+@keyframes fillUp { 
+  from { width: 0; } 
+  to { width: var(--target-width); }
+}
 .sk-fill { 
   height: 100%; 
   background: var(--acc); 
@@ -892,7 +896,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   animation: fillUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; 
 }
 
-/* CAROUSEL ANIMATIONS */
+/* CAROUSEL */
 .cert-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
 .cert-counter { font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--muted); letter-spacing: .06em; }
 .cert-carousel { position: relative; display: flex; align-items: center; gap: .75rem; }
@@ -901,12 +905,14 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   display: flex; align-items: center; justify-content: center; color: var(--sub);
   font-size: 1.2rem; cursor: none; flex-shrink: 0; transition: border-color .2s, color .2s;
   background: var(--bg);
+  /* Added these two lines to perfectly center the angle brackets */
+  line-height: 0;
+  padding-bottom: 2px; 
 }
 .cert-nav:hover { border-color: var(--acc); color: var(--acc); }
 
 .cert-card-wrap { flex: 1; overflow: hidden; }
 
-/* Dynamic Animation Classes */
 .cert-in { animation: certIn .3s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .cert-in-r { animation: certInR .3s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
@@ -944,6 +950,8 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
 .cert-dot.on { background: var(--acc); }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
 @media (max-width: 960px) {
   .page-about { padding: 6.5rem 1.5rem 4rem; }
@@ -951,36 +959,39 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   .btn, .cert-nav, .cert-card, .cert-dot, .skill-toggle-btn { cursor: pointer !important; }
 }.
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\blog\blog.component.ts === 
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, inject, output, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { BlogPost } from '../../models/portfolio.models';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.css',
 })
 export class BlogComponent {
+  @Input() active = false;
   data = inject(PortfolioDataService);
   postOpened = output<BlogPost>();
-}
-.
+}..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\blog\blog.component.html === 
-<section class="page-blog">
+<section class="page-blog" [class.active-page]="active">
   <div class="pin">
-    <div class="pheader">
+    <div class="pheader au d0">
       <h2 class="ph2">From the desk.</h2>
       <span class="pcnt">02 posts</span>
       <div class="phr"></div>
     </div>
     <div class="blog-grid">
       @for (post of data.blogPosts; track post.title; let i = $index) {
-        <article class="bc" (click)="postOpened.emit(post)" role="button" tabindex="0"
-                 (keydown.enter)="postOpened.emit(post)" [attr.aria-label]="'Read: ' + post.title">
+        <article class="bc as" [ngClass]="i === 0 ? 'd1' : 'd2'"
+                 (click)="postOpened.emit(post)" role="button" tabindex="0"
+                 (keydown.enter)="postOpened.emit(post)">
           <div class="bc-img">
             @if (i === 0) {
-              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
                 <rect width="400" height="190" fill="var(--bg)"/>
                 <defs><radialGradient id="b1g" cx="30%" cy="50%"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".2"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient></defs>
                 <rect width="400" height="190" fill="url(#b1g)"/>
@@ -989,7 +1000,7 @@ export class BlogComponent {
                 <text x="220" y="82" fill="#a78bfa" font-family="monospace" font-size="10" letter-spacing="1.5" opacity=".4">GAME DEV → WEB DEV</text>
               </svg>
             } @else {
-              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
                 <rect width="400" height="190" fill="var(--bg)"/>
                 <defs><radialGradient id="b2g" cx="70%" cy="50%"><stop offset="0%" stop-color="#60a5fa" stop-opacity=".18"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></radialGradient></defs>
                 <rect width="400" height="190" fill="url(#b2g)"/>
@@ -1008,8 +1019,7 @@ export class BlogComponent {
       }
     </div>
   </div>
-</section>
-.
+</section>..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\blog\blog.component.css === 
 .page-blog {
   width: 100%;
@@ -1066,9 +1076,9 @@ export class BlogComponent {
   .page-blog { padding: 6.5rem 1.5rem 4rem; }
   .blog-grid { grid-template-columns: 1fr; }
 }
-.
+..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\blog-overlay\blog-overlay.component.ts === 
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { BlogPost } from '../../models/portfolio.models';
 
 @Component({
@@ -1080,13 +1090,20 @@ import { BlogPost } from '../../models/portfolio.models';
 export class BlogOverlayComponent {
   post = input<BlogPost | null>(null);
   closed = output<void>();
+  isClosing = signal(false);
 
-  close() { this.closed.emit(); }
-}
-.
+  close() {
+    this.isClosing.set(true);
+    setTimeout(() => {
+      this.isClosing.set(false);
+      this.closed.emit();
+    }, 500);
+  }
+}..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\blog-overlay\blog-overlay.component.html === 
-@if (post()) {
-  <div class="blog-overlay" role="dialog" aria-modal="true" aria-label="Blog post">
+ @if (post()) {
+  <div class="blog-overlay" [class.closing]="isClosing()" role="dialog" aria-modal="true" aria-label="Blog post">
+  ...
     <div class="bp-top">
       <div class="bp-label">FROM THE DESK</div>
       <button class="bp-close" (click)="close()" aria-label="Close post">✕</button>
@@ -1102,8 +1119,7 @@ export class BlogOverlayComponent {
       <div class="bp-content" [innerHTML]="post()!.content"></div>
     </div>
   </div>
-}
-..
+}..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\blog-overlay\blog-overlay.component.css === 
 .blog-overlay {
   position: fixed;
@@ -1124,6 +1140,15 @@ export class BlogOverlayComponent {
 
 .blog-overlay::-webkit-scrollbar { width: 6px; }
 .blog-overlay::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+.blog-overlay.closing {
+  animation: slideDown .5s cubic-bezier(.76,0,.24,1) forwards;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
 
 .bp-top {
   display: flex;
@@ -1232,7 +1257,7 @@ export class BlogOverlayComponent {
 }
 ..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\contact\contact.component.ts === 
-import { Component, signal } from '@angular/core';
+import { Component, signal, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -1243,6 +1268,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './contact.component.css',
 })
 export class ContactComponent {
+  @Input() active = false;
   readonly submitted = signal(false);
 
   readonly formData = signal({
@@ -1268,14 +1294,13 @@ export class ContactComponent {
       this.formData.set({ name: '', email: '', subject: '', message: '' });
     }, 4000);
   }
-}
-..
+}..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\contact\contact.component.html === 
-<section class="page-contact">
+<section class="page-contact" [class.active-page]="active">
   <div class="pin">
-    <h2 class="cho">Hire Me.</h2>
+    <h2 class="cho au d0">Hire Me.</h2>
     <div class="cgg">
-      <div>
+      <div class="au d1">
         <p class="cp">I'm actively looking for a full-stack internship. If you're building something and need someone who understands both the database and the interface — reach out. I prioritize clean code and prompt communication.</p>
         <ul class="socl" role="list">
           <li>
@@ -1305,32 +1330,24 @@ export class ContactComponent {
         </ul>
       </div>
 
-      <div class="cform">
+      <div class="cform au d2">
         <div class="frow">
           <div class="fg">
             <label for="fn">Name</label>
-            <input type="text" id="fn" placeholder="Your name"
-                   [value]="formData().name"
-                   (input)="updateField('name', $any($event.target).value)" autocomplete="name"/>
+            <input type="text" id="fn" placeholder="Your name" [value]="formData().name" (input)="updateField('name', $any($event.target).value)" autocomplete="name"/>
           </div>
           <div class="fg">
             <label for="fe">Email</label>
-            <input type="email" id="fe" placeholder="you@company.com"
-                   [value]="formData().email"
-                   (input)="updateField('email', $any($event.target).value)" autocomplete="email"/>
+            <input type="email" id="fe" placeholder="you@company.com" [value]="formData().email" (input)="updateField('email', $any($event.target).value)" autocomplete="email"/>
           </div>
         </div>
         <div class="fg">
           <label for="fs">Subject</label>
-          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..."
-                 [value]="formData().subject"
-                 (input)="updateField('subject', $any($event.target).value)"/>
+          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..." [value]="formData().subject" (input)="updateField('subject', $any($event.target).value)"/>
         </div>
         <div class="fg">
           <label for="fm">Message</label>
-          <textarea id="fm" placeholder="Tell me about what you're building..."
-                    [value]="formData().message"
-                    (input)="updateField('message', $any($event.target).value)"></textarea>
+          <textarea id="fm" placeholder="Tell me about what you're building..." [value]="formData().message" (input)="updateField('message', $any($event.target).value)"></textarea>
         </div>
         <button type="button" class="btn btn-fill" (click)="submit()" style="width:100%;">Send Message</button>
         @if (submitted()) {
@@ -1339,8 +1356,7 @@ export class ContactComponent {
       </div>
     </div>
   </div>
-</section>
-..
+</section>..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\contact\contact.component.css === 
 .page-contact {
   width: 100%;
@@ -1475,20 +1491,19 @@ textarea { min-height: 150px; }
 }
 ..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\experience\experience.component.ts === 
-import { Component, Input } from '@angular/core'; // Added Input
-import { DecryptDirective } from '../../directives/decrypt.directive'; // Import Directive
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-experience',
   standalone: true,
-  imports: [DecryptDirective], // Add to imports
+  imports: [CommonModule],
   templateUrl: './experience.component.html',
   styleUrl: './experience.component.css',
 })
 export class ExperienceComponent {
-  @Input() active = false; // Added this
+  @Input() active = false;
   readonly entries = [
-    // ... keep entries ...
     {
       period: 'Apr 2025 — Present',
       org: 'VirtuIntelligence · Part-time · Remote',
@@ -1506,16 +1521,16 @@ export class ExperienceComponent {
   ];
 }..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\experience\experience.component.html === 
-<section class="page-experience">
+<section class="page-experience" [class.active-page]="active">
   <div class="pin">
-    <div class="slabel">
+    <div class="slabel au d0">
       <span class="sn">04</span><span class="st">/ experience &amp; education</span>
       <div class="shr"></div>
     </div>
-    <h2 class="exph">Where I've been.</h2>
+    <h2 class="exph au d1">Where I've been.</h2>
     <div class="tl">
-      @for (entry of entries; track entry.title) {
-        <div class="tlr">
+      @for (entry of entries; track entry.title; let i = $index) {
+        <div class="tlr" [ngClass]="i === 0 ? 'al d2' : 'ar d3'">
           <div>
             <p class="tlpd">{{ entry.period }}</p>
             <p class="tlorg">{{ entry.org }}</p>
@@ -1535,8 +1550,7 @@ export class ExperienceComponent {
       }
     </div>
   </div>
-</section>
-..
+</section>..
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\experience\experience.component.css === 
 /* FULL HEIGHT & BACKGROUND FIX */
 :host {
@@ -1636,10 +1650,11 @@ export class ExperienceComponent {
 @media (max-width: 960px) {
   .page-experience { padding: 6.5rem 1.5rem 4rem; }
   .tlr { grid-template-columns: 1fr; gap: 1rem; }
-}..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\home\home.component.ts === 
-import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input } from '@angular/core';
+import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input, effect } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
+import { NavigationService } from '../../data/navigation.service'; // Needed for theme
 import { DecryptDirective } from '../../directives/decrypt.directive';
 
 @Component({
@@ -1650,9 +1665,10 @@ import { DecryptDirective } from '../../directives/decrypt.directive';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
-  @Input() active = false; // Trigger for glitch effect
+  @Input() active = false;
   
   data = inject(PortfolioDataService);
+  nav = inject(NavigationService);
   projectOpened = output<number>();
   previewHover = output<number | null>();
 
@@ -1695,7 +1711,11 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private resize() {
-    const { offsetWidth: W, offsetHeight: H } = this.canvas;
+    // Fix: Use scrollHeight to fill the full scrollable area, not just viewport
+    const container = this.canvas.parentElement;
+    const W = container ? container.offsetWidth : window.innerWidth;
+    const H = container ? Math.max(container.scrollHeight, window.innerHeight) : window.innerHeight;
+    
     this.canvas.width = W;
     this.canvas.height = H;
     this.pts = [];
@@ -1732,7 +1752,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       p.y += this.vy[i];
     });
 
-    ctx.strokeStyle = 'rgba(42,42,64,0.65)';
+    // Fix: Adjust grid line color based on theme
+    const isDark = this.nav.isDark();
+    ctx.strokeStyle = isDark ? 'rgba(42,42,64,0.65)' : 'rgba(200,195,224,0.55)';
     ctx.lineWidth = 0.8;
     ctx.beginPath();
     this.pts.forEach((p, i) => {
@@ -1760,53 +1782,48 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this.animId = requestAnimationFrame(() => this.draw());
   }
-}..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\home\home.component.html === 
-<section class="page-home">
+<section class="page-home" [class.active-page]="active">
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
   <div class="pin h-top">
     <div class="h-top-grid">
       <div class="h-text">
-        <!-- Pass active state to trigger glitch -->
-        <h1 class="hname" [appDecrypt]="'Hello, I\'m'" [active]="active" [delay]="400">Hello, I'm</h1>
-        <h1 class="hname accent-name" [appDecrypt]="'Jaren Kendrick.'" [active]="active" [delay]="600">Jaren Kendrick.</h1>
-        <span class="hrole">Full Stack Web Developer</span>
-        <p class="hdesc">
+        <h1 class="hname au d1" [appDecrypt]="'Hello, I\'m'" [active]="active" [delay]="400">Hello, I'm</h1>
+        <h1 class="hname accent-name au d1" [appDecrypt]="'Jaren Kendrick.'" [active]="active" [delay]="600">Jaren Kendrick.</h1>
+        <span class="hrole au d2">Full Stack Web Developer</span>
+        <p class="hdesc au d3">
           I build end-to-end web applications, specializing in <strong>Angular</strong> for the frontend
           and robust, scalable architectures on the backend with <strong>Node.js and C#</strong>.
           I focus on writing clean code and shipping products that solve real problems.
         </p>
-        <div class="h-meta">
+        <div class="h-meta au d4">
           <div class="hloc">
-            <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
+            <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             Pampanga, Philippines
           </div>
         </div>
-        <div class="hbtns">
+        <div class="hbtns au d5">
           <button class="btn btn-fill" (click)="projectOpened.emit(-1)">View My Projects</button>
           <a href="Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-ghost" download>Download Resume</a>
         </div>
       </div>
-      <div class="h-photo">
+      <div class="h-photo au d3">
         <div class="h-photo-placeholder">
-          <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
+          <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </div>
       </div>
     </div>
 
-    <div class="feat-section">
+    <div class="feat-section au d5">
       <p class="feat-label">Featured Projects</p>
       <div class="feat-grid">
         @for (item of featuredProjects; track item.index) {
           <div class="feat-card" (click)="projectOpened.emit(item.index)" 
                (mouseenter)="previewHover.emit(item.index)"
                (mouseleave)="previewHover.emit(null)"
-               role="button" tabindex="0" [attr.aria-label]="item.project.name + ' project'">
+               role="button" tabindex="0">
             <div class="feat-thumb" [style.background]="item.project.imgs[0]"></div>
             <div class="feat-body">
               <div class="feat-name">{{ item.project.name }}</div>
@@ -1822,13 +1839,15 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       </div>
     </div>
   </div>
-</section>..
+</section>echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\home\home.component.css === 
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+/* Changed to relative so canvas sizes against content height */
 .page-home {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  /* Standardized padding to match other pages */
   padding: 5rem 5rem 3rem;
   overflow-y: auto;
 }
@@ -1862,7 +1881,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   color: var(--white);
   font-size: clamp(4rem, 8vw, 5.5rem);
   margin-bottom: .8rem;
-  animation: fadeUp .5s .1s ease both;
 }
 
 .accent-name { margin-bottom: 1.2rem; }
@@ -1873,7 +1891,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   color: var(--acc);
   margin-bottom: 1.5rem;
   display: block;
-  animation: fadeUp .5s .17s ease both;
 }
 
 .hdesc {
@@ -1882,7 +1899,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   line-height: 1.75;
   margin-bottom: 2rem;
   font-weight: 300;
-  animation: fadeUp .5s .24s ease both;
 }
 .hdesc strong { color: var(--white); font-weight: 600; }
 
@@ -1892,7 +1908,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   gap: 1.5rem;
   flex-wrap: wrap;
   margin-bottom: 2.5rem;
-  animation: fadeUp .5s .31s ease both;
 }
 
 .hloc {
@@ -1912,14 +1927,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  animation: fadeUp .5s .42s ease both;
 }
 
 .h-photo {
   width: 220px;
   height: 220px;
   flex-shrink: 0;
-  animation: fadeUp .5s .17s ease both;
 }
 
 .h-photo-placeholder {
@@ -1940,7 +1953,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 .feat-section {
   position: relative;
   z-index: 1;
-  animation: fadeUp .5s .42s ease both;
 }
 
 .feat-label {
@@ -2035,17 +2047,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 4rem; }
   .h-top-grid { flex-direction: column-reverse; align-items: flex-start; gap: 2.5rem; margin-bottom: 4rem; }
   .h-photo { width: 160px; height: 160px; }
   .feat-grid { grid-template-columns: 1fr; }
-}..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\project-overlay\project-overlay.component.ts === 
 import { Component, input, output, signal } from '@angular/core';
 import { Project } from '../../models/portfolio.models';
@@ -2059,15 +2066,19 @@ import { Project } from '../../models/portfolio.models';
 export class ProjectOverlayComponent {
   project = input<Project | null>(null);
   closed = output<void>();
+  isClosing = signal(false);
 
   close() {
-    this.closed.emit();
+    this.isClosing.set(true);
+    setTimeout(() => {
+      this.isClosing.set(false);
+      this.closed.emit();
+    }, 500); // Wait for CSS animation to finish
   }
-}
-..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\project-overlay\project-overlay.component.html === 
 @if (project()) {
-  <div class="overlay-wrap">
+  <div class="overlay-wrap" [class.closing]="isClosing()">
     <div class="ov-backdrop" (click)="close()"></div>
     <div class="ov-panel" role="dialog" aria-modal="true" aria-label="Project details">
       <div class="ov-top">
@@ -2127,8 +2138,7 @@ export class ProjectOverlayComponent {
       </div>
     </div>
   </div>
-}
-..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\project-overlay\project-overlay.component.css === 
 .overlay-wrap {
   position: fixed;
@@ -2136,6 +2146,15 @@ export class ProjectOverlayComponent {
   z-index: 9000;
   display: flex;
   animation: overlayIn .55s cubic-bezier(.76,0,.24,1) both;
+}
+
+.overlay-wrap.closing {
+  animation: overlayOut .5s cubic-bezier(.76,0,.24,1) forwards;
+}
+
+@keyframes overlayOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
 }
 
 @keyframes overlayIn {
@@ -2324,43 +2343,41 @@ export class ProjectOverlayComponent {
   .ov-body { padding: 2rem 1.5rem; }
   .ov-top { padding: 1.5rem; }
 }
-..
+echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\projects\projects.component.ts === 
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.css',
 })
 export class ProjectsComponent {
+  @Input() active = false;
   data = inject(PortfolioDataService);
   projectOpened = output<number>();
-}
-..
+  previewHover = output<number | null>();
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\projects\projects.component.html === 
-<section class="page-projects">
+<section class="page-projects" [class.active-page]="active">
   <div class="pin">
-    <div class="pheader">
-      <!-- Notice the [appDecrypt] directive added here -->
-      <h2 class="ph2" [appDecrypt]="'Selected Work'">Selected Work</h2>
+    <div class="pheader au d0">
+      <h2 class="ph2">Selected Work</h2>
       <span class="pcnt">05 projects</span>
       <div class="phr" aria-hidden="true"></div>
     </div>
     <ul class="plist" role="list">
       @for (proj of data.projects; track proj.num; let i = $index) {
-        
-        <!-- Notice the mouseenter and mouseleave bindings added here -->
-        <li class="pi" 
+        <li class="pi al" 
+            [class.d1]="i === 0" [class.d2]="i === 1" [class.d3]="i === 2" [class.d4]="i === 3" [class.d5]="i === 4"
             (click)="projectOpened.emit(i)" 
             (mouseenter)="previewHover.emit(i)" 
             (mouseleave)="previewHover.emit(null)"
-            role="button" 
-            tabindex="0"
-            (keydown.enter)="projectOpened.emit(i)">
-            
+            role="button" tabindex="0" (keydown.enter)="projectOpened.emit(i)">
           <span class="pnum">{{ proj.num }}</span>
           <div>
             <div class="pnm">{{ proj.name }}</div>
@@ -2376,7 +2393,7 @@ export class ProjectsComponent {
       }
     </ul>
   </div>
-</section>..
+</section>echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\projects\projects.component.css === 
 .page-projects {
   width: 100%;
@@ -2487,6 +2504,10 @@ export class ProjectsComponent {
   transition: color .2s, transform .2s;
 }
 
+.active-page .ph2,
+.active-page .pheader { animation: fadeUp .5s ease both; }
+.active-page .pi { animation: fadeLeft .5s ease both; }
+
 @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
@@ -2502,7 +2523,7 @@ export class ProjectsComponent {
   .pnum, .ptgs { display: none; }
   .pnm { font-size: clamp(1.6rem, 7vw, 2.2rem); }
 }
-..
+echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\sidebar\sidebar.component.ts === 
 import { Component, inject, effect } from '@angular/core';
 import { NavigationService } from '../../data/navigation.service';
@@ -2530,7 +2551,7 @@ export class SidebarComponent {
     this.nav.goTo(index, this.navItems.length);
   }
 }
-..
+echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\sidebar\sidebar.component.html === 
 <aside class="sidebar" role="navigation" aria-label="Main Navigation">
   <a href="#" (click)="goTo(0); $event.preventDefault()" class="sb-logo" aria-label="Home">jk<span>.</span></a>
@@ -2566,24 +2587,57 @@ export class SidebarComponent {
     <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle dark/light mode">
       <div class="tknob">
         @if (nav.isDark()) {
-          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         } @else {
           <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/>
-            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
         }
       </div>
     </button>
+    
+    <button class="term-trigger" (click)="nav.toggleTerminal()" aria-label="Open developer terminal" title="Developer Mode">
+      <span class="term-trigger-dot"></span>[ ]_ dev
+    </button>
   </div>
-</aside>
-..
+</aside>echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\sidebar\sidebar.component.css === 
+/* Add to existing CSS */
+/* ... */
+.term-trigger {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .07em;
+  color: var(--muted);
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  padding: .3rem .55rem;
+  cursor: pointer;
+  background: none;
+  transition: color .2s, border-color .2s, background .2s;
+  margin-top: .5rem;
+}
+.term-trigger:hover {
+  color: var(--acc);
+  border-color: var(--acc);
+  background: rgba(167,139,250,.06);
+}
+.term-trigger-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--acc);
+  opacity: .5;
+  animation: termPulse 1.6s ease infinite;
+}
+@keyframes termPulse {
+  0%, 100% { opacity: .5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* Include everything else you already had above this line ... */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
@@ -2719,10 +2773,10 @@ export class SidebarComponent {
 
 @media (max-width: 960px) {
   .sidebar { display: none; }
-}
-..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\terminal\terminal.component.ts === 
-import { Component, signal, ViewChild, ElementRef, AfterViewChecked, HostListener } from '@angular/core';
+import { Component, signal, ViewChild, ElementRef, effect, inject } from '@angular/core';
+import { NavigationService } from '../../data/navigation.service';
 
 interface TermLine {
   html: string;
@@ -2734,11 +2788,13 @@ interface TermLine {
   templateUrl: './terminal.component.html',
   styleUrl: './terminal.component.css',
 })
-export class TerminalComponent implements AfterViewChecked {
+export class TerminalComponent {
   @ViewChild('termOutput') termOutput!: ElementRef<HTMLDivElement>;
   @ViewChild('termInput') termInput!: ElementRef<HTMLInputElement>;
 
-  readonly isOpen = signal(false);
+  nav = inject(NavigationService);
+  isOpen = this.nav.terminalOpen;
+
   readonly lines = signal<TermLine[]>([]);
   readonly inputValue = signal('');
 
@@ -2766,6 +2822,7 @@ export class TerminalComponent implements AfterViewChecked {
       `  <span class="tl-acc">whoami</span>        who is jaren`,
       `  <span class="tl-acc">contact</span>       get contact info`,
       `  <span class="tl-acc">github</span>        open github profile`,
+      `  <span class="tl-acc">run pathfinder</span> launch vr app`,
       `  <span class="tl-acc">clear</span>         clear terminal`,
       `  <span class="tl-acc">exit</span>          close terminal`,
     ],
@@ -2821,25 +2878,45 @@ export class TerminalComponent implements AfterViewChecked {
       window.open('https://github.com/jarenkendrick14', '_blank');
       return [`<span class="tl-ok">✓ Opening github.com/jarenkendrick14...</span>`];
     },
+    'run pathfinder': () => {
+      const outputLines = [
+        `<span class="tl-dim">Initializing VR runtime environment...</span>`,
+        `<span class="tl-ok">  ✓ Unreal Engine 5.5 loaded</span>`,
+        `<span class="tl-ok">  ✓ Meta Quest SDK connected</span>`,
+        `<span class="tl-dim">Mounting PathFinder.apk to device...</span>`,
+        `<span class="tl-ok">  ✓ APK verified (23.4 MB)</span>`,
+        `<span class="tl-dim">Launching VR session...</span>`,
+        `  <span class="tl-acc">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> 100%`,
+        `<span class="tl-ok">  ✓ PathFinder v1.0.0 running</span>`,
+        `  🥽 Put on your headset. The journey begins.`,
+      ];
+      outputLines.forEach((line, i) => {
+        setTimeout(() => this.addLine(line), i * 180);
+      });
+      return null;
+    },
     clear: () => { this.lines.set([]); return null; },
     exit: () => { this.close(); return null; },
     quit: () => { this.close(); return null; },
   };
 
-  toggle() { this.isOpen() ? this.close() : this.open(); }
-
-  open() {
-    this.isOpen.set(true);
-    if (!this.booted) {
-      this.booted = true;
-      this.BOOT_MSG.forEach((msg, i) => {
-        setTimeout(() => this.lines.update(l => [...l, { html: msg }]), i * 55);
-      });
-    }
-    setTimeout(() => this.termInput?.nativeElement.focus(), 460);
+  constructor() {
+    effect(() => {
+      if (this.isOpen()) {
+        if (!this.booted) {
+          this.booted = true;
+          this.BOOT_MSG.forEach((msg, i) => {
+            setTimeout(() => this.addLine(msg), i * 55);
+          });
+          // Auto-run 'help' command after booting
+          setTimeout(() => this.runCmd('help'), (this.BOOT_MSG.length * 55) + 300);
+        }
+        setTimeout(() => this.termInput?.nativeElement.focus(), 460);
+      }
+    });
   }
 
-  close() { this.isOpen.set(false); }
+  close() { this.nav.terminalOpen.set(false); }
 
   onKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter') {
@@ -2877,22 +2954,20 @@ export class TerminalComponent implements AfterViewChecked {
     this.addLine('');
   }
 
+  // Handle scroll ONLY when adding lines, allowing manual scrolling otherwise
   private addLine(html: string) {
     this.lines.update(l => [...l, { html }]);
+    setTimeout(() => {
+      if (this.termOutput?.nativeElement) {
+        this.termOutput.nativeElement.scrollTop = this.termOutput.nativeElement.scrollHeight;
+      }
+    }, 10);
   }
 
   private esc(s: string) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
-
-  ngAfterViewChecked() {
-    if (this.termOutput?.nativeElement) {
-      const el = this.termOutput.nativeElement;
-      el.scrollTop = el.scrollHeight;
-    }
-  }
-}
-..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\terminal\terminal.component.html === 
 <div class="terminal" [class.open]="isOpen()" role="complementary" aria-label="Developer terminal">
   <div class="term-bar">
@@ -2904,7 +2979,8 @@ export class TerminalComponent implements AfterViewChecked {
     <span class="term-title">jaren&#64;portfolio:~$ — bash</span>
     <button class="term-bar-close" (click)="close()" aria-label="Close terminal">✕</button>
   </div>
-  <div class="term-output" #termOutput>
+  <!-- Stop propagation prevents scrolling the underlying page when hovering terminal -->
+  <div class="term-output" #termOutput (wheel)="$event.stopPropagation()" (touchmove)="$event.stopPropagation()">
     @for (line of lines(); track $index) {
       <p [innerHTML]="line.html"></p>
     }
@@ -2923,10 +2999,7 @@ export class TerminalComponent implements AfterViewChecked {
       (input)="inputValue.set($any($event.target).value)"
       (keydown)="onKeyDown($event)"/>
   </div>
-</div>
-
-<!-- Trigger button (placed outside terminal itself, used by app) -->
-..
+</div>echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\terminal\terminal.component.css === 
 .terminal {
   position: fixed;
@@ -3020,32 +3093,34 @@ export class TerminalComponent implements AfterViewChecked {
 @media (max-width: 960px) {
   .terminal { left: 0; }
 }
-..
+echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\testimonials\testimonials.component.ts === 
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
 
 @Component({
   selector: 'app-testimonials',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './testimonials.component.html',
   styleUrl: './testimonials.component.css',
 })
 export class TestimonialsComponent {
+  @Input() active = false;
   data = inject(PortfolioDataService);
-}
-..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\testimonials\testimonials.component.html === 
-<section class="page-testimonials">
+<section class="page-testimonials" [class.active-page]="active">
   <div class="pin">
-    <div class="slabel">
+    <div class="slabel au d0">
       <span class="sn">06</span><span class="st">/ what people say</span>
       <div class="shr"></div>
     </div>
-    <h2 class="exph">Testimonials.</h2>
+    <h2 class="exph au d1">Testimonials.</h2>
     <div class="tmg">
       @for (tm of data.testimonials; track tm.name; let i = $index) {
-        <div class="tmc">
+        <div class="tmc as" [ngClass]="i === 0 ? 'd2' : i === 1 ? 'd3' : 'd4'">
           <p class="tmq">{{ tm.quote }}</p>
           <div class="tma">
             <div class="tmav">{{ tm.initial }}</div>
@@ -3063,8 +3138,7 @@ export class TestimonialsComponent {
       }
     </div>
   </div>
-</section>
-..
+</section>echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\components\testimonials\testimonials.component.css === 
 /* FULL HEIGHT & BACKGROUND FIX */
 :host {
@@ -3178,7 +3252,7 @@ export class TestimonialsComponent {
 @media (max-width: 960px) {
   .page-testimonials { padding: 6.5rem 1.5rem 4rem; }
   .tmg { grid-template-columns: 1fr; }
-}..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\data\navigation.service.ts === 
 import { Injectable, signal, computed } from '@angular/core';
 
@@ -3187,6 +3261,9 @@ export class NavigationService {
   readonly currentPage = signal<number>(0);
   readonly isAnimating = signal<boolean>(false);
   readonly theme = signal<'dark' | 'light'>('dark');
+  
+  // Added terminal state management
+  readonly terminalOpen = signal<boolean>(false);
 
   readonly isDark = computed(() => this.theme() === 'dark');
 
@@ -3207,8 +3284,12 @@ export class NavigationService {
     this.theme.set(next);
     localStorage.setItem('jk-theme', next);
   }
-}
-..
+
+  // Added method to toggle terminal
+  toggleTerminal(): void {
+    this.terminalOpen.update(v => !v);
+  }
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\data\portfolio.data.ts === 
 import { Injectable } from '@angular/core';
 import { Project, Certificate, BlogPost, Testimonial, NavItem } from '../models/portfolio.models';
@@ -3319,7 +3400,7 @@ export class PortfolioDataService {
     { quote: '"The web application Jaren built exceeded expectations. Clean database structure, solid API design, and delivered on time. A strong full-stack candidate."', name: 'Prof. [Name]', role: 'IT Instructor · Holy Angel University', initial: 'P', placeholder: true },
   ];
 }
-..
+echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\directives\decrypt.directive.ts === 
 import { Directive, ElementRef, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 
@@ -3337,43 +3418,34 @@ export class DecryptDirective implements OnChanges {
   private originalHTML = '';
   private plainText = '';
   private running = false;
-  private hasRan = false;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['targetText']) {
-      // Store initial state
       this.originalHTML = this.el.nativeElement.innerHTML;
       this.plainText = this.targetText || this.el.nativeElement.textContent.trim();
     }
 
-    if (changes['active']) {
-      if (this.active && !this.running && !this.hasRan) {
-        // Reset hasRan if you want it to run every time you visit, remove this check
-        // For now, we allow re-running if the component is kept alive but we want the effect on re-entry
-        this.hasRan = false; 
+    // Only run if the component is physically active AND not already running
+    if (changes['active'] && this.active) {
+      if (!this.running) {
+        this.running = true; // Lock execution immediately 
         setTimeout(() => this.runEffect(), this.delay);
       }
     }
   }
 
   private runEffect() {
-    if (this.running) return;
-    this.running = true;
-
     const el = this.el.nativeElement;
     
     // 1. Lock Dimensions to prevent layout jumping
-    // We explicitly set width/height to computed pixel values
     const rect = el.getBoundingClientRect();
     el.style.width = `${rect.width}px`;
     el.style.height = `${rect.height}px`;
-    el.style.display = 'block'; // Ensure block layout during glitch
-    el.style.whiteSpace = 'nowrap'; // Prevent wrapping changes
+    el.style.display = 'block'; 
+    el.style.whiteSpace = 'nowrap'; 
     el.style.overflow = 'hidden';
 
-    // Store original HTML if not already set
     if (!this.originalHTML) this.originalHTML = el.innerHTML;
-
     el.classList.add('decrypting');
 
     const len = this.plainText.length;
@@ -3411,13 +3483,12 @@ export class DecryptDirective implements OnChanges {
         el.style.overflow = '';
         
         el.classList.remove('decrypting');
-        this.running = false;
-        this.hasRan = true;
+        this.running = false; // Release lock
         clearInterval(iv);
       }
     }, 40);
   }
-}..
+}echo ...
 === FILE: D:\Codes\AngularPortfolio\jaren-portfolio\src\app\models\portfolio.models.ts === 
 export interface Project {
   num: string;
@@ -3462,4 +3533,4 @@ export interface NavItem {
   short: string;
   index: number;
 }
-..
+echo ...
