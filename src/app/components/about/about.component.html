@@ -1,0 +1,100 @@
+<section class="page-about" [class.active-page]="active">
+  <div class="pin">
+    <div class="slabel au d0">
+      <span class="sn">02</span><span class="st">/ about me</span>
+      <div class="shr"></div>
+    </div>
+
+    <div class="ag">
+      <div>
+        <h2 class="apull al d1">A builder who actually <em>ships</em>.</h2>
+        <div class="abio au d2">
+          <p>I'm a Full Stack Developer specializing in <strong>Angular, Node.js, and MongoDB</strong>. I build complete systems: from designing secure database schemas and REST APIs to crafting intuitive frontend interfaces.</p>
+          <p>While I currently work as a Game Developer, programming complex systems in <strong>C# (Unity)</strong> has deeply reinforced my backend logic, object-oriented design, and architectural skills.</p>
+          <p>I don't just write code; I care about shipping functional, maintainable products. I am looking for a full-stack internship where I can contribute to real-world codebases.</p>
+          <div style="margin-top:2rem;">
+            <a href="Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
+              <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download Resume
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- SKILLS SECTION -->
+        <div class="blk ar d2">
+          <div class="blkh">
+            Technical Skills
+            <button class="skill-toggle-btn" (click)="toggleSkills()">
+              @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
+            </button>
+          </div>
+
+          <!-- 3D SPHERE (Centered Container) -->
+          <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
+            <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
+            <div class="sphere-hint">drag to spin</div>
+          </div>
+
+          <!-- SKILL BARS -->
+          @if (skillsExpanded()) {
+            <ul class="skl" role="list">
+              @for (sk of skills; track sk.name; let i = $index) {
+                <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="sk-info">
+                    <span>{{ sk.name }}</span>
+                    <span class="sk-time">{{ sk.time }}</span>
+                  </div>
+                  <div class="sk-bar">
+                    <!-- Pass the target width via custom property to prevent flashing -->
+                    <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <!-- CERT CAROUSEL -->
+        <div class="blk ar d3">
+          <div class="cert-header">
+            <div class="blkh" style="margin-bottom:0;">Certifications</div>
+            <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
+          </div>
+          <div class="cert-carousel">
+            <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
+            <div class="cert-card-wrap" [ngClass]="certAnimClass()">
+              <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
+                <div class="cert-top" [style.background]="currentCert.color + '22'">
+                  <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
+                  <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
+                </div>
+                <div class="cert-body">
+                  <div class="cert-name">{{ currentCert.name }}</div>
+                  <div class="cert-meta">
+                    <div class="cert-date">{{ currentCert.date }}</div>
+                    <div class="cert-view">View Certificate ↗</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
+          </div>
+          <div class="cert-dots">
+            @for (cert of data.certificates; track $index) {
+              <button class="cert-dot" [class.on]="$index === certIndex()"
+                (click)="certNav($index > certIndex() ? 1 : -1)"
+                [attr.aria-label]="'Cert ' + ($index + 1)">
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

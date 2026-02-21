@@ -1,0 +1,146 @@
+.app-root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  background: var(--bg);
+}
+
+.main-content {
+  position: fixed;
+  left: 200px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+/* ══════════ PAGE SLIDER LOGIC (DESKTOP) ══════════ */
+.page-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-section {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg);
+  will-change: transform;
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+  /* Default state is below */
+  transform: translateY(100%);
+  z-index: 10;
+}
+
+.page-section.active {
+  transform: translateY(0);
+  z-index: 20;
+}
+
+.page-section.prev {
+  transform: translateY(-100%);
+  z-index: 10;
+}
+
+.page-section.next {
+  transform: translateY(100%);
+  z-index: 10;
+}
+
+/* ══════════ FIX INNER COMPONENT SCROLLING ══════════ */
+:host ::ng-deep .page-home,
+:host ::ng-deep .page-about,
+:host ::ng-deep .page-projects,
+:host ::ng-deep .page-experience,
+:host ::ng-deep .page-blog,
+:host ::ng-deep .page-testimonials,
+:host ::ng-deep .page-contact {
+  position: static !important;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow: visible !important;
+  width: 100% !important;
+}
+
+/* ══════════ SCROLLBAR STYLING ══════════ */
+.page-section::-webkit-scrollbar { width: 6px; }
+.page-section::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+/* ══════════ MOBILE NAV ══════════ */
+.mobnav {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; height: 70px;
+  background: var(--sb); border-bottom: 1px solid var(--sbbrd);
+  z-index: 500; align-items: center; justify-content: space-between; padding: 0 1.5rem;
+}
+.mlogo { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: 1.8rem; color: var(--white); text-decoration: none; }
+.mlogo span { color: var(--acc); font-style: normal; }
+.mnr { display: flex; align-items: center; gap: 1.5rem; }
+.thm { width: 46px; height: 24px; border-radius: 100px; background: var(--surf); border: 1px solid var(--bord); position: relative; cursor: none; }
+.tknob { position: absolute; top: 2px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; transition: transform .3s ease; color: #fff; }
+[data-theme="light"] .tknob { transform: translateX(20px); }
+.mbg { display: flex; flex-direction: column; gap: 6px; background: none; border: none; padding: 4px; cursor: none; }
+.mbg span { display: block; width: 26px; height: 2px; background: var(--white); transition: all .25s; }
+.mbg.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.mbg.open span:nth-child(2) { opacity: 0; }
+.mbg.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+.mobmenu {
+  display: flex; position: fixed; top: 70px; left: 0; right: 0; bottom: 0;
+  background: var(--bg); padding: 2rem; z-index: 499; flex-direction: column; gap: 1.5rem;
+  animation: fadeUp .3s ease both;
+}
+.mobmenu a {
+  font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; letter-spacing: .05em;
+  color: var(--text); text-transform: uppercase; font-weight: 500;
+  border-bottom: 1px solid var(--bord); padding-bottom: 1rem; cursor: none; text-decoration: none;
+}
+.mobmenu a.on { color: var(--acc); border-color: var(--acc); }
+
+/* ══════════ CURSOR & PREVIEW ══════════ */
+#cdot{position:fixed;width:7px;height:7px;background:var(--acc);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);}
+#cring{position:fixed;width:32px;height:32px;border:1.5px solid var(--acc);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s,opacity .25s !important;}
+#cring.big{width:55px;height:55px;opacity:.22;}
+.cl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.12em;color:var(--acc);opacity:0;transition:opacity .2s !important;user-select:none;}
+#cring.big .cl{opacity:1;}
+
+#prvw{position:fixed;width:290px;height:185px;border-radius:8px;overflow:hidden;pointer-events:none;z-index:9990;opacity:0;transform:translate(-50%,-65%) scale(.88);transition:opacity .28s ease,transform .28s ease !important;border:1px solid var(--bord);box-shadow:0 18px 55px rgba(0,0,0,.55);}
+#prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
+.psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
+.psc.act{opacity:1;}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ══════════ MOBILE STACKING (VANILLA PARITY) ══════════ */
+@media (max-width: 960px) {
+  .main-content { left: 0; top: 70px; overflow: visible; }
+  .mobnav { display: flex; }
+  .app-root { overflow: auto; height: auto; display: block; }
+  
+  .page-slider { 
+    height: auto; 
+    overflow: visible; 
+    display: flex; 
+    flex-direction: column; 
+  }
+  
+  .page-section { 
+    position: relative !important; 
+    height: auto !important; 
+    transform: none !important; 
+    transition: none !important; 
+    opacity: 1 !important; 
+    min-height: 100vh !important; 
+    overflow: visible !important; 
+    display: block !important; 
+  }
+  
+  #cdot, #cring, #prvw { display: none !important; }
+}

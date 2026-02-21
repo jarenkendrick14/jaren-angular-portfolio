@@ -1,0 +1,30 @@
+<section class="page-projects" [class.active-page]="active">
+  <div class="pin">
+    <div class="pheader">
+      <h2 class="ph2">Selected Work</h2>
+      <span class="pcnt">05 projects</span>
+      <div class="phr" aria-hidden="true"></div>
+    </div>
+    <ul class="plist" role="list">
+      @for (proj of data.projects; track proj.num; let i = $index) {
+        <li class="pi" 
+            (click)="projectOpened.emit(i)" 
+            (mouseenter)="previewHover.emit(i)" 
+            (mouseleave)="previewHover.emit(null)"
+            role="button" tabindex="0" (keydown.enter)="projectOpened.emit(i)">
+          <span class="pnum">{{ proj.num }}</span>
+          <div>
+            <div class="pnm">{{ proj.name }}</div>
+            <div class="psub">{{ proj.subtitle }}</div>
+          </div>
+          <div class="ptgs">
+            @for (tag of proj.tags; track tag) {
+              <span class="ptag">{{ tag }}</span>
+            }
+          </div>
+          <span class="parr" aria-hidden="true">↗</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,203 @@
+.overlay-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  animation: overlayIn .55s cubic-bezier(.76,0,.24,1) both;
+}
+
+.overlay-wrap.closing {
+  animation: overlayOut .5s cubic-bezier(.76,0,.24,1) forwards;
+}
+
+@keyframes overlayOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes overlayIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.ov-backdrop {
+  width: 200px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,.6);
+  cursor: pointer;
+}
+
+.ov-panel {
+  flex: 1;
+  background: var(--bg);
+  border-left: 1px solid var(--bord);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.ov-panel::-webkit-scrollbar { width: 6px; }
+.ov-panel::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+.ov-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 3rem;
+  border-bottom: 1px solid var(--bord);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 1;
+}
+
+.ov-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  color: var(--acc);
+  letter-spacing: .1em;
+  margin-bottom: .75rem;
+}
+
+.ov-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  color: var(--text);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.ov-close {
+  width: 40px; height: 40px;
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sub);
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: none;
+  transition: border-color .2s, color .2s;
+}
+.ov-close:hover { border-color: var(--acc); color: var(--acc); }
+
+.ov-body { padding: 3rem 4rem; flex: 1; }
+
+.ov-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  letter-spacing: -.04em;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 2.5rem;
+}
+
+.ov-imgs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.ov-img {
+  aspect-ratio: 16/10;
+  border-radius: 6px;
+  border: 1px solid var(--bord);
+  overflow: hidden;
+}
+
+.ov-sections {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 4rem;
+}
+
+.ov-h {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: .85rem;
+  text-transform: uppercase;
+}
+
+.ov-desc {
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.85;
+  font-weight: 300;
+}
+
+.ov-features {
+  list-style: none;
+}
+.ov-features li {
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.75;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--bord);
+  font-weight: 300;
+}
+.ov-features li:last-child { border-bottom: none; }
+.ov-features li::before { content: '→ '; color: var(--acc); }
+
+.ov-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 2rem;
+}
+
+.ov-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.ptag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .04em;
+  padding: .3rem .6rem;
+  border-radius: 4px;
+  background: var(--surf);
+  color: var(--text);
+  border: 1px solid var(--bord);
+}
+
+.links-coming {
+  font-size: .85rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  border: none;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-fill { background: var(--acc); color: #fff; }
+.btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
+.btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
+.btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
+.btn-sm { padding: .65rem 1.2rem; font-size: .88rem; }
+
+@media (max-width: 960px) {
+  .ov-backdrop { display: none; }
+  .ov-imgs { grid-template-columns: 1fr 1fr; }
+  .ov-sections { grid-template-columns: 1fr; }
+  .ov-body { padding: 2rem 1.5rem; }
+  .ov-top { padding: 1.5rem; }
+}

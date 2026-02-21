@@ -1,0 +1,30 @@
+<section class="page-experience">
+  <div class="pin">
+    <div class="slabel">
+      <span class="sn">04</span><span class="st">/ experience &amp; education</span>
+      <div class="shr"></div>
+    </div>
+    <h2 class="exph">Where I've been.</h2>
+    <div class="tl">
+      @for (entry of entries; track entry.title) {
+        <div class="tlr">
+          <div>
+            <p class="tlpd">{{ entry.period }}</p>
+            <p class="tlorg">{{ entry.org }}</p>
+          </div>
+          <div>
+            <h3 class="tltl">{{ entry.title }}</h3>
+            <p class="tldc" [innerHTML]="entry.desc"></p>
+            @if (entry.tags.length > 0) {
+              <div class="tlch">
+                @for (tag of entry.tags; track tag) {
+                  <span class="ptag">{{ tag }}</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

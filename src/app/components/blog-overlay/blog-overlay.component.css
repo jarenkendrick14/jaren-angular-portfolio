@@ -1,0 +1,134 @@
+.blog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  background: var(--bg);
+  border-top: 2px solid var(--acc);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: slideUp .5s cubic-bezier(.76,0,.24,1) both;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.blog-overlay::-webkit-scrollbar { width: 6px; }
+.blog-overlay::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+.blog-overlay.closing {
+  animation: slideDown .5s cubic-bezier(.76,0,.24,1) forwards;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+.bp-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 5rem;
+  border-bottom: 1px solid var(--bord);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 1;
+}
+
+.bp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+  font-weight: 600;
+}
+
+.bp-close {
+  width: 40px; height: 40px;
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sub);
+  font-size: 1.1rem;
+  cursor: pointer;
+  background: none;
+  transition: border-color .2s, color .2s;
+}
+.bp-close:hover { border-color: var(--acc); color: var(--acc); }
+
+.bp-body {
+  padding: 3.5rem 5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.bp-hero-img {
+  width: 100%;
+  height: 320px;
+  border-radius: 8px;
+  border: 1px solid var(--bord);
+  background: var(--surf);
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  overflow: hidden;
+}
+
+.bp-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--acc);
+  letter-spacing: .1em;
+  margin-bottom: 1rem;
+}
+
+.bp-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -.03em;
+  color: var(--white);
+  line-height: 1.08;
+  margin-bottom: 2.5rem;
+}
+
+.bp-content {
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+:host ::ng-deep .bp-content p { margin-bottom: 1.25rem; }
+:host ::ng-deep .bp-content h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  letter-spacing: -.025em;
+  color: var(--white);
+  margin: 2rem 0 .75rem;
+}
+:host ::ng-deep .bp-content strong { color: var(--white); font-weight: 600; }
+:host ::ng-deep .bp-content em { color: var(--acc); font-style: italic; }
+:host ::ng-deep .bp-content code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .9em;
+  color: var(--acc);
+  background: var(--surf);
+  padding: .1rem .35rem;
+  border-radius: 3px;
+}
+
+@media (max-width: 960px) {
+  .bp-top { padding: 1.5rem; }
+  .bp-body { padding: 2rem 1.5rem; }
+}

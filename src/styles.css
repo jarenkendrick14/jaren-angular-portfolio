@@ -1,0 +1,89 @@
+/* ══════════ GOOGLE FONTS ══════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ══════════ DESIGN TOKENS ══════════ */
+:root {
+  --bg: #09090f;
+  --sb: #0d0d16;
+  --surf: #111120;
+  --bord: #2a2a40;
+  --acc: #a78bfa;
+  --acc2: #7c3aed;
+  --white: #ffffff;
+  --text: #e0def0;
+  --muted: #a4a1c6;
+  --sub: #c2c0dc;
+  --sbbrd: #1a1a2e;
+}
+
+[data-theme="light"] {
+  --bg: #f4f2f9;
+  --sb: #ebe8f5;
+  --surf: #e0ddf0;
+  --bord: #c8c3e0;
+  --acc: #7c3aed;
+  --acc2: #6d28d9;
+  --white: #1a1826;
+  --text: #2d2b3b;
+  --muted: #5c597a;
+  --sub: #44425e;
+  --sbbrd: #d0cceb;
+}
+
+/* ══════════ RESET ══════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  transition: background-color .35s ease, color .35s ease;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* Smooth theme transitions */
+*, *::before, *::after {
+  transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+}
+
+/* Focus styles */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+@media (max-width: 960px) {
+  body {
+    overflow: auto;
+    height: auto;
+  }
+}
+
+
+body { cursor: none; }
+button, a { cursor: none !important; }
+
+.decrypting { color: var(--acc) !important; }
+
+@media (max-width: 960px) {
+  body { cursor: auto; }
+  button, a { cursor: pointer !important; }
+}

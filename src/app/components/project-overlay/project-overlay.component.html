@@ -1,0 +1,62 @@
+@if (project()) {
+  <div class="overlay-wrap" [class.closing]="isClosing()">
+    <div class="ov-backdrop" (click)="close()"></div>
+    <div class="ov-panel" role="dialog" aria-modal="true" aria-label="Project details">
+      <div class="ov-top">
+        <div>
+          <div class="ov-num">{{ project()!.num }}</div>
+          <div class="ov-section-label">Project Details</div>
+        </div>
+        <button class="ov-close" (click)="close()" aria-label="Close">✕</button>
+      </div>
+      <div class="ov-body">
+        <h2 class="ov-name">{{ project()!.name }}</h2>
+        <div class="ov-imgs">
+          @for (img of project()!.imgs; track $index) {
+            <div class="ov-img" [style.background]="img">
+              <svg width="100%" height="100%" viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
+                <rect width="200" height="125" fill="transparent" rx="4"/>
+                <path d="M0 0 L200 125 M200 0 L0 125" stroke="var(--bord)" stroke-width="1" opacity=".25"/>
+              </svg>
+            </div>
+          }
+        </div>
+        <div class="ov-sections">
+          <div>
+            <p class="ov-h">ABOUT THIS PROJECT</p>
+            <p class="ov-desc">
+              <strong>{{ project()!.purpose }}</strong><br/><br/>
+              {{ project()!.desc }}
+            </p>
+            <div class="ov-tags">
+              @for (tag of project()!.tags; track tag) {
+                <span class="ptag">{{ tag }}</span>
+              }
+            </div>
+            <div class="ov-links">
+              @if (project()!.live) {
+                @for (link of project()!.live!; track link.url) {
+                  <a [href]="link.url" target="_blank" rel="noopener" class="btn btn-fill btn-sm">{{ link.name }}</a>
+                }
+              }
+              @if (project()!.github) {
+                <a [href]="project()!.github!" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub →</a>
+              }
+              @if (!project()!.live && !project()!.github) {
+                <span class="links-coming">Links coming soon</span>
+              }
+            </div>
+          </div>
+          <div>
+            <p class="ov-h">KEY FEATURES</p>
+            <ul class="ov-features">
+              @for (feat of project()!.features; track feat) {
+                <li>{{ feat }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

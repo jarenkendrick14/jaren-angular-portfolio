@@ -1,0 +1,28 @@
+<section class="page-testimonials">
+  <div class="pin">
+    <div class="slabel">
+      <span class="sn">06</span><span class="st">/ what people say</span>
+      <div class="shr"></div>
+    </div>
+    <h2 class="exph">Testimonials.</h2>
+    <div class="tmg">
+      @for (tm of data.testimonials; track tm.name; let i = $index) {
+        <div class="tmc">
+          <p class="tmq">{{ tm.quote }}</p>
+          <div class="tma">
+            <div class="tmav">{{ tm.initial }}</div>
+            <div>
+              <p class="tmname">
+                {{ tm.name }}
+                @if (tm.placeholder) {
+                  <span class="placeholder-note">(placeholder)</span>
+                }
+              </p>
+              <p class="tmrole">{{ tm.role }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

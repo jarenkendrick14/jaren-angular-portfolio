@@ -1,0 +1,31 @@
+<div class="terminal" [class.open]="isOpen()" role="complementary" aria-label="Developer terminal">
+  <div class="term-bar">
+    <div class="term-wm-dots">
+      <span style="background:#f87171;"></span>
+      <span style="background:#fbbf24;"></span>
+      <span style="background:#34d399;"></span>
+    </div>
+    <span class="term-title">jaren&#64;portfolio:~$ — bash</span>
+    <button class="term-bar-close" (click)="close()" aria-label="Close terminal">✕</button>
+  </div>
+  <!-- Stop propagation prevents scrolling the underlying page when hovering terminal -->
+  <div class="term-output" #termOutput (wheel)="$event.stopPropagation()" (touchmove)="$event.stopPropagation()">
+    @for (line of lines(); track $index) {
+      <p [innerHTML]="line.html"></p>
+    }
+  </div>
+  <div class="term-prompt-row">
+    <span class="term-ps">jaren&#64;portfolio:~$</span>
+    <input
+      #termInput
+      type="text"
+      class="term-input"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="type 'help' to get started..."
+      aria-label="Terminal input"
+      [value]="inputValue()"
+      (input)="inputValue.set($any($event.target).value)"
+      (keydown)="onKeyDown($event)"/>
+  </div>
+</div>

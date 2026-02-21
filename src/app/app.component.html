@@ -1,0 +1,102 @@
+<div id="cdot" #cdot aria-hidden="true"></div>
+<div id="cring" #cring [class.big]="cursorHover()" aria-hidden="true"><span class="cl">VIEW</span></div>
+
+<div id="prvw" #prvw [class.on]="previewActive() !== null" aria-hidden="true">
+   <div class="psc" [class.act]="previewActive() === 0"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#0a0a14"/><defs><radialGradient id="rg0" cx="50%" cy="50%"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".2"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient></defs><circle cx="145" cy="92" r="82" fill="url(#rg0)"/><circle cx="145" cy="92" r="78" fill="none" stroke="#a78bfa" stroke-width=".7" stroke-dasharray="5 9" opacity=".4"/><circle cx="145" cy="92" r="48" fill="none" stroke="#a78bfa" stroke-width=".5" opacity=".25"/><text x="145" y="97" text-anchor="middle" fill="#a78bfa" font-size="22" opacity=".5">🥽</text><text x="145" y="170" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">PATHFINDER · VR</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 1"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#09101a"/><defs><radialGradient id="rg1" cx="35%" cy="60%"><stop offset="0%" stop-color="#60a5fa" stop-opacity=".22"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg1)"/><rect x="45" y="32" width="200" height="120" rx="5" fill="none" stroke="#60a5fa" stroke-width=".8" opacity=".4"/><rect x="45" y="32" width="200" height="22" rx="5" fill="#60a5fa" opacity=".08"/><circle cx="59" cy="43" r="4" fill="#60a5fa" opacity=".25"/><rect x="56" y="63" width="115" height="7" rx="3" fill="#60a5fa" opacity=".2"/><text x="145" y="170" text-anchor="middle" fill="#60a5fa" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">TRAVEL ATELIER · FULL STACK</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 2"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#080f0b"/><defs><radialGradient id="rg2" cx="65%" cy="40%"><stop offset="0%" stop-color="#34d399" stop-opacity=".18"/><stop offset="100%" stop-color="#34d399" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg2)"/><rect x="30" y="28" width="68" height="88" rx="4" fill="none" stroke="#34d399" stroke-width=".7" opacity=".35"/><rect x="108" y="28" width="68" height="88" rx="4" fill="none" stroke="#34d399" stroke-width=".7" opacity=".25"/><rect x="186" y="28" width="68" height="88" rx="4" fill="none" stroke="#34d399" stroke-width=".7" opacity=".18"/><text x="145" y="170" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">DROPIFY · E-COMMERCE</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 3"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#100d16"/><defs><radialGradient id="rg3" cx="50%" cy="50%"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".2"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg3)"/><rect x="55" y="30" width="180" height="115" rx="6" fill="none" stroke="#a78bfa" stroke-width=".7" opacity=".35"/><text x="145" y="170" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">EINSTEIN'S ART · ANGULAR</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 4"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#0d0a14"/><defs><radialGradient id="rg4" cx="50%" cy="50%"><stop offset="0%" stop-color="#c4b5fd" stop-opacity=".18"/><stop offset="100%" stop-color="#c4b5fd" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg4)"/><circle cx="145" cy="92" r="32" fill="none" stroke="#c4b5fd" stroke-width=".8" opacity=".28"/><circle cx="145" cy="92" r="55" fill="none" stroke="#c4b5fd" stroke-width=".6" opacity=".18"/><text x="145" y="170" text-anchor="middle" fill="#c4b5fd" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">CUT THE CORDS · VANILLA</text></svg></div>
+</div>
+
+<div class="app-root" [attr.data-page]="nav.currentPage()">
+  <app-sidebar />
+
+  <header class="mobnav" role="banner">
+    <a href="#" class="mlogo" (click)="goTo(0); $event.preventDefault()">jk<span>.</span></a>
+    <div class="mnr">
+      <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle theme">
+        <div class="tknob">
+          @if (nav.isDark()) { <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> } 
+          @else { <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg> }
+        </div>
+      </button>
+      <button class="mbg" [class.open]="mobileMenuOpen()" (click)="mobileMenuOpen.set(!mobileMenuOpen())" aria-label="Toggle menu" [attr.aria-expanded]="mobileMenuOpen()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  @if (mobileMenuOpen()) {
+    <nav class="mobmenu" role="navigation">
+      @for (item of data.navItems; track item.index) {
+        <a (click)="goTo(item.index)" [class.on]="nav.currentPage() === item.index">0{{ item.index + 1 }} {{ item.label }}</a>
+      }
+    </nav>
+  }
+
+  <main class="main-content">
+    <div class="page-slider">
+      <!-- Logic: Component receives [active]="true" only when slide finishes. 
+           Slide handles transition, directive handles the glitch effect. -->
+      
+      <app-home class="page-section" 
+        [class.active]="nav.currentPage() === 0" 
+        [class.prev]="nav.currentPage() > 0"
+        [active]="nav.currentPage() === 0"
+        (projectOpened)="openProject($event)" 
+        (previewHover)="setPreview($event)">
+      </app-home>
+
+      <app-about class="page-section" 
+        [class.active]="nav.currentPage() === 1" 
+        [class.prev]="nav.currentPage() > 1"
+        [class.next]="nav.currentPage() < 1"
+        [active]="nav.currentPage() === 1">
+      </app-about>
+
+      <app-projects class="page-section" 
+        [class.active]="nav.currentPage() === 2" 
+        [class.prev]="nav.currentPage() > 2"
+        [class.next]="nav.currentPage() < 2"
+        [active]="nav.currentPage() === 2"
+        (projectOpened)="openProject($event)" 
+        (previewHover)="setPreview($event)">
+      </app-projects>
+
+      <app-experience class="page-section" 
+        [class.active]="nav.currentPage() === 3" 
+        [class.prev]="nav.currentPage() > 3"
+        [class.next]="nav.currentPage() < 3"
+        [active]="nav.currentPage() === 3">
+      </app-experience>
+
+      <app-blog class="page-section" 
+        [class.active]="nav.currentPage() === 4" 
+        [class.prev]="nav.currentPage() > 4"
+        [class.next]="nav.currentPage() < 4"
+        [active]="nav.currentPage() === 4"
+        (postOpened)="openBlog($event)">
+      </app-blog>
+
+      <app-testimonials class="page-section" 
+        [class.active]="nav.currentPage() === 5" 
+        [class.prev]="nav.currentPage() > 5"
+        [class.next]="nav.currentPage() < 5"
+        [active]="nav.currentPage() === 5">
+      </app-testimonials>
+
+      <app-contact class="page-section" 
+        [class.active]="nav.currentPage() === 6" 
+        [class.prev]="nav.currentPage() > 6"
+        [class.next]="nav.currentPage() < 6"
+        [active]="nav.currentPage() === 6">
+      </app-contact>
+    </div>
+  </main>
+
+  @if (activeProject()) { <app-project-overlay [project]="activeProject()" (closed)="closeProject()" /> }
+  @if (activeBlogPost()) { <app-blog-overlay [post]="activeBlogPost()" (closed)="closeBlog()" /> }
+  
+  <app-terminal #terminal />
+</div>
