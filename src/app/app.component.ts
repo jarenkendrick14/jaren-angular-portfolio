@@ -44,7 +44,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   readonly cursorHover = signal(false);
   readonly previewActive = signal<number | null>(null);
-  
+
   private mx = 0; private my = 0;
   private rx = 0; private ry = 0;
   private prx = 0; private pry = 0;
@@ -65,8 +65,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   goTo(index: number) {
     if (window.innerWidth < 960) {
+      // Mobile: scroll to section using window.scrollTo with 70px nav offset
       const sections = document.querySelectorAll('.page-section');
-      if (sections[index]) sections[index].scrollIntoView({ behavior: 'smooth' });
+      const el = sections[index] as HTMLElement;
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
       this.nav.currentPage.set(index);
     } else {
       this.nav.goTo(index, this.totalPages);
@@ -80,13 +85,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.ry += (this.my - this.ry) * 0.11;
       if (this.cring) {
         this.cring.nativeElement.style.left = `${this.rx}px`;
-        this.cring.nativeElement.style.top = `${this.ry}px`;
+        this.cring.nativeElement.style.top  = `${this.ry}px`;
       }
       if (this.previewActive() !== null && this.prvw) {
         this.prx += (this.mx - this.prx) * 0.1;
         this.pry += (this.my - this.pry) * 0.1;
         this.prvw.nativeElement.style.left = `${this.prx}px`;
-        this.prvw.nativeElement.style.top = `${this.pry}px`;
+        this.prvw.nativeElement.style.top  = `${this.pry}px`;
       }
       this.animId = requestAnimationFrame(lerp);
     };
@@ -101,9 +106,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.my = e.clientY;
     if (this.cdot) {
       this.cdot.nativeElement.style.left = `${this.mx}px`;
-      this.cdot.nativeElement.style.top = `${this.my}px`;
+      this.cdot.nativeElement.style.top  = `${this.my}px`;
     }
-    // Improved hover detection
     const target = e.target as HTMLElement;
     const isHoverable = target.closest('a, button, .btn, .sdw, .pi, .bc, .tmc, .feat-card, .term-trigger, .skill-toggle-btn, .cert-nav, .cert-card');
     this.cursorHover.set(!!isHoverable);
@@ -120,7 +124,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
     if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') return;
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') this.goTo(Math.min(this.nav.currentPage() + 1, this.totalPages - 1));
-    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') this.goTo(Math.max(this.nav.currentPage() - 1, 0));
+    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  this.goTo(Math.max(this.nav.currentPage() - 1, 0));
     if (e.key === 'Escape' && this.nav.terminalOpen()) this.nav.terminalOpen.set(false);
   }
 
@@ -134,7 +138,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const activePage = document.querySelector('.page-section.active') as HTMLElement;
     if (!activePage) return;
 
-    const atTop = activePage.scrollTop <= 5;
+    const atTop    = activePage.scrollTop <= 5;
     const atBottom = Math.ceil(activePage.scrollTop + activePage.clientHeight) >= activePage.scrollHeight - 5;
 
     if (e.deltaY > 20 && atBottom) {

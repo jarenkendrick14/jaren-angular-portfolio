@@ -1,39 +1,3 @@
-/* Add to existing CSS */
-/* ... */
-.term-trigger {
-  display: flex;
-  align-items: center;
-  gap: .4rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: .6rem;
-  letter-spacing: .07em;
-  color: var(--muted);
-  border: 1px solid var(--bord);
-  border-radius: 4px;
-  padding: .3rem .55rem;
-  cursor: pointer;
-  background: none;
-  transition: color .2s, border-color .2s, background .2s;
-  margin-top: .5rem;
-}
-.term-trigger:hover {
-  color: var(--acc);
-  border-color: var(--acc);
-  background: rgba(167,139,250,.06);
-}
-.term-trigger-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--acc);
-  opacity: .5;
-  animation: termPulse 1.6s ease infinite;
-}
-@keyframes termPulse {
-  0%, 100% { opacity: .5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
-}
-
-/* Include everything else you already had above this line ... */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
@@ -47,16 +11,26 @@
   padding: 2rem 0;
 }
 
+/* ── Logo image (replaces jk. text) ── */
 .sb-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 600;
-  font-style: italic;
-  font-size: 2rem;
-  letter-spacing: -.04em;
-  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
+  /* keep the old font fallback invisible if img loads */
+  font-size: 0;
+  line-height: 0;
 }
-.sb-logo span { color: var(--acc); font-style: normal; }
+
+.sb-logo-img {
+  height: 44px;       /* adjust to taste */
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
+  transition: opacity .2s ease;
+}
+.sb-logo:hover .sb-logo-img { opacity: .8; }
 
 .sb-nav {
   margin: auto 0;
@@ -94,7 +68,6 @@
   flex-shrink: 0;
   transition: border-color .2s, background .2s;
 }
-
 .sdw.on .sdot, .sdw:hover .sdot {
   background: var(--acc);
   border-color: var(--acc);
@@ -109,7 +82,6 @@
   transition: color .2s;
   width: 52px;
 }
-
 .sdw.on .slbl, .sdw:hover .slbl { color: var(--white); }
 
 .sb-bot {
@@ -140,6 +112,9 @@
 .sbsoc:hover { border-color: var(--acc); color: var(--acc); background: var(--surf); }
 .sbsoc svg { width: 16px; height: 16px; fill: currentColor; }
 
+/* Paper-plane icon uses stroke, not fill */
+.sbsoc svg[stroke] { fill: none; }
+
 .thm {
   width: 46px; height: 24px;
   border-radius: 100px;
@@ -164,8 +139,45 @@
   transition: transform .3s ease;
   color: #fff;
 }
-
 :host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
+
+/* ── Terminal trigger — hardcoded dark purple so it looks
+   the same regardless of light/dark page theme ── */
+.term-trigger {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .07em;
+  /* Always use dark-theme violet, not var(--acc) */
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, .3);
+  border-radius: 4px;
+  padding: .3rem .55rem;
+  cursor: pointer;
+  background: none;
+  transition: color .2s, border-color .2s, background .2s;
+  margin-top: .5rem;
+}
+.term-trigger:hover {
+  color: #a78bfa;
+  border-color: #a78bfa;
+  background: rgba(139, 92, 246, .1);
+}
+
+.term-trigger-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  /* Always light lavender regardless of theme */
+  background: #a78bfa;
+  opacity: .7;
+  animation: termPulse 1.6s ease infinite;
+}
+@keyframes termPulse {
+  0%, 100% { opacity: .7; transform: scale(1); }
+  50%       { opacity: 1; transform: scale(1.3); }
+}
 
 @media (max-width: 960px) {
   .sidebar { display: none; }

@@ -9,7 +9,7 @@
         <span class="hrole au d2">Full Stack Web Developer</span>
         <p class="hdesc au d3">
           I build end-to-end web applications, specializing in <strong>Angular</strong> for the frontend
-          and robust, scalable architectures on the backend with <strong>Node.js and C#</strong>.
+          and robust, scalable architectures on the backend with <strong>Node.js and MongoDB</strong>.
           I focus on writing clean code and shipping products that solve real problems.
         </p>
         <div class="h-meta au d4">
@@ -34,7 +34,7 @@
       <p class="feat-label">Featured Projects</p>
       <div class="feat-grid">
         @for (item of featuredProjects; track item.index) {
-          <div class="feat-card" (click)="projectOpened.emit(item.index)" 
+          <div class="feat-card" (click)="projectOpened.emit(item.index)"
                (mouseenter)="previewHover.emit(item.index)"
                (mouseleave)="previewHover.emit(null)"
                role="button" tabindex="0">

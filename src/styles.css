@@ -7,8 +7,9 @@
   --sb: #0d0d16;
   --surf: #111120;
   --bord: #2a2a40;
-  --acc: #a78bfa;
-  --acc2: #7c3aed;
+  /* Toned-down from #a78bfa → less pastel, more solid violet */
+  --acc: #8b5cf6;
+  --acc2: #6d28d9;
   --white: #ffffff;
   --text: #e0def0;
   --muted: #a4a1c6;
@@ -56,7 +57,6 @@ body {
 a { text-decoration: none; color: inherit; }
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
 
-/* Smooth theme transitions */
 *, *::before, *::after {
   transition: background-color .35s ease, border-color .35s ease, color .35s ease;
 }
@@ -76,66 +76,64 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 .decrypting { color: var(--acc) !important; }
 
-/* ══════════ GLOBAL ANIMATIONS ══════════ */
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes scaleIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+/* ══════════ GLOBAL ANIMATIONS — more prominent distances ══════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(-44px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(44px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
 
-/* ══════════ BASE STATE (Hidden) ══════════ */
-/*
-  Elements start hidden. The transition-delay keeps them visible
-  for 0.6s when they should fade — but component-scoped Angular
-  styles can override this. The .prev fix below is the real solution.
-*/
+/* ══════════ BASE STATE (hidden) ══════════ */
 .au, .al, .ar, .as {
   opacity: 0;
   transition: opacity 0.1s ease 0.6s;
 }
 
-/* ══════════ ACTIVE STATE (Visible + Animated) ══════════ */
-.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp .5s ease both; }
-.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .5s ease both; }
-.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .5s ease both; }
-.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .45s ease both; }
+/* ══════════ ACTIVE STATE ══════════ */
+.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp  .55s cubic-bezier(.22,1,.36,1) both; }
+.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) both; }
+.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .55s cubic-bezier(.22,1,.36,1) both; }
+.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .5s cubic-bezier(.22,1,.36,1) both; }
 
 /* Stagger Delays */
 .active .d0, .active-page .d0 { animation-delay: .04s !important; }
-.active .d1, .active-page .d1 { animation-delay: .1s !important; }
-.active .d2, .active-page .d2 { animation-delay: .17s !important; }
-.active .d3, .active-page .d3 { animation-delay: .24s !important; }
-.active .d4, .active-page .d4 { animation-delay: .31s !important; }
-.active .d5, .active-page .d5 { animation-delay: .42s !important; }
+.active .d1, .active-page .d1 { animation-delay: .10s !important; }
+.active .d2, .active-page .d2 { animation-delay: .18s !important; }
+.active .d3, .active-page .d3 { animation-delay: .26s !important; }
+.active .d4, .active-page .d4 { animation-delay: .34s !important; }
+.active .d5, .active-page .d5 { animation-delay: .44s !important; }
 
-/* ══════════ SEAMLESS SLIDE-OUT ══════════ */
-/*
-  THE FIX: When a page slides out (.prev), its animated content was
-  snapping to opacity:0 immediately because Angular's component-scoped
-  CSS rules (e.g. `.apull { opacity: 0 }`) fire the instant .active-page
-  is removed — before the 0.6s page slide animation even starts.
-
-  We use !important here intentionally to beat Angular's higher-specificity
-  attribute-scoped component styles and keep content fully visible for the
-  entire 0.6s slide duration, so the user sees a seamless transition.
-*/
+/* ══════════ SEAMLESS SLIDE-OUT (both directions) ══════════
+   When a page slides OUT — either up (.prev) or down (.next) —
+   its content must stay fully visible for the whole 0.6s slide.
+   
+   .prev  = page that slid up and off (scroll DOWN)
+   .next  = page that slid down and off (scroll UP)
+   
+   Both are off-screen via translateY(±100%), so opacity:1 here
+   causes zero visual bleed. The !important beats Angular's
+   higher-specificity attribute-scoped component styles.
+══════════════════════════════════════════════════════════════ */
 .page-section.prev .au,
 .page-section.prev .al,
 .page-section.prev .ar,
-.page-section.prev .as {
-  opacity: 1 !important;
-  animation: none !important;
-  transition: none !important;
-}
-
-/*
-  Next pages (not yet visited / coming from below) stay invisible
-  until they animate in. Redundant but explicit for clarity.
-*/
+.page-section.prev .as,
 .page-section.next .au,
 .page-section.next .al,
 .page-section.next .ar,
 .page-section.next .as {
-  opacity: 0 !important;
+  opacity: 1 !important;
   animation: none !important;
   transition: none !important;
 }

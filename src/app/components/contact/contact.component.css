@@ -16,7 +16,7 @@
   letter-spacing: -.02em;
   color: var(--white);
   margin-bottom: 3rem;
-  animation: fadeUp .5s ease both;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) ease both;
 }
 
 .cgg { display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem; width: 100%; }
@@ -27,10 +27,10 @@
   line-height: 1.8;
   font-weight: 300;
   margin-bottom: 2.5rem;
-  animation: fadeUp .5s .1s ease both;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .10s ease both;
 }
 
-.socl { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; padding: 0; animation: fadeUp .5s .17s ease both; }
+.socl { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; padding: 0; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both; }
 
 .solink {
   display: flex;
@@ -56,7 +56,18 @@
   transition: border-color .2s;
 }
 .solink:hover .soico { border-color: var(--acc); }
+
+/* Filled icons (LinkedIn, GitHub) */
 .soico svg { width: 22px; height: 22px; fill: currentColor; }
+
+/* Stroke-based paper-plane icon override */
+.soico-send svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 .cform {
   display: flex;
@@ -66,12 +77,11 @@
   padding: 3rem;
   border: 1px solid var(--bord);
   border-radius: 8px;
-  animation: fadeUp .5s .17s ease both;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both;
 }
 
 .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-
-.fg { display: flex; flex-direction: column; gap: .6rem; }
+.fg   { display: flex; flex-direction: column; gap: .6rem; }
 
 label {
   font-family: 'JetBrains Mono', monospace;
@@ -108,19 +118,19 @@ textarea { min-height: 150px; }
 }
 .btn:hover { transform: translateY(-3px); }
 .btn-fill { background: var(--acc); color: #fff; }
-.btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
+.btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 
 .fsok {
   font-family: 'JetBrains Mono', monospace;
   font-size: .9rem;
   color: var(--acc);
   padding: 1rem 1.25rem;
-  border: 1px solid rgba(167,139,250,.3);
+  border: 1px solid rgba(139,92,246,.3);
   border-radius: 6px;
   animation: fadeUp .3s ease both;
 }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 960px) {
   .page-contact { padding: 6.5rem 1.5rem 4rem; }

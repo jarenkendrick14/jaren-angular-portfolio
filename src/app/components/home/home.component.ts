@@ -1,6 +1,6 @@
 import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input, effect } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
-import { NavigationService } from '../../data/navigation.service'; // Needed for theme
+import { NavigationService } from '../../data/navigation.service';
 import { DecryptDirective } from '../../directives/decrypt.directive';
 
 @Component({
@@ -12,13 +12,14 @@ import { DecryptDirective } from '../../directives/decrypt.directive';
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
   @Input() active = false;
-  
+
   data = inject(PortfolioDataService);
-  nav = inject(NavigationService);
+  nav  = inject(NavigationService);
   projectOpened = output<number>();
-  previewHover = output<number | null>();
+  previewHover  = output<number | null>();
 
   readonly featuredIndices = [0, 1, 3];
+
   private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
   private animId = 0;
@@ -27,11 +28,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private vy: number[] = [];
   private cmx = -9999;
   private cmy = -9999;
-  private readonly SP = 42;
-  private readonly REPEL = 110;
-  private readonly FORCE = 22;
+
+  private readonly SP     = 42;
+  private readonly REPEL  = 110;
+  private readonly FORCE  = 22;
   private readonly RESTORE = 0.07;
-  private readonly DAMP = 0.82;
+  private readonly DAMP   = 0.82;
+
+  // Keep a bound reference so we can remove the listener on destroy
+  private _docMouseMove!: (e: MouseEvent) => void;
+  private _docMouseLeave!: () => void;
 
   get featuredProjects() {
     return this.featuredIndices.map(i => ({ project: this.data.projects[i], index: i }));
@@ -43,30 +49,49 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.ctx = this.canvas.getContext('2d')!;
     this.resize();
     window.addEventListener('resize', () => this.resize());
-    this.canvas.addEventListener('mousemove', (e) => {
+
+    /*
+      FIX: Use document-level mousemove instead of canvas.mousemove.
+      The canvas sits at z-index:0 under content (z-index:1), so when
+      the cursor is over text, buttons, cards, etc., the canvas never
+      receives mouse events — causing dead zones.
+      Tracking at document level and converting to canvas-local coords
+      fixes this for ALL whitespace and content areas.
+    */
+    this._docMouseMove = (e: MouseEvent) => {
       const rect = this.canvas.getBoundingClientRect();
       this.cmx = e.clientX - rect.left;
       this.cmy = e.clientY - rect.top;
-    });
-    this.canvas.addEventListener('mouseleave', () => { this.cmx = -9999; this.cmy = -9999; });
+    };
+    this._docMouseLeave = () => {
+      this.cmx = -9999;
+      this.cmy = -9999;
+    };
+
+    document.addEventListener('mousemove',  this._docMouseMove);
+    document.addEventListener('mouseleave', this._docMouseLeave);
+
     this.draw();
   }
 
   ngOnDestroy() {
     cancelAnimationFrame(this.animId);
+    document.removeEventListener('mousemove',  this._docMouseMove);
+    document.removeEventListener('mouseleave', this._docMouseLeave);
+    window.removeEventListener('resize', () => this.resize());
   }
 
   private resize() {
-    // Fix: Use scrollHeight to fill the full scrollable area, not just viewport
     const container = this.canvas.parentElement;
-    const W = container ? container.offsetWidth : window.innerWidth;
+    const W = container ? container.offsetWidth  : window.innerWidth;
     const H = container ? Math.max(container.scrollHeight, window.innerHeight) : window.innerHeight;
-    
-    this.canvas.width = W;
+
+    this.canvas.width  = W;
     this.canvas.height = H;
     this.pts = [];
-    this.vx = [];
-    this.vy = [];
+    this.vx  = [];
+    this.vy  = [];
+
     for (let c = 0; c <= Math.ceil(W / this.SP) + 1; c++) {
       for (let r = 0; r <= Math.ceil(H / this.SP) + 1; r++) {
         this.pts.push({ ox: c * this.SP, oy: r * this.SP, x: c * this.SP, y: r * this.SP });
@@ -83,7 +108,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     const cols = Math.ceil(W / this.SP) + 2;
 
     this.pts.forEach((p, i) => {
-      const dx = p.x - this.cmx, dy = p.y - this.cmy;
+      const dx   = p.x - this.cmx;
+      const dy   = p.y - this.cmy;
       const dist = Math.hypot(dx, dy) || 1;
       if (dist < this.REPEL) {
         const mag = ((this.REPEL - dist) / this.REPEL) * this.FORCE;
@@ -98,7 +124,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       p.y += this.vy[i];
     });
 
-    // Fix: Adjust grid line color based on theme
     const isDark = this.nav.isDark();
     ctx.strokeStyle = isDark ? 'rgba(42,42,64,0.65)' : 'rgba(200,195,224,0.55)';
     ctx.lineWidth = 0.8;
@@ -118,11 +143,11 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     ctx.stroke();
 
     this.pts.forEach(p => {
-      const d = Math.hypot(p.x - this.cmx, p.y - this.cmy);
+      const d    = Math.hypot(p.x - this.cmx, p.y - this.cmy);
       const prox = Math.max(0, 1 - d / this.REPEL);
       ctx.beginPath();
       ctx.arc(p.x, p.y, 1.1 + prox * 3, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(167,139,250,${0.14 + prox * 0.65})`;
+      ctx.fillStyle = `rgba(139,92,246,${0.14 + prox * 0.65})`;
       ctx.fill();
     });
 

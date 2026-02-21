@@ -1,4 +1,3 @@
-/* FULL HEIGHT & BACKGROUND FIX */
 :host {
   display: block;
   min-height: 100vh;
@@ -14,7 +13,7 @@
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; animation: fadeUp .5s .04s ease both; }
+.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
 .sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
@@ -26,7 +25,7 @@
   letter-spacing: -.04em;
   color: var(--white);
   margin-bottom: 4rem;
-  animation: fadeUp .5s .1s ease both;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .10s ease both;
 }
 
 .tmg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: stretch; }
@@ -42,12 +41,12 @@
   transition: border-color .25s;
   position: relative;
   overflow: hidden;
-  animation: scaleIn .45s ease both;
+  animation: scaleIn .5s cubic-bezier(.22,1,.36,1) ease both;
   cursor: none;
 }
-.tmc:nth-child(1) { animation-delay: .17s; }
-.tmc:nth-child(2) { animation-delay: .24s; }
-.tmc:nth-child(3) { animation-delay: .31s; }
+.tmc:nth-child(1) { animation-delay: .18s; }
+.tmc:nth-child(2) { animation-delay: .26s; }
+.tmc:nth-child(3) { animation-delay: .34s; }
 
 .tmc::before {
   content: '"';
@@ -62,7 +61,7 @@
   user-select: none;
 }
 
-.tmc:hover { border-color: rgba(167,139,250,.4); }
+.tmc:hover { border-color: rgba(139,92,246,.4); }
 
 .tmq {
   font-size: 1.1rem;
@@ -104,8 +103,8 @@
 .placeholder-note { font-size: .75rem; color: var(--muted); font-weight: 300; }
 .tmrole { font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--muted); letter-spacing: .04em; margin-top: .2rem; }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes scaleIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes fadeUp  { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.88); }       to { opacity: 1; transform: scale(1); } }
 
 @media (max-width: 960px) {
   .page-testimonials { padding: 6.5rem 1.5rem 4rem; }

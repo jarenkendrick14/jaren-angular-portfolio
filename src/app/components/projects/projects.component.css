@@ -13,7 +13,7 @@
   align-items: baseline;
   gap: 2rem;
   margin-bottom: 3rem;
-  animation: fadeUp .5s .04s ease both;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both;
 }
 
 .ph2 {
@@ -47,7 +47,7 @@
   transition: border-color .2s, padding .2s, background .2s;
   position: relative;
   overflow: hidden;
-  animation: fadeLeft .5s ease both;
+  animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both;
 }
 
 .pi:first-child { border-top: 1px solid var(--bord); }
@@ -59,7 +59,7 @@
   padding-right: 1rem;
   border-radius: 8px;
 }
-.pi:hover .pnm { color: var(--acc); }
+.pi:hover .pnm  { color: var(--acc); }
 .pi:hover .parr { color: var(--acc); transform: translate(5px, -5px); }
 
 .pnum {
@@ -108,17 +108,17 @@
 }
 
 .active-page .ph2,
-.active-page .pheader { animation: fadeUp .5s ease both; }
-.active-page .pi { animation: fadeLeft .5s ease both; }
+.active-page .pheader { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) ease both; }
+.active-page .pi      { animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both; }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
 
-.pi:nth-child(1) { animation-delay: .1s; }
-.pi:nth-child(2) { animation-delay: .17s; }
-.pi:nth-child(3) { animation-delay: .24s; }
-.pi:nth-child(4) { animation-delay: .31s; }
-.pi:nth-child(5) { animation-delay: .42s; }
+.pi:nth-child(1) { animation-delay: .10s; }
+.pi:nth-child(2) { animation-delay: .18s; }
+.pi:nth-child(3) { animation-delay: .26s; }
+.pi:nth-child(4) { animation-delay: .34s; }
+.pi:nth-child(5) { animation-delay: .44s; }
 
 @media (max-width: 960px) {
   .page-projects { padding: 6.5rem 1.5rem 4rem; }

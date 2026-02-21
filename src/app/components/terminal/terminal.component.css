@@ -1,3 +1,9 @@
+/*
+  Terminal is intentionally theme-agnostic — it always uses the dark-mode
+  lavender (#a78bfa) regardless of whether the page is in light or dark mode.
+  This means we hardcode the purple instead of using var(--acc).
+*/
+
 .terminal {
   position: fixed;
   bottom: 0;
@@ -5,7 +11,8 @@
   right: 0;
   height: 0;
   background: #06060d;
-  border-top: 2px solid var(--acc);
+  /* Hardcoded lavender border — ignores page theme */
+  border-top: 2px solid #a78bfa;
   z-index: 9500;
   display: flex;
   flex-direction: column;
@@ -21,7 +28,7 @@
   align-items: center;
   justify-content: space-between;
   padding: .65rem 1.5rem;
-  border-bottom: 1px solid rgba(167,139,250,.18);
+  border-bottom: 1px solid rgba(167, 139, 250, .18);
   flex-shrink: 0;
   background: #080810;
 }
@@ -29,11 +36,16 @@
 .term-wm-dots { display: flex; gap: .45rem; align-items: center; }
 .term-wm-dots span { width: 11px; height: 11px; border-radius: 50%; }
 
-.term-title { font-size: .72rem; letter-spacing: .1em; color: var(--muted); }
+.term-title {
+  font-size: .72rem;
+  letter-spacing: .1em;
+  /* muted color hardcoded — dark bg always */
+  color: #6e6c8a;
+}
 
 .term-bar-close {
   font-size: .9rem;
-  color: var(--muted);
+  color: #6e6c8a;
   cursor: pointer;
   padding: .2rem .5rem;
   border-radius: 3px;
@@ -41,7 +53,10 @@
   border: none;
   transition: color .2s, background .2s;
 }
-.term-bar-close:hover { color: var(--acc); background: rgba(167,139,250,.08); }
+.term-bar-close:hover {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, .08);
+}
 
 .term-output {
   flex: 1;
@@ -52,15 +67,15 @@
   color: #a0a0c0;
 }
 .term-output::-webkit-scrollbar { width: 4px; }
-.term-output::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+.term-output::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 4px; }
 
-/* Global terminal styles */
-:host ::ng-deep .tl-cmd { color: var(--acc); }
-:host ::ng-deep .tl-ok { color: #34d399; }
-:host ::ng-deep .tl-err { color: #f87171; }
-:host ::ng-deep .tl-dim { color: #504e6a; }
-:host ::ng-deep .tl-head { color: #fff; font-weight: 600; }
-:host ::ng-deep .tl-acc { color: var(--acc); }
+/* All tl-* classes use hardcoded colors — never var(--acc) */
+:host ::ng-deep .tl-cmd  { color: #a78bfa; }
+:host ::ng-deep .tl-ok   { color: #34d399; }
+:host ::ng-deep .tl-err  { color: #f87171; }
+:host ::ng-deep .tl-dim  { color: #504e6a; }
+:host ::ng-deep .tl-head { color: #ffffff; font-weight: 600; }
+:host ::ng-deep .tl-acc  { color: #a78bfa; }
 :host ::ng-deep .tl-warn { color: #fbbf24; }
 
 .term-prompt-row {
@@ -68,12 +83,17 @@
   align-items: center;
   gap: .75rem;
   padding: .7rem 1.5rem;
-  border-top: 1px solid rgba(167,139,250,.12);
+  border-top: 1px solid rgba(167, 139, 250, .12);
   flex-shrink: 0;
   background: #06060d;
 }
 
-.term-ps { color: var(--acc); font-size: .82rem; white-space: nowrap; }
+.term-ps {
+  /* Hardcoded lavender */
+  color: #a78bfa;
+  font-size: .82rem;
+  white-space: nowrap;
+}
 
 .term-input {
   flex: 1;
@@ -83,7 +103,8 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: .82rem;
   outline: none;
-  caret-color: var(--acc);
+  /* Hardcoded caret */
+  caret-color: #a78bfa;
   padding: 0;
 }
 

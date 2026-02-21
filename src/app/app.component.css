@@ -15,7 +15,6 @@
   overflow: hidden;
 }
 
-/* ══════════ PAGE SLIDER LOGIC (DESKTOP) ══════════ */
 /* ══════════ PAGE SLIDER LOGIC ══════════ */
 .page-slider {
   position: relative;
@@ -39,8 +38,8 @@
 }
 
 .page-section.active { transform: translateY(0); }
-.page-section.prev { transform: translateY(-100%); }
-.page-section.next { transform: translateY(100%); }
+.page-section.prev   { transform: translateY(-100%); }
+.page-section.next   { transform: translateY(100%); }
 
 /* ══════════ FIX INNER COMPONENT SCROLLING ══════════ */
 :host ::ng-deep .page-home,
@@ -57,7 +56,7 @@
   width: 100% !important;
 }
 
-/* ══════════ SCROLLBAR STYLING ══════════ */
+/* ══════════ SCROLLBAR ══════════ */
 .page-section::-webkit-scrollbar { width: 6px; }
 .page-section::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
@@ -88,7 +87,7 @@
 .mobmenu a {
   font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; letter-spacing: .05em;
   color: var(--text); text-transform: uppercase; font-weight: 500;
-  border-bottom: 1px solid var(--bord); padding-bottom: 1rem; cursor: none; text-decoration: none;
+  border-bottom: 1px solid var(--bord); padding-bottom: 1rem; cursor: pointer; text-decoration: none;
 }
 .mobmenu a.on { color: var(--acc); border-color: var(--acc); }
 
@@ -104,31 +103,49 @@
 .psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ══════════ MOBILE STACKING (VANILLA PARITY) ══════════ */
+/* ══════════ MOBILE STACKING ══════════ */
 @media (max-width: 960px) {
-  .main-content { left: 0; top: 70px; overflow: visible; }
+  /*
+    KEY FIX: .main-content must be position:relative (not fixed) on mobile
+    so page sections stack in normal document flow and scrollIntoView works.
+  */
+  .main-content {
+    position: relative;
+    left: 0;
+    top: 0;
+    bottom: auto;
+    right: 0;
+    overflow: visible;
+    padding-top: 70px; /* offset for fixed mobnav */
+  }
+
   .mobnav { display: flex; }
-  .app-root { overflow: auto; height: auto; display: block; }
-  
-  .page-slider { 
-    height: auto; 
-    overflow: visible; 
-    display: flex; 
-    flex-direction: column; 
+
+  .app-root {
+    overflow: auto;
+    height: auto;
+    display: block;
   }
-  
-  .page-section { 
-    position: relative !important; 
-    height: auto !important; 
-    transform: none !important; 
-    transition: none !important; 
-    opacity: 1 !important; 
-    min-height: 100vh !important; 
-    overflow: visible !important; 
-    display: block !important; 
+
+  .page-slider {
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
   }
-  
+
+  .page-section {
+    position: relative !important;
+    height: auto !important;
+    transform: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
   #cdot, #cring, #prvw { display: none !important; }
 }

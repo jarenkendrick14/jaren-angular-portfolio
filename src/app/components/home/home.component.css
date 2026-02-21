@@ -1,6 +1,5 @@
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-/* Changed to relative so canvas sizes against content height */
 .page-home {
   position: relative;
   width: 100%;
@@ -39,7 +38,6 @@
   font-size: clamp(4rem, 8vw, 5.5rem);
   margin-bottom: .8rem;
 }
-
 .accent-name { margin-bottom: 1.2rem; }
 
 .hrole {
@@ -107,10 +105,7 @@
 }
 .h-photo-placeholder:hover { border-color: var(--acc); border-style: solid; }
 
-.feat-section {
-  position: relative;
-  z-index: 1;
-}
+.feat-section { position: relative; z-index: 1; }
 
 .feat-label {
   font-family: 'JetBrains Mono', monospace;
@@ -143,9 +138,7 @@
 }
 .feat-card:hover { border-color: var(--acc); transform: translateY(-4px); }
 
-.feat-thumb {
-  height: 120px;
-}
+.feat-thumb { height: 120px; }
 
 .feat-body {
   padding: 1.25rem;
@@ -200,9 +193,15 @@
 }
 .btn:hover { transform: translateY(-3px); }
 .btn-fill { background: var(--acc); color: #fff; }
-.btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
+.btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
+
+/* Updated keyframes — more prominent distances */
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(44px); }  to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn   { from { opacity: 0; transform: scale(.88); }        to { opacity: 1; transform: scale(1); } }
 
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 4rem; }
