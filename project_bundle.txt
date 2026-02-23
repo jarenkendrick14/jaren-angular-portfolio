@@ -1,0 +1,3893 @@
+
+--- DIRECTORY: .gitignore ---
+# Angular specific
+/dist/
+/out-tsc/
+/tmp/
+/coverage/
+/e2e/test-output/
+/.angular/
+.angular/
+
+# Node modules and dependency files
+/node_modules/
+/package-lock.json
+/yarn.lock
+
+# Environment files
+/.env
+
+# Angular CLI and build artefacts
+/.angular-cli.json
+/.ng/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+--- DIRECTORY: angular.json ---
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "jaren-portfolio": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": true,
+          "style": "css"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/jaren-portfolio",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "css",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                { "type": "initial", "maximumWarning": "500kb", "maximumError": "1mb" },
+                { "type": "anyComponentStyle", "maximumWarning": "2kb", "maximumError": "4kb" }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": { "buildTarget": "jaren-portfolio:build:production" },
+            "development": { "buildTarget": "jaren-portfolio:build:development" }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}
+
+
+--- DIRECTORY: package.json ---
+{
+  "name": "jaren-portfolio",
+  "version": "2.5.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^21.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.0.0",
+    "@angular/router": "^21.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
+    "typescript": "^5.9.3",
+    "zone.js": "^0.15.1"
+  }
+}
+
+
+--- DIRECTORY: src\app\app.component.css ---
+.app-root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  background: var(--bg);
+}
+
+.main-content {
+  position: fixed;
+  left: 200px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+/* ══════════ PAGE SLIDER LOGIC ══════════ */
+.page-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-section {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  will-change: transform;
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+  transform: translateY(100%);
+  z-index: 10;
+}
+
+.page-section.active { transform: translateY(0); }
+.page-section.prev   { transform: translateY(-100%); }
+.page-section.next   { transform: translateY(100%); }
+
+/* ══════════ FIX INNER COMPONENT SCROLLING ══════════ */
+:host ::ng-deep .page-home,
+:host ::ng-deep .page-about,
+:host ::ng-deep .page-projects,
+:host ::ng-deep .page-experience,
+:host ::ng-deep .page-blog,
+:host ::ng-deep .page-testimonials,
+:host ::ng-deep .page-contact {
+  position: static !important;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow: visible !important;
+  width: 100% !important;
+}
+
+/* ══════════ SCROLLBAR ══════════ */
+.page-section::-webkit-scrollbar { width: 6px; }
+.page-section::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+/* ══════════ MOBILE NAV ══════════ */
+.mobnav {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; height: 70px;
+  background: var(--sb); border-bottom: 1px solid var(--sbbrd);
+  z-index: 500; align-items: center; justify-content: space-between; padding: 0 1.5rem;
+}
+.mlogo { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: 1.8rem; color: var(--white); text-decoration: none; }
+.mlogo span { color: var(--acc); font-style: normal; }
+.mnr { display: flex; align-items: center; gap: 1.5rem; }
+.thm { width: 46px; height: 24px; border-radius: 100px; background: var(--surf); border: 1px solid var(--bord); position: relative; cursor: none; }
+.tknob { position: absolute; top: 2px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; transition: transform .3s ease; color: #fff; }
+[data-theme="light"] .tknob { transform: translateX(20px); }
+.mbg { display: flex; flex-direction: column; gap: 6px; background: none; border: none; padding: 4px; cursor: none; }
+.mbg span { display: block; width: 26px; height: 2px; background: var(--white); transition: all .25s; }
+.mbg.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.mbg.open span:nth-child(2) { opacity: 0; }
+.mbg.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+.mobmenu {
+  display: flex; position: fixed; top: 70px; left: 0; right: 0; bottom: 0;
+  background: var(--bg); padding: 2rem; z-index: 499; flex-direction: column; gap: 1.5rem;
+  animation: fadeUp .3s ease both;
+}
+.mobmenu a {
+  font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; letter-spacing: .05em;
+  color: var(--text); text-transform: uppercase; font-weight: 500;
+  border-bottom: 1px solid var(--bord); padding-bottom: 1rem; cursor: pointer; text-decoration: none;
+}
+.mobmenu a.on { color: var(--acc); border-color: var(--acc); }
+
+/* ══════════ CURSOR & PREVIEW ══════════ */
+#cdot{position:fixed;width:7px;height:7px;background:var(--acc);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);}
+#cring{position:fixed;width:32px;height:32px;border:1.5px solid var(--acc);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s,opacity .25s !important;}
+#cring.big{width:55px;height:55px;opacity:.22;}
+.cl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.12em;color:var(--acc);opacity:0;transition:opacity .2s !important;user-select:none;}
+#cring.big .cl{opacity:1;}
+
+#prvw{position:fixed;width:290px;height:185px;border-radius:8px;overflow:hidden;pointer-events:none;z-index:9990;opacity:0;transform:translate(-50%,-65%) scale(.88);transition:opacity .28s ease,transform .28s ease !important;border:1px solid var(--bord);box-shadow:0 18px 55px rgba(0,0,0,.55);}
+#prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
+.psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
+.psc.act{opacity:1;}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ══════════ MOBILE STACKING ══════════ */
+@media (max-width: 960px) {
+  /*
+    KEY FIX: .main-content must be position:relative (not fixed) on mobile
+    so page sections stack in normal document flow and scrollIntoView works.
+  */
+  .main-content {
+    position: relative;
+    left: 0;
+    top: 0;
+    bottom: auto;
+    right: 0;
+    overflow: visible;
+    padding-top: 70px; /* offset for fixed mobnav */
+  }
+
+  .mobnav { display: flex; }
+
+  .app-root {
+    overflow: auto;
+    height: auto;
+    display: block;
+  }
+
+  .page-slider {
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-section {
+    position: relative !important;
+    height: auto !important;
+    transform: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  #cdot, #cring, #prvw { display: none !important; }
+}
+
+--- DIRECTORY: src\app\app.component.html ---
+<div id="cdot" #cdot aria-hidden="true"></div>
+<div id="cring" #cring [class.big]="cursorHover()" aria-hidden="true"><span class="cl">VIEW</span></div>
+
+<div id="prvw" #prvw [class.on]="previewActive() !== null" aria-hidden="true">
+   <div class="psc" [class.act]="previewActive() === 0"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#0a0a14"/><defs><radialGradient id="rg0" cx="50%" cy="50%"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".2"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient></defs><circle cx="145" cy="92" r="82" fill="url(#rg0)"/><circle cx="145" cy="92" r="78" fill="none" stroke="#a78bfa" stroke-width=".7" stroke-dasharray="5 9" opacity=".4"/><circle cx="145" cy="92" r="48" fill="none" stroke="#a78bfa" stroke-width=".5" opacity=".25"/><text x="145" y="97" text-anchor="middle" fill="#a78bfa" font-size="22" opacity=".5">🥽</text><text x="145" y="170" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">PATHFINDER · VR</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 1"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#09101a"/><defs><radialGradient id="rg1" cx="35%" cy="60%"><stop offset="0%" stop-color="#60a5fa" stop-opacity=".22"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg1)"/><rect x="45" y="32" width="200" height="120" rx="5" fill="none" stroke="#60a5fa" stroke-width=".8" opacity=".4"/><rect x="45" y="32" width="200" height="22" rx="5" fill="#60a5fa" opacity=".08"/><circle cx="59" cy="43" r="4" fill="#60a5fa" opacity=".25"/><rect x="56" y="63" width="115" height="7" rx="3" fill="#60a5fa" opacity=".2"/><text x="145" y="170" text-anchor="middle" fill="#60a5fa" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">TRAVEL ATELIER · FULL STACK</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 2"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#080f0b"/><defs><radialGradient id="rg2" cx="65%" cy="40%"><stop offset="0%" stop-color="#34d399" stop-opacity=".18"/><stop offset="100%" stop-color="#34d399" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg2)"/><rect x="30" y="28" width="68" height="88" rx="4" fill="none" stroke="#34d399" stroke-width=".7" opacity=".35"/><rect x="108" y="28" width="68" height="88" rx="4" fill="none" stroke="#34d399" stroke-width=".7" opacity=".25"/><rect x="186" y="28" width="68" height="88" rx="4" fill="none" stroke="#34d399" stroke-width=".7" opacity=".18"/><text x="145" y="170" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">DROPIFY · E-COMMERCE</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 3"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#100d16"/><defs><radialGradient id="rg3" cx="50%" cy="50%"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".2"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg3)"/><rect x="55" y="30" width="180" height="115" rx="6" fill="none" stroke="#a78bfa" stroke-width=".7" opacity=".35"/><text x="145" y="170" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">EINSTEIN'S ART · ANGULAR</text></svg></div>
+   <div class="psc" [class.act]="previewActive() === 4"><svg width="290" height="185" viewBox="0 0 290 185" xmlns="http://www.w3.org/2000/svg"><rect width="290" height="185" fill="#0d0a14"/><defs><radialGradient id="rg4" cx="50%" cy="50%"><stop offset="0%" stop-color="#c4b5fd" stop-opacity=".18"/><stop offset="100%" stop-color="#c4b5fd" stop-opacity="0"/></radialGradient></defs><rect width="290" height="185" fill="url(#rg4)"/><circle cx="145" cy="92" r="32" fill="none" stroke="#c4b5fd" stroke-width=".8" opacity=".28"/><circle cx="145" cy="92" r="55" fill="none" stroke="#c4b5fd" stroke-width=".6" opacity=".18"/><text x="145" y="170" text-anchor="middle" fill="#c4b5fd" font-family="monospace" font-size="9" letter-spacing="2" opacity=".55">CUT THE CORDS · VANILLA</text></svg></div>
+</div>
+
+<div class="app-root" [attr.data-page]="nav.currentPage()">
+  <app-sidebar />
+
+  <header class="mobnav" role="banner">
+    <a href="#" class="mlogo" (click)="goTo(0); $event.preventDefault()">jk<span>.</span></a>
+    <div class="mnr">
+      <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle theme">
+        <div class="tknob">
+          @if (nav.isDark()) { <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> } 
+          @else { <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg> }
+        </div>
+      </button>
+      <button class="mbg" [class.open]="mobileMenuOpen()" (click)="mobileMenuOpen.set(!mobileMenuOpen())" aria-label="Toggle menu" [attr.aria-expanded]="mobileMenuOpen()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  @if (mobileMenuOpen()) {
+    <nav class="mobmenu" role="navigation">
+      @for (item of data.navItems; track item.index) {
+        <a (click)="goTo(item.index)" [class.on]="nav.currentPage() === item.index">0{{ item.index + 1 }} {{ item.label }}</a>
+      }
+    </nav>
+  }
+
+  <main class="main-content">
+    <div class="page-slider">
+      <!-- Logic: Component receives [active]="true" only when slide finishes. 
+           Slide handles transition, directive handles the glitch effect. -->
+      
+      <app-home class="page-section" 
+        [class.active]="nav.currentPage() === 0" 
+        [class.prev]="nav.currentPage() > 0"
+        [active]="nav.currentPage() === 0"
+        (projectOpened)="openProject($event)" 
+        (previewHover)="setPreview($event)">
+      </app-home>
+
+      <app-about class="page-section" 
+        [class.active]="nav.currentPage() === 1" 
+        [class.prev]="nav.currentPage() > 1"
+        [class.next]="nav.currentPage() < 1"
+        [active]="nav.currentPage() === 1">
+      </app-about>
+
+      <app-projects class="page-section" 
+        [class.active]="nav.currentPage() === 2" 
+        [class.prev]="nav.currentPage() > 2"
+        [class.next]="nav.currentPage() < 2"
+        [active]="nav.currentPage() === 2"
+        (projectOpened)="openProject($event)" 
+        (previewHover)="setPreview($event)">
+      </app-projects>
+
+      <app-experience class="page-section" 
+        [class.active]="nav.currentPage() === 3" 
+        [class.prev]="nav.currentPage() > 3"
+        [class.next]="nav.currentPage() < 3"
+        [active]="nav.currentPage() === 3">
+      </app-experience>
+
+      <app-blog class="page-section" 
+        [class.active]="nav.currentPage() === 4" 
+        [class.prev]="nav.currentPage() > 4"
+        [class.next]="nav.currentPage() < 4"
+        [active]="nav.currentPage() === 4"
+        (postOpened)="openBlog($event)">
+      </app-blog>
+
+      <app-testimonials class="page-section" 
+        [class.active]="nav.currentPage() === 5" 
+        [class.prev]="nav.currentPage() > 5"
+        [class.next]="nav.currentPage() < 5"
+        [active]="nav.currentPage() === 5">
+      </app-testimonials>
+
+      <app-contact class="page-section" 
+        [class.active]="nav.currentPage() === 6" 
+        [class.prev]="nav.currentPage() > 6"
+        [class.next]="nav.currentPage() < 6"
+        [active]="nav.currentPage() === 6">
+      </app-contact>
+    </div>
+  </main>
+
+  @if (activeProject()) { <app-project-overlay [project]="activeProject()" (closed)="closeProject()" /> }
+  @if (activeBlogPost()) { <app-blog-overlay [post]="activeBlogPost()" (closed)="closeBlog()" /> }
+  
+  <app-terminal #terminal />
+</div>
+
+--- DIRECTORY: src\app\app.component.ts ---
+import {
+  Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy
+} from '@angular/core';
+import { NavigationService } from './data/navigation.service';
+import { PortfolioDataService } from './data/portfolio.data';
+import { Project, BlogPost } from './models/portfolio.models';
+
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { HomeComponent } from './components/home/home.component';
+import { AboutComponent } from './components/about/about.component';
+import { ProjectsComponent } from './components/projects/projects.component';
+import { ExperienceComponent } from './components/experience/experience.component';
+import { BlogComponent } from './components/blog/blog.component';
+import { TestimonialsComponent } from './components/testimonials/testimonials.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { ProjectOverlayComponent } from './components/project-overlay/project-overlay.component';
+import { BlogOverlayComponent } from './components/blog-overlay/blog-overlay.component';
+import { TerminalComponent } from './components/terminal/terminal.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    SidebarComponent, HomeComponent, AboutComponent, ProjectsComponent,
+    ExperienceComponent, BlogComponent, TestimonialsComponent, ContactComponent,
+    ProjectOverlayComponent, BlogOverlayComponent, TerminalComponent,
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+})
+export class AppComponent implements AfterViewInit, OnDestroy {
+  nav = inject(NavigationService);
+  data = inject(PortfolioDataService);
+
+  @ViewChild(TerminalComponent) terminal!: TerminalComponent;
+  @ViewChild('cdot') cdot!: ElementRef<HTMLDivElement>;
+  @ViewChild('cring') cring!: ElementRef<HTMLDivElement>;
+  @ViewChild('prvw') prvw!: ElementRef<HTMLDivElement>;
+
+  readonly activeProject = signal<Project | null>(null);
+  readonly activeBlogPost = signal<BlogPost | null>(null);
+  readonly mobileMenuOpen = signal(false);
+  readonly totalPages = this.data.navItems.length;
+
+  readonly cursorHover = signal(false);
+  readonly previewActive = signal<number | null>(null);
+
+  private mx = 0; private my = 0;
+  private rx = 0; private ry = 0;
+  private prx = 0; private pry = 0;
+  private animId = 0;
+
+  openProject(index: number) {
+    if (index === -1) { this.goTo(2); return; }
+    this.activeProject.set(this.data.projects[index]);
+  }
+  closeProject() { this.activeProject.set(null); }
+  openBlog(post: BlogPost) { this.activeBlogPost.set(post); }
+  closeBlog() { this.activeBlogPost.set(null); }
+
+  setPreview(index: number | null) {
+    this.previewActive.set(index);
+    if (index !== null) { this.prx = this.mx; this.pry = this.my; }
+  }
+
+  goTo(index: number) {
+    if (window.innerWidth < 960) {
+      // Mobile: scroll to section using window.scrollTo with 70px nav offset
+      const sections = document.querySelectorAll('.page-section');
+      const el = sections[index] as HTMLElement;
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+      this.nav.currentPage.set(index);
+    } else {
+      this.nav.goTo(index, this.totalPages);
+    }
+    this.mobileMenuOpen.set(false);
+  }
+
+  ngAfterViewInit() {
+    const lerp = () => {
+      this.rx += (this.mx - this.rx) * 0.11;
+      this.ry += (this.my - this.ry) * 0.11;
+      if (this.cring) {
+        this.cring.nativeElement.style.left = `${this.rx}px`;
+        this.cring.nativeElement.style.top  = `${this.ry}px`;
+      }
+      if (this.previewActive() !== null && this.prvw) {
+        this.prx += (this.mx - this.prx) * 0.1;
+        this.pry += (this.my - this.pry) * 0.1;
+        this.prvw.nativeElement.style.left = `${this.prx}px`;
+        this.prvw.nativeElement.style.top  = `${this.pry}px`;
+      }
+      this.animId = requestAnimationFrame(lerp);
+    };
+    lerp();
+  }
+
+  ngOnDestroy() { cancelAnimationFrame(this.animId); }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(e: MouseEvent) {
+    this.mx = e.clientX;
+    this.my = e.clientY;
+    if (this.cdot) {
+      this.cdot.nativeElement.style.left = `${this.mx}px`;
+      this.cdot.nativeElement.style.top  = `${this.my}px`;
+    }
+    const target = e.target as HTMLElement;
+    const isHoverable = target.closest('a, button, .btn, .sdw, .pi, .bc, .tmc, .feat-card, .term-trigger, .skill-toggle-btn, .cert-nav, .cert-card');
+    this.cursorHover.set(!!isHoverable);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(e: KeyboardEvent) {
+    if (this.activeProject() || this.activeBlogPost()) {
+      if (e.key === 'Escape') {
+        this.activeProject.set(null);
+        this.activeBlogPost.set(null);
+      }
+      return;
+    }
+    if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') this.goTo(Math.min(this.nav.currentPage() + 1, this.totalPages - 1));
+    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  this.goTo(Math.max(this.nav.currentPage() - 1, 0));
+    if (e.key === 'Escape' && this.nav.terminalOpen()) this.nav.terminalOpen.set(false);
+  }
+
+  private wheelTimer: any = null;
+  @HostListener('wheel', ['$event'])
+  onWheel(e: WheelEvent) {
+    if (window.innerWidth < 960) return;
+    if (this.activeProject() || this.activeBlogPost() || this.wheelTimer) return;
+    if (this.mobileMenuOpen()) return;
+
+    const activePage = document.querySelector('.page-section.active') as HTMLElement;
+    if (!activePage) return;
+
+    const atTop    = activePage.scrollTop <= 5;
+    const atBottom = Math.ceil(activePage.scrollTop + activePage.clientHeight) >= activePage.scrollHeight - 5;
+
+    if (e.deltaY > 20 && atBottom) {
+      if (this.nav.currentPage() < this.totalPages - 1) {
+        this.goTo(this.nav.currentPage() + 1);
+        this.wheelTimer = setTimeout(() => { this.wheelTimer = null; }, 800);
+      }
+    } else if (e.deltaY < -20 && atTop) {
+      if (this.nav.currentPage() > 0) {
+        this.goTo(this.nav.currentPage() - 1);
+        this.wheelTimer = setTimeout(() => { this.wheelTimer = null; }, 800);
+      }
+    }
+  }
+}
+
+--- DIRECTORY: src\app\components\about\about.component.css ---
+:host {
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--surf);
+}
+
+.page-about {
+  width: 100%;
+  min-height: 100vh;
+  padding: 5rem 5rem 3rem;
+}
+
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.slabel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+/*
+  NOTE: We do NOT set { opacity: 0 } on .apull, .abio, .blk, .slabel here.
+  Base opacity is handled by the global utility classes (.au, .al, .ar, .as)
+  in styles.css. Setting it locally (Angular-scoped) was causing content to
+  snap invisible instantly during slide-out, defeating the global .prev fix.
+*/
+
+/* Active Page Animations (Retriggered by [active] input) */
+.active-page .slabel     { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
+.active-page .apull      { animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) .10s ease both; }
+.active-page .abio       { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both; }
+.active-page .blk.ar.d2  { animation: fadeRight .55s cubic-bezier(.22,1,.36,1) .18s ease both; }
+.active-page .blk.ar.d3  { animation: fadeRight .55s cubic-bezier(.22,1,.36,1) .26s ease both; }
+
+.sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
+.st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
+.shr { flex: 1; height: 1px; background: var(--bord); }
+
+.ag { display: grid; grid-template-columns: 1.1fr .9fr; gap: 5rem; }
+
+.apull {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(2.5rem, 3.5vw, 3.5rem);
+  line-height: 1.2;
+  letter-spacing: -.025em;
+  color: var(--white);
+  margin-bottom: 2rem;
+}
+.apull em { color: var(--acc); font-style: normal; }
+
+.abio { font-size: 1.1rem; color: var(--text); line-height: 1.8; font-weight: 300; }
+.abio p + p { margin-top: 1.25rem; }
+.abio strong { color: var(--white); font-weight: 600; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .6rem; justify-content: center;
+  padding: 1rem 2rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem;
+  font-weight: 600; border-radius: 6px; cursor: none; transition: transform .2s ease, box-shadow .2s ease;
+  text-decoration: none; border: none;
+}
+.btn:hover { transform: translateY(-3px); }
+.btn-fill { background: var(--acc); color: #fff; }
+.btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
+
+.blk { margin-bottom: 2.5rem; }
+.blkh {
+  font-family: 'JetBrains Mono', monospace; font-size: .8rem; letter-spacing: .12em;
+  color: var(--muted); margin-bottom: 1.5rem; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: space-between; font-weight: 600;
+}
+
+.skill-toggle-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: .65rem; letter-spacing: .08em;
+  color: var(--acc); border: 1px solid rgba(139,92,246,.3); padding: .3rem .65rem;
+  border-radius: 4px; cursor: none; background: none; transition: background .2s, border-color .2s;
+}
+.skill-toggle-btn:hover { background: rgba(139,92,246,.1); }
+
+/* SPHERE */
+.skill-sphere-wrap {
+  position: relative; min-height: 268px; display: flex;
+  align-items: center; justify-content: center;
+  border: 1px solid var(--bord); border-radius: 8px; background: var(--bg);
+  padding: 1.5rem; overflow: hidden;
+}
+
+/* "drag to spin" — desktop only */
+.sphere-hint {
+  position: absolute; bottom: .6rem; left: 50%; transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--muted);
+  letter-spacing: .08em; opacity: .5; pointer-events: none; width: max-content;
+}
+
+/* PROFICIENCY LIST */
+.skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; }
+.sk-item { display: flex; flex-direction: column; gap: .4rem; opacity: 0; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards; }
+
+.sk-info { display: flex; justify-content: space-between; align-items: center; font-size: .92rem; font-weight: 500; color: var(--text); }
+.sk-time { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--muted); }
+.sk-bar { width: 100%; height: 5px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--bord); }
+
+@keyframes fillUp {
+  from { width: 0; }
+  to   { width: var(--target-width); }
+}
+.sk-fill {
+  height: 100%;
+  background: var(--acc);
+  border-radius: 4px;
+  width: 0;
+  animation: fillUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* CAROUSEL */
+.cert-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.cert-counter { font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--muted); letter-spacing: .06em; }
+.cert-carousel { position: relative; display: flex; align-items: center; gap: .75rem; }
+.cert-nav {
+  width: 36px; height: 36px; border: 1px solid var(--bord); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: var(--sub);
+  font-size: 1.2rem; cursor: none; flex-shrink: 0; transition: border-color .2s, color .2s;
+  background: var(--bg); line-height: 0; padding-bottom: 2px;
+}
+.cert-nav:hover { border-color: var(--acc); color: var(--acc); }
+
+.cert-card-wrap { flex: 1; overflow: hidden; }
+
+.cert-in  { animation: certIn  .3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.cert-in-r{ animation: certInR .3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes certIn  { from { opacity: 0; transform: translateX(30px);  } to { opacity: 1; transform: translateX(0); } }
+@keyframes certInR { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+
+.cert-card {
+  display: block; border-radius: 8px; overflow: hidden; border: 1px solid var(--bord);
+  transition: border-color .25s; text-decoration: none; cursor: none;
+}
+.cert-card:hover { border-color: var(--acc); }
+.cert-top { height: 55px; display: flex; align-items: center; padding: 0 1.25rem; gap: .75rem; }
+.cert-issuer-badge {
+  width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center;
+  justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: .65rem;
+  font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.cert-issuer-name { font-family: 'JetBrains Mono', monospace; font-size: .75rem; letter-spacing: .05em; color: var(--text); font-weight: 500; }
+.cert-body { background: var(--bg); padding: 1.25rem; }
+.cert-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: -.01em; color: var(--white); line-height: 1.2; margin-bottom: .5rem; }
+.cert-meta { display: flex; align-items: center; justify-content: space-between; }
+.cert-date { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--muted); letter-spacing: .06em; }
+.cert-view { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--acc); letter-spacing: .06em; font-weight: 500; }
+.cert-dots { display: flex; gap: .4rem; justify-content: center; margin-top: 1rem; }
+.cert-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--bord);
+  border: none; cursor: none; transition: background .2s; padding: 0;
+}
+.cert-dot.on { background: var(--acc); }
+
+/* Updated keyframes */
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(44px); }  to { opacity: 1; transform: translateX(0); } }
+
+@media (max-width: 960px) {
+  .page-about { padding: 6.5rem 1.5rem 4rem; }
+  .ag { grid-template-columns: 1fr; gap: 3rem; }
+  .btn, .cert-nav, .cert-card, .cert-dot, .skill-toggle-btn { cursor: pointer !important; }
+
+  /* Hide "drag to spin" on touch devices — dragging works differently */
+  .sphere-hint { display: none; }
+}
+
+--- DIRECTORY: src\app\components\about\about.component.html ---
+<section class="page-about" [class.active-page]="active">
+  <div class="pin">
+    <div class="slabel au d0">
+      <span class="sn">02</span><span class="st">/ about me</span>
+      <div class="shr"></div>
+    </div>
+
+    <div class="ag">
+      <div>
+        <h2 class="apull al d1">A builder who actually <em>ships</em>.</h2>
+        <div class="abio au d2">
+          <p>I'm a Full Stack Developer specializing in <strong>Angular, Node.js, and MongoDB</strong>. I build complete systems: from designing secure database schemas and REST APIs to crafting intuitive frontend interfaces.</p>
+          <p>While I currently work as a Game Developer, programming complex systems in <strong>C# (Unity)</strong> has deeply reinforced my backend logic, object-oriented design, and architectural skills.</p>
+          <p>I don't just write code; I care about shipping functional, maintainable products. I am looking for a full-stack internship where I can contribute to real-world codebases.</p>
+          <div style="margin-top:2rem;">
+            <a href="Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
+              <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download Resume
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- SKILLS SECTION -->
+        <div class="blk ar d2">
+          <div class="blkh">
+            Technical Skills
+            <button class="skill-toggle-btn" (click)="toggleSkills()">
+              @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
+            </button>
+          </div>
+
+          <!-- 3D SPHERE (Centered Container) -->
+          <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
+            <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
+            <div class="sphere-hint">drag to spin</div>
+          </div>
+
+          <!-- SKILL BARS -->
+          @if (skillsExpanded()) {
+            <ul class="skl" role="list">
+              @for (sk of skills; track sk.name; let i = $index) {
+                <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="sk-info">
+                    <span>{{ sk.name }}</span>
+                    <span class="sk-time">{{ sk.time }}</span>
+                  </div>
+                  <div class="sk-bar">
+                    <!-- Pass the target width via custom property to prevent flashing -->
+                    <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <!-- CERT CAROUSEL -->
+        <div class="blk ar d3">
+          <div class="cert-header">
+            <div class="blkh" style="margin-bottom:0;">Certifications</div>
+            <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
+          </div>
+          <div class="cert-carousel">
+            <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
+            <div class="cert-card-wrap" [ngClass]="certAnimClass()">
+              <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
+                <div class="cert-top" [style.background]="currentCert.color + '22'">
+                  <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
+                  <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
+                </div>
+                <div class="cert-body">
+                  <div class="cert-name">{{ currentCert.name }}</div>
+                  <div class="cert-meta">
+                    <div class="cert-date">{{ currentCert.date }}</div>
+                    <div class="cert-view">View Certificate ↗</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
+          </div>
+          <div class="cert-dots">
+            @for (cert of data.certificates; track $index) {
+              <button class="cert-dot" [class.on]="$index === certIndex()"
+                (click)="certNav($index > certIndex() ? 1 : -1)"
+                [attr.aria-label]="'Cert ' + ($index + 1)">
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+--- DIRECTORY: src\app\components\about\about.component.ts ---
+import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { PortfolioDataService } from '../../data/portfolio.data';
+import { Certificate } from '../../models/portfolio.models';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-about',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './about.component.html',
+  styleUrl: './about.component.css',
+})
+export class AboutComponent implements AfterViewInit, OnDestroy {
+  @Input() active = false; 
+  data = inject(PortfolioDataService);
+
+  @ViewChild('sphereContainer') sphereContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('sphereWrap') sphereWrap!: ElementRef<HTMLDivElement>;
+
+  readonly skillsExpanded = signal(false);
+  readonly certIndex = signal(0);
+  readonly certAnimClass = signal('');
+
+  readonly skills = [
+    { name: 'Angular', time: '1 yr', pct: 75 },
+    { name: 'Node.js & Express', time: '1 yr', pct: 75 },
+    { name: 'MongoDB', time: '1 yr', pct: 65 },
+    { name: 'C# (Backend Logic)', time: '2 yrs', pct: 80 },
+    { name: 'Vue.js 3', time: '1 yr', pct: 70 },
+    { name: 'JavaScript / TypeScript', time: '2 yrs', pct: 85 },
+  ];
+
+  readonly sphereTags = [
+    { text: 'Angular', color: '#dd0031' }, { text: 'Vue.js 3', color: '#42b883' },
+    { text: 'Node.js', color: '#339933' }, { text: 'MongoDB', color: '#47a248' },
+    { text: 'TypeScript', color: '#3178c6' }, { text: 'C#', color: '#9b59b6' },
+    { text: 'Unity', color: '#a78bfa' }, { text: 'Express.js', color: '#a4a1c6' },
+    { text: 'REST APIs', color: '#60a5fa' }, { text: 'Git', color: '#f05030' },
+    { text: 'VR / XR', color: '#f59e0b' }, { text: 'Netlify', color: '#00c7b7' },
+  ];
+
+  get currentCert(): Certificate {
+    return this.data.certificates[this.certIndex()];
+  }
+
+  get certTotal(): number {
+    return this.data.certificates.length;
+  }
+
+  private animId = 0;
+  private rotX = 0.4; private rotY = 0;
+  private isDrag = false; private lx = 0; private ly = 0;
+  private velX = 0; private velY = 0.004;
+
+  toggleSkills() { 
+    this.skillsExpanded.update(v => !v); 
+  }
+  
+  certNav(dir: number) {
+    this.certAnimClass.set('');
+    this.certIndex.update(i => (i + dir + this.certTotal) % this.certTotal);
+    setTimeout(() => {
+      this.certAnimClass.set(dir > 0 ? 'cert-in' : 'cert-in-r');
+    }, 10);
+  }
+
+  ngAfterViewInit() {
+    this.initSphere();
+  }
+
+  ngOnDestroy() {
+    cancelAnimationFrame(this.animId);
+  }
+
+  private initSphere() {
+    const RADIUS = 95;
+    const items = this.sphereTags.map((tag, i) => {
+      const phi = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      const el = document.createElement('span');
+      
+      el.className = 'sphere-tag';
+      el.textContent = tag.text;
+      el.style.color = tag.color;
+      el.style.position = 'absolute';
+      el.style.background = 'var(--surf)';
+      el.style.padding = '4px 8px';
+      el.style.borderRadius = '4px';
+      el.style.border = '1px solid var(--bord)';
+      el.style.cursor = 'grab';
+      el.style.userSelect = 'none';
+      el.style.fontFamily = "'JetBrains Mono', monospace";
+      el.style.fontSize = "12px";
+      el.style.whiteSpace = "nowrap";
+      
+      if (this.sphereContainer?.nativeElement) {
+        this.sphereContainer.nativeElement.appendChild(el);
+      }
+      return { el, phi, theta };
+    });
+
+    const render = () => {
+      const cosRX = Math.cos(this.rotX), sinRX = Math.sin(this.rotX);
+      const cosRY = Math.cos(this.rotY), sinRY = Math.sin(this.rotY);
+
+      items.forEach((item) => {
+        let x = Math.sin(item.phi) * Math.cos(item.theta);
+        let y = Math.cos(item.phi);
+        let z = Math.sin(item.phi) * Math.sin(item.theta);
+        
+        const x2 = x * cosRY - z * sinRY;
+        const z2 = x * sinRY + z * cosRY;
+        const y3 = y * cosRX - z2 * sinRX;
+        const z3 = y * sinRX + z2 * cosRX;
+        
+        const scale = (z3 + 2.2) / 3.2;
+        const px = x2 * RADIUS;
+        const py = y3 * RADIUS;
+
+        item.el.style.transform = `translate(-50%,-50%) translate(${px}px,${py}px)`;
+        item.el.style.opacity = Math.max(0.1, scale).toString();
+        item.el.style.zIndex = Math.round(scale * 20).toString();
+        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250, 0.6)' : 'var(--bord)';
+      });
+    };
+
+    const animate = () => {
+      if (!this.isDrag) {
+        this.rotY += this.velY; this.rotX += this.velX;
+        this.velX *= 0.97;
+      }
+      render();
+      this.animId = requestAnimationFrame(animate);
+    };
+
+    const wrap = this.sphereWrap?.nativeElement;
+    if (wrap) {
+      wrap.addEventListener('mousedown', e => { this.isDrag = true; this.lx = e.clientX; this.ly = e.clientY; });
+      document.addEventListener('mousemove', e => {
+        if (!this.isDrag) return;
+        this.velY = (e.clientX - this.lx) * 0.006;
+        this.velX = (e.clientY - this.ly) * 0.006;
+        this.rotY += this.velY; this.rotX += this.velX;
+        this.lx = e.clientX; this.ly = e.clientY;
+      });
+      document.addEventListener('mouseup', () => this.isDrag = false);
+    }
+    animate();
+  }
+}
+
+--- DIRECTORY: src\app\components\blog\blog.component.css ---
+.page-blog {
+  width: 100%;
+  min-height: 100%;
+  padding: 5rem 5rem 3rem;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.pheader { display: flex; align-items: baseline; gap: 2rem; margin-bottom: 3rem; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
+.ph2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(3rem, 5vw, 4.5rem); letter-spacing: -.04em; color: var(--white); line-height: 1; }
+.pcnt { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .1em; }
+.phr { flex: 1; height: 1px; background: var(--bord); }
+
+.blog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+
+.bc {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  background: var(--surf);
+  overflow: hidden;
+  transition: transform .25s, border-color .25s;
+  cursor: pointer;
+  position: relative;
+  animation: scaleIn .5s cubic-bezier(.22,1,.36,1) ease both;
+}
+.bc:first-child  { animation-delay: .10s; }
+.bc:nth-child(2) { animation-delay: .18s; }
+.bc:hover { transform: translateY(-5px); border-color: var(--acc); }
+
+.bc-img { height: 200px; background: var(--bg); border-bottom: 1px solid var(--bord); overflow: hidden; }
+
+.bc-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.bc-date    { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--acc); letter-spacing: .08em; margin-bottom: 1rem; }
+.bc-title   { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.5rem; letter-spacing: -.01em; color: var(--white); line-height: 1.3; margin-bottom: 1rem; }
+.bc-excerpt { font-size: 1.05rem; color: var(--text); line-height: 1.75; font-weight: 300; margin-bottom: 1.5rem; flex: 1; }
+.bc-read    { font-size: .95rem; font-weight: 600; color: var(--acc); display: inline-flex; align-items: center; gap: .4rem; transition: gap .2s; }
+.bc:hover .bc-read { gap: .75rem; }
+
+@keyframes fadeUp  { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.88); }       to { opacity: 1; transform: scale(1); } }
+
+@media (max-width: 960px) {
+  .page-blog { padding: 6.5rem 1.5rem 4rem; }
+  .blog-grid { grid-template-columns: 1fr; }
+}
+
+--- DIRECTORY: src\app\components\blog\blog.component.html ---
+<section class="page-blog" [class.active-page]="active">
+  <div class="pin">
+    <div class="pheader au d0">
+      <h2 class="ph2">From the desk.</h2>
+      <span class="pcnt">02 posts</span>
+      <div class="phr"></div>
+    </div>
+    <div class="blog-grid">
+      @for (post of data.blogPosts; track post.title; let i = $index) {
+        <article class="bc as" [ngClass]="i === 0 ? 'd1' : 'd2'"
+                 (click)="postOpened.emit(post)" role="button" tabindex="0"
+                 (keydown.enter)="postOpened.emit(post)">
+          <div class="bc-img">
+            @if (i === 0) {
+              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="190" fill="var(--bg)"/>
+                <defs><radialGradient id="b1g" cx="30%" cy="50%"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".2"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient></defs>
+                <rect width="400" height="190" fill="url(#b1g)"/>
+                <circle cx="90" cy="95" r="52" fill="none" stroke="#a78bfa" stroke-width=".8" stroke-dasharray="5 9" opacity=".4"/>
+                <text x="90" y="101" text-anchor="middle" fill="#a78bfa" font-size="22" opacity=".55">🥽</text>
+                <text x="220" y="82" fill="#a78bfa" font-family="monospace" font-size="10" letter-spacing="1.5" opacity=".4">GAME DEV → WEB DEV</text>
+              </svg>
+            } @else {
+              <svg width="100%" height="190" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="190" fill="var(--bg)"/>
+                <defs><radialGradient id="b2g" cx="70%" cy="50%"><stop offset="0%" stop-color="#60a5fa" stop-opacity=".18"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></radialGradient></defs>
+                <rect width="400" height="190" fill="url(#b2g)"/>
+                <rect x="225" y="28" width="130" height="90" rx="6" fill="none" stroke="#60a5fa" stroke-width=".8" opacity=".4"/>
+                <text x="52" y="80" fill="#60a5fa" font-family="monospace" font-size="10" letter-spacing="1.5" opacity=".4">VUE.JS vs VANILLA</text>
+              </svg>
+            }
+          </div>
+          <div class="bc-body">
+            <p class="bc-date">{{ post.date }}</p>
+            <h3 class="bc-title">{{ post.title }}</h3>
+            <p class="bc-excerpt">{{ post.excerpt }}</p>
+            <span class="bc-read">Read Post →</span>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+--- DIRECTORY: src\app\components\blog\blog.component.ts ---
+import { Component, inject, output, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PortfolioDataService } from '../../data/portfolio.data';
+import { BlogPost } from '../../models/portfolio.models';
+
+@Component({
+  selector: 'app-blog',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './blog.component.html',
+  styleUrl: './blog.component.css',
+})
+export class BlogComponent {
+  @Input() active = false;
+  data = inject(PortfolioDataService);
+  postOpened = output<BlogPost>();
+}
+
+--- DIRECTORY: src\app\components\blog-overlay\blog-overlay.component.css ---
+.blog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  background: var(--bg);
+  border-top: 2px solid var(--acc);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: slideUp .5s cubic-bezier(.76,0,.24,1) both;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.blog-overlay::-webkit-scrollbar { width: 6px; }
+.blog-overlay::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+.blog-overlay.closing {
+  animation: slideDown .5s cubic-bezier(.76,0,.24,1) forwards;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+.bp-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 5rem;
+  border-bottom: 1px solid var(--bord);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 1;
+}
+
+.bp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+  font-weight: 600;
+}
+
+.bp-close {
+  width: 40px; height: 40px;
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sub);
+  font-size: 1.1rem;
+  cursor: pointer;
+  background: none;
+  transition: border-color .2s, color .2s;
+}
+.bp-close:hover { border-color: var(--acc); color: var(--acc); }
+
+.bp-body {
+  padding: 3.5rem 5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.bp-hero-img {
+  width: 100%;
+  height: 320px;
+  border-radius: 8px;
+  border: 1px solid var(--bord);
+  background: var(--surf);
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  overflow: hidden;
+}
+
+.bp-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--acc);
+  letter-spacing: .1em;
+  margin-bottom: 1rem;
+}
+
+.bp-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -.03em;
+  color: var(--white);
+  line-height: 1.08;
+  margin-bottom: 2.5rem;
+}
+
+.bp-content {
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+:host ::ng-deep .bp-content p { margin-bottom: 1.25rem; }
+:host ::ng-deep .bp-content h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  letter-spacing: -.025em;
+  color: var(--white);
+  margin: 2rem 0 .75rem;
+}
+:host ::ng-deep .bp-content strong { color: var(--white); font-weight: 600; }
+:host ::ng-deep .bp-content em { color: var(--acc); font-style: italic; }
+:host ::ng-deep .bp-content code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .9em;
+  color: var(--acc);
+  background: var(--surf);
+  padding: .1rem .35rem;
+  border-radius: 3px;
+}
+
+@media (max-width: 960px) {
+  .bp-top { padding: 1.5rem; }
+  .bp-body { padding: 2rem 1.5rem; }
+}
+
+
+--- DIRECTORY: src\app\components\blog-overlay\blog-overlay.component.html ---
+ @if (post()) {
+  <div class="blog-overlay" [class.closing]="isClosing()" role="dialog" aria-modal="true" aria-label="Blog post">
+  ...
+    <div class="bp-top">
+      <div class="bp-label">FROM THE DESK</div>
+      <button class="bp-close" (click)="close()" aria-label="Close post">✕</button>
+    </div>
+    <div class="bp-body">
+      <div class="bp-hero-img">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" opacity="0.5">
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+        </svg>
+      </div>
+      <p class="bp-date">{{ post()!.date }}</p>
+      <h2 class="bp-title">{{ post()!.title }}</h2>
+      <div class="bp-content" [innerHTML]="post()!.content"></div>
+    </div>
+  </div>
+}
+
+--- DIRECTORY: src\app\components\blog-overlay\blog-overlay.component.ts ---
+import { Component, input, output, signal } from '@angular/core';
+import { BlogPost } from '../../models/portfolio.models';
+
+@Component({
+  selector: 'app-blog-overlay',
+  standalone: true,
+  templateUrl: './blog-overlay.component.html',
+  styleUrl: './blog-overlay.component.css',
+})
+export class BlogOverlayComponent {
+  post = input<BlogPost | null>(null);
+  closed = output<void>();
+  isClosing = signal(false);
+
+  close() {
+    this.isClosing.set(true);
+    setTimeout(() => {
+      this.isClosing.set(false);
+      this.closed.emit();
+    }, 500);
+  }
+}
+
+--- DIRECTORY: src\app\components\contact\contact.component.css ---
+.page-contact {
+  width: 100%;
+  min-height: 100%;
+  padding: 5rem 5rem 3rem;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.cho {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(4rem, 9vw, 6rem);
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--white);
+  margin-bottom: 3rem;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) ease both;
+}
+
+.cgg { display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem; width: 100%; }
+
+.cp {
+  font-size: 1.15rem;
+  color: var(--text);
+  line-height: 1.8;
+  font-weight: 300;
+  margin-bottom: 2.5rem;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .10s ease both;
+}
+
+.socl { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; padding: 0; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both; }
+
+.solink {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 1.05rem;
+  color: var(--white);
+  font-weight: 500;
+  transition: color .2s;
+  text-decoration: none;
+}
+.solink:hover { color: var(--acc); }
+
+.soico {
+  width: 48px; height: 48px;
+  border-radius: 6px;
+  background: var(--surf);
+  border: 1px solid var(--bord);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color .2s;
+}
+.solink:hover .soico { border-color: var(--acc); }
+
+/* Filled icons (LinkedIn, GitHub) */
+.soico svg { width: 22px; height: 22px; fill: currentColor; }
+
+/* Stroke-based paper-plane icon override */
+.soico-send svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cform {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--surf);
+  padding: 3rem;
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both;
+}
+
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.fg   { display: flex; flex-direction: column; gap: .6rem; }
+
+label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+input, textarea {
+  background: var(--bg);
+  border: 1px solid var(--bord);
+  border-radius: 6px;
+  padding: 1.1rem 1.25rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--white);
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  transition: border-color .2s;
+}
+input::placeholder, textarea::placeholder { color: var(--muted); }
+input:focus, textarea:focus { border-color: var(--acc); }
+textarea { min-height: 150px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .6rem; justify-content: center;
+  padding: 1rem 2rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem;
+  font-weight: 600; border-radius: 6px; cursor: pointer; transition: transform .2s, box-shadow .2s;
+  border: none;
+}
+.btn:hover { transform: translateY(-3px); }
+.btn-fill { background: var(--acc); color: #fff; }
+.btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
+
+.fsok {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .9rem;
+  color: var(--acc);
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(139,92,246,.3);
+  border-radius: 6px;
+  animation: fadeUp .3s ease both;
+}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 960px) {
+  .page-contact { padding: 6.5rem 1.5rem 4rem; }
+  .cgg { grid-template-columns: 1fr; gap: 3.5rem; }
+  .frow { grid-template-columns: 1fr; }
+  .cform { padding: 1.5rem; }
+  .cho { font-size: clamp(3.5rem, 12vw, 5.5rem); }
+}
+
+--- DIRECTORY: src\app\components\contact\contact.component.html ---
+<section class="page-contact" [class.active-page]="active">
+  <div class="pin">
+    <h2 class="cho au d0">Hire Me.</h2>
+    <div class="cgg">
+      <div class="au d1">
+        <p class="cp">I'm actively looking for a full-stack internship. If you're building something and need someone who understands both the database and the interface — reach out. I prioritize clean code and prompt communication.</p>
+        <ul class="socl" role="list">
+          <li>
+            <a href="https://linkedin.com/in/jarenkendrick" target="_blank" rel="noopener" class="solink">
+              <span class="soico">
+                <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </span>
+              linkedin.com/in/jarenkendrick
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="solink">
+              <span class="soico">
+                <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              </span>
+              github.com/jarenkendrick14
+            </a>
+          </li>
+          <li>
+            <!-- Paper plane / send icon -->
+            <a href="mailto:jarenkendrickyambao@gmail.com" class="solink">
+              <span class="soico soico-send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+              </span>
+              jarenkendrickyambao@gmail.com
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="cform au d2">
+        <div class="frow">
+          <div class="fg">
+            <label for="fn">Name</label>
+            <input type="text" id="fn" placeholder="Your name" [value]="formData().name" (input)="updateField('name', $any($event.target).value)" autocomplete="name"/>
+          </div>
+          <div class="fg">
+            <label for="fe">Email</label>
+            <input type="email" id="fe" placeholder="you@company.com" [value]="formData().email" (input)="updateField('email', $any($event.target).value)" autocomplete="email"/>
+          </div>
+        </div>
+        <div class="fg">
+          <label for="fs">Subject</label>
+          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..." [value]="formData().subject" (input)="updateField('subject', $any($event.target).value)"/>
+        </div>
+        <div class="fg">
+          <label for="fm">Message</label>
+          <textarea id="fm" placeholder="Tell me about what you're building..." [value]="formData().message" (input)="updateField('message', $any($event.target).value)"></textarea>
+        </div>
+        <button type="button" class="btn btn-fill" (click)="submit()" style="width:100%;">Send Message</button>
+        @if (submitted()) {
+          <div class="fsok" role="status" aria-live="polite">✓ Sent — I'll get back to you soon.</div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+--- DIRECTORY: src\app\components\contact\contact.component.ts ---
+import { Component, signal, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-contact',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './contact.component.html',
+  styleUrl: './contact.component.css',
+})
+export class ContactComponent {
+  @Input() active = false;
+  readonly submitted = signal(false);
+
+  readonly formData = signal({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
+  updateField(field: string, value: string) {
+    this.formData.update(d => ({ ...d, [field]: value }));
+  }
+
+  submit() {
+    const d = this.formData();
+    if (!d.name || !d.email || !d.message) return;
+    const body = encodeURIComponent(`Hi Jaren,\n\n${d.message}\n\nFrom: ${d.name}\nEmail: ${d.email}`);
+    const subject = encodeURIComponent(d.subject || 'Portfolio Inquiry');
+    window.location.href = `mailto:jarenkendrickyambao@gmail.com?subject=${subject}&body=${body}`;
+    this.submitted.set(true);
+    setTimeout(() => {
+      this.submitted.set(false);
+      this.formData.set({ name: '', email: '', subject: '', message: '' });
+    }, 4000);
+  }
+}
+
+--- DIRECTORY: src\app\components\experience\experience.component.css ---
+/* ════ experience.component.css ════ */
+:host {
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--surf);
+}
+
+.page-experience {
+  width: 100%;
+  min-height: 100vh;
+  padding: 5rem 5rem 3rem;
+}
+
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
+.sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
+.st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
+.shr { flex: 1; height: 1px; background: var(--bord); }
+
+.exph {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  letter-spacing: -.04em;
+  color: var(--white);
+  margin-bottom: 4rem;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .10s ease both;
+}
+
+.tl { display: flex; flex-direction: column; }
+
+.tlr {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 4rem;
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--bord);
+  animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both;
+}
+.tlr:last-child { border-bottom: none; padding-bottom: 0; }
+.tlr:first-child { padding-top: 0; animation-delay: .18s; }
+.tlr:nth-child(2) { animation-delay: .26s; }
+
+.tlpd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .9rem;
+  color: var(--acc);
+  letter-spacing: .05em;
+  margin-bottom: .5rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.tlorg {
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.tltl {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  letter-spacing: -.01em;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+
+.tldc {
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.8;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+}
+
+.tlch { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+.ptag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .04em;
+  padding: .3rem .6rem;
+  border-radius: 4px;
+  background: var(--surf);
+  color: var(--text);
+  border: 1px solid var(--bord);
+}
+
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
+
+@media (max-width: 960px) {
+  .page-experience { padding: 6.5rem 1.5rem 4rem; }
+  .tlr { grid-template-columns: 1fr; gap: 1rem; }
+}
+
+--- DIRECTORY: src\app\components\experience\experience.component.html ---
+<section class="page-experience" [class.active-page]="active">
+  <div class="pin">
+    <div class="slabel au d0">
+      <span class="sn">04</span><span class="st">/ experience &amp; education</span>
+      <div class="shr"></div>
+    </div>
+    <h2 class="exph au d1">Where I've been.</h2>
+    <div class="tl">
+      @for (entry of entries; track entry.title; let i = $index) {
+        <div class="tlr" [ngClass]="i === 0 ? 'al d2' : 'ar d3'">
+          <div>
+            <p class="tlpd">{{ entry.period }}</p>
+            <p class="tlorg">{{ entry.org }}</p>
+          </div>
+          <div>
+            <h3 class="tltl">{{ entry.title }}</h3>
+            <p class="tldc" [innerHTML]="entry.desc"></p>
+            @if (entry.tags.length > 0) {
+              <div class="tlch">
+                @for (tag of entry.tags; track tag) {
+                  <span class="ptag">{{ tag }}</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+--- DIRECTORY: src\app\components\experience\experience.component.ts ---
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-experience',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './experience.component.html',
+  styleUrl: './experience.component.css',
+})
+export class ExperienceComponent {
+  @Input() active = false;
+  readonly entries = [
+    {
+      period: 'Apr 2025 — Present',
+      org: 'VirtuIntelligence · Part-time · Remote',
+      title: 'Game Developer',
+      desc: 'Building VR applications using Unreal Engine 5.5 Blueprints. Shipped PathFinder (VR journaling app) in Unity. Currently developing an action title, <em>\'Robots vs Aliens\'</em>, in Unity. Writing complex game systems in C# has heavily sharpened my backend logic, object-oriented design, and ability to architect scalable features.',
+      tags: ['Unreal 5.5', 'Blueprints', 'Unity', 'C#', 'Backend Logic'],
+    },
+    {
+      period: 'Jun 2023 — 2027',
+      org: 'Holy Angel University · Pampanga, PH',
+      title: 'BS Information Technology',
+      desc: 'Specialization in Web Development. Coursework spanning full-stack architecture, database systems, software engineering principles, and deployment workflows.',
+      tags: [],
+    },
+  ];
+}
+
+--- DIRECTORY: src\app\components\home\home.component.css ---
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.page-home {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 5rem 5rem 3rem;
+  overflow-y: auto;
+}
+
+#bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: all;
+}
+
+.h-top { position: relative; z-index: 1; padding-top: 1rem; }
+
+.h-top-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+  margin-bottom: 5rem;
+}
+
+.h-text { flex: 1; max-width: 650px; }
+
+.hname {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--white);
+  font-size: clamp(4rem, 8vw, 5.5rem);
+  margin-bottom: .8rem;
+}
+.accent-name { margin-bottom: 1.2rem; }
+
+.hrole {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--acc);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.hdesc {
+  font-size: 1.15rem;
+  color: var(--text);
+  line-height: 1.75;
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+.hdesc strong { color: var(--white); font-weight: 600; }
+
+.h-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.hloc {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem;
+  color: var(--white);
+  padding: .65rem 1.1rem;
+  background: var(--surf);
+  border: 1px solid var(--bord);
+  border-radius: 6px;
+}
+
+.hbtns {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.h-photo {
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.h-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed var(--bord);
+  border-radius: 50%;
+  background: var(--surf);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  overflow: hidden;
+  transition: border-color .3s;
+}
+.h-photo-placeholder:hover { border-color: var(--acc); border-style: solid; }
+
+.feat-section { position: relative; z-index: 1; }
+
+.feat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-weight: 500;
+}
+.feat-label::after { content: ''; flex: 1; height: 1px; background: var(--bord); }
+
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.feat-card {
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  background: var(--surf);
+  overflow: hidden;
+  cursor: none;
+  transition: border-color .25s, transform .25s;
+  position: relative;
+}
+.feat-card:hover { border-color: var(--acc); transform: translateY(-4px); }
+
+.feat-thumb { height: 120px; }
+
+.feat-body {
+  padding: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.feat-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: -.01em;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: .5rem;
+}
+
+.feat-desc {
+  font-size: .85rem;
+  color: var(--text);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+.feat-tags { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+.feat-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  padding: .2rem .5rem;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--acc);
+  border: 1px solid var(--bord);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  justify-content: center;
+  padding: 1rem 2rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  border: none;
+}
+.btn:hover { transform: translateY(-3px); }
+.btn-fill { background: var(--acc); color: #fff; }
+.btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
+.btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
+.btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
+
+/* Updated keyframes — more prominent distances */
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(44px); }  to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn   { from { opacity: 0; transform: scale(.88); }        to { opacity: 1; transform: scale(1); } }
+
+@media (max-width: 960px) {
+  .page-home { padding: 7rem 1.5rem 4rem; }
+  .h-top-grid { flex-direction: column-reverse; align-items: flex-start; gap: 2.5rem; margin-bottom: 4rem; }
+  .h-photo { width: 160px; height: 160px; }
+  .feat-grid { grid-template-columns: 1fr; }
+}
+
+--- DIRECTORY: src\app\components\home\home.component.html ---
+<section class="page-home" [class.active-page]="active">
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <div class="pin h-top">
+    <div class="h-top-grid">
+      <div class="h-text">
+        <h1 class="hname au d1" [appDecrypt]="'Hello, I\'m'" [active]="active" [delay]="400">Hello, I'm</h1>
+        <h1 class="hname accent-name au d1" [appDecrypt]="'Jaren Kendrick.'" [active]="active" [delay]="600">Jaren Kendrick.</h1>
+        <span class="hrole au d2">Full Stack Web Developer</span>
+        <p class="hdesc au d3">
+          I build end-to-end web applications, specializing in <strong>Angular</strong> for the frontend
+          and robust, scalable architectures on the backend with <strong>Node.js and MongoDB</strong>.
+          I focus on writing clean code and shipping products that solve real problems.
+        </p>
+        <div class="h-meta au d4">
+          <div class="hloc">
+            <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Pampanga, Philippines
+          </div>
+        </div>
+        <div class="hbtns au d5">
+          <button class="btn btn-fill" (click)="projectOpened.emit(-1)">View My Projects</button>
+          <a href="Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-ghost" download>Download Resume</a>
+        </div>
+      </div>
+      <div class="h-photo au d3">
+        <div class="h-photo-placeholder">
+          <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="feat-section au d5">
+      <p class="feat-label">Featured Projects</p>
+      <div class="feat-grid">
+        @for (item of featuredProjects; track item.index) {
+          <div class="feat-card" (click)="projectOpened.emit(item.index)"
+               (mouseenter)="previewHover.emit(item.index)"
+               (mouseleave)="previewHover.emit(null)"
+               role="button" tabindex="0">
+            <div class="feat-thumb" [style.background]="item.project.imgs[0]"></div>
+            <div class="feat-body">
+              <div class="feat-name">{{ item.project.name }}</div>
+              <div class="feat-desc">{{ item.project.desc.substring(0, 80) }}...</div>
+              <div class="feat-tags">
+                @for (tag of item.project.tags.slice(0,3); track tag) {
+                  <span class="feat-tag">{{ tag }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+--- DIRECTORY: src\app\components\home\home.component.ts ---
+import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input, effect } from '@angular/core';
+import { PortfolioDataService } from '../../data/portfolio.data';
+import { NavigationService } from '../../data/navigation.service';
+import { DecryptDirective } from '../../directives/decrypt.directive';
+
+@Component({
+  selector: 'app-home',
+  standalone: true,
+  imports: [DecryptDirective],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
+})
+export class HomeComponent implements AfterViewInit, OnDestroy {
+  @Input() active = false;
+
+  data = inject(PortfolioDataService);
+  nav  = inject(NavigationService);
+  projectOpened = output<number>();
+  previewHover  = output<number | null>();
+
+  readonly featuredIndices = [0, 1, 3];
+
+  private canvas!: HTMLCanvasElement;
+  private ctx!: CanvasRenderingContext2D;
+  private animId = 0;
+  private pts: { ox: number; oy: number; x: number; y: number }[] = [];
+  private vx: number[] = [];
+  private vy: number[] = [];
+  private cmx = -9999;
+  private cmy = -9999;
+
+  private readonly SP     = 42;
+  private readonly REPEL  = 110;
+  private readonly FORCE  = 22;
+  private readonly RESTORE = 0.07;
+  private readonly DAMP   = 0.82;
+
+  // Keep a bound reference so we can remove the listener on destroy
+  private _docMouseMove!: (e: MouseEvent) => void;
+  private _docMouseLeave!: () => void;
+
+  get featuredProjects() {
+    return this.featuredIndices.map(i => ({ project: this.data.projects[i], index: i }));
+  }
+
+  ngAfterViewInit() {
+    this.canvas = document.getElementById('bg-canvas') as HTMLCanvasElement;
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d')!;
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+
+    /*
+      FIX: Use document-level mousemove instead of canvas.mousemove.
+      The canvas sits at z-index:0 under content (z-index:1), so when
+      the cursor is over text, buttons, cards, etc., the canvas never
+      receives mouse events — causing dead zones.
+      Tracking at document level and converting to canvas-local coords
+      fixes this for ALL whitespace and content areas.
+    */
+    this._docMouseMove = (e: MouseEvent) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.cmx = e.clientX - rect.left;
+      this.cmy = e.clientY - rect.top;
+    };
+    this._docMouseLeave = () => {
+      this.cmx = -9999;
+      this.cmy = -9999;
+    };
+
+    document.addEventListener('mousemove',  this._docMouseMove);
+    document.addEventListener('mouseleave', this._docMouseLeave);
+
+    this.draw();
+  }
+
+  ngOnDestroy() {
+    cancelAnimationFrame(this.animId);
+    document.removeEventListener('mousemove',  this._docMouseMove);
+    document.removeEventListener('mouseleave', this._docMouseLeave);
+    window.removeEventListener('resize', () => this.resize());
+  }
+
+  private resize() {
+    const container = this.canvas.parentElement;
+    const W = container ? container.offsetWidth  : window.innerWidth;
+    const H = container ? Math.max(container.scrollHeight, window.innerHeight) : window.innerHeight;
+
+    this.canvas.width  = W;
+    this.canvas.height = H;
+    this.pts = [];
+    this.vx  = [];
+    this.vy  = [];
+
+    for (let c = 0; c <= Math.ceil(W / this.SP) + 1; c++) {
+      for (let r = 0; r <= Math.ceil(H / this.SP) + 1; r++) {
+        this.pts.push({ ox: c * this.SP, oy: r * this.SP, x: c * this.SP, y: r * this.SP });
+        this.vx.push(0);
+        this.vy.push(0);
+      }
+    }
+  }
+
+  private draw() {
+    const { ctx, canvas: { width: W, height: H } } = this;
+    ctx.clearRect(0, 0, W, H);
+    const rows = Math.ceil(H / this.SP) + 2;
+    const cols = Math.ceil(W / this.SP) + 2;
+
+    this.pts.forEach((p, i) => {
+      const dx   = p.x - this.cmx;
+      const dy   = p.y - this.cmy;
+      const dist = Math.hypot(dx, dy) || 1;
+      if (dist < this.REPEL) {
+        const mag = ((this.REPEL - dist) / this.REPEL) * this.FORCE;
+        this.vx[i] += (dx / dist) * mag;
+        this.vy[i] += (dy / dist) * mag;
+      }
+      this.vx[i] += (p.ox - p.x) * this.RESTORE;
+      this.vy[i] += (p.oy - p.y) * this.RESTORE;
+      this.vx[i] *= this.DAMP;
+      this.vy[i] *= this.DAMP;
+      p.x += this.vx[i];
+      p.y += this.vy[i];
+    });
+
+    const isDark = this.nav.isDark();
+    ctx.strokeStyle = isDark ? 'rgba(42,42,64,0.65)' : 'rgba(200,195,224,0.55)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    this.pts.forEach((p, i) => {
+      const c = Math.floor(i / rows);
+      const r = i % rows;
+      if (c < cols - 1) {
+        const n = this.pts[(c + 1) * rows + r];
+        if (n) { ctx.moveTo(p.x, p.y); ctx.lineTo(n.x, n.y); }
+      }
+      if (r < rows - 1) {
+        const n = this.pts[c * rows + r + 1];
+        if (n) { ctx.moveTo(p.x, p.y); ctx.lineTo(n.x, n.y); }
+      }
+    });
+    ctx.stroke();
+
+    this.pts.forEach(p => {
+      const d    = Math.hypot(p.x - this.cmx, p.y - this.cmy);
+      const prox = Math.max(0, 1 - d / this.REPEL);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.1 + prox * 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(139,92,246,${0.14 + prox * 0.65})`;
+      ctx.fill();
+    });
+
+    this.animId = requestAnimationFrame(() => this.draw());
+  }
+}
+
+--- DIRECTORY: src\app\components\project-overlay\project-overlay.component.css ---
+.overlay-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  animation: overlayIn .55s cubic-bezier(.76,0,.24,1) both;
+}
+
+.overlay-wrap.closing {
+  animation: overlayOut .5s cubic-bezier(.76,0,.24,1) forwards;
+}
+
+@keyframes overlayOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes overlayIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.ov-backdrop {
+  width: 200px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,.6);
+  cursor: pointer;
+}
+
+.ov-panel {
+  flex: 1;
+  background: var(--bg);
+  border-left: 1px solid var(--bord);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.ov-panel::-webkit-scrollbar { width: 6px; }
+.ov-panel::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+.ov-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 3rem;
+  border-bottom: 1px solid var(--bord);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 1;
+}
+
+.ov-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  color: var(--acc);
+  letter-spacing: .1em;
+  margin-bottom: .75rem;
+}
+
+.ov-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  color: var(--text);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.ov-close {
+  width: 40px; height: 40px;
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sub);
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: none;
+  transition: border-color .2s, color .2s;
+}
+.ov-close:hover { border-color: var(--acc); color: var(--acc); }
+
+.ov-body { padding: 3rem 4rem; flex: 1; }
+
+.ov-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  letter-spacing: -.04em;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 2.5rem;
+}
+
+.ov-imgs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.ov-img {
+  aspect-ratio: 16/10;
+  border-radius: 6px;
+  border: 1px solid var(--bord);
+  overflow: hidden;
+}
+
+.ov-sections {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 4rem;
+}
+
+.ov-h {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: .85rem;
+  text-transform: uppercase;
+}
+
+.ov-desc {
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.85;
+  font-weight: 300;
+}
+
+.ov-features {
+  list-style: none;
+}
+.ov-features li {
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.75;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--bord);
+  font-weight: 300;
+}
+.ov-features li:last-child { border-bottom: none; }
+.ov-features li::before { content: '→ '; color: var(--acc); }
+
+.ov-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 2rem;
+}
+
+.ov-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.ptag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .04em;
+  padding: .3rem .6rem;
+  border-radius: 4px;
+  background: var(--surf);
+  color: var(--text);
+  border: 1px solid var(--bord);
+}
+
+.links-coming {
+  font-size: .85rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  border: none;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-fill { background: var(--acc); color: #fff; }
+.btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
+.btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
+.btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
+.btn-sm { padding: .65rem 1.2rem; font-size: .88rem; }
+
+@media (max-width: 960px) {
+  .ov-backdrop { display: none; }
+  .ov-imgs { grid-template-columns: 1fr 1fr; }
+  .ov-sections { grid-template-columns: 1fr; }
+  .ov-body { padding: 2rem 1.5rem; }
+  .ov-top { padding: 1.5rem; }
+}
+
+
+--- DIRECTORY: src\app\components\project-overlay\project-overlay.component.html ---
+@if (project()) {
+  <div class="overlay-wrap" [class.closing]="isClosing()">
+    <div class="ov-backdrop" (click)="close()"></div>
+    <div class="ov-panel" role="dialog" aria-modal="true" aria-label="Project details">
+      <div class="ov-top">
+        <div>
+          <div class="ov-num">{{ project()!.num }}</div>
+          <div class="ov-section-label">Project Details</div>
+        </div>
+        <button class="ov-close" (click)="close()" aria-label="Close">✕</button>
+      </div>
+      <div class="ov-body">
+        <h2 class="ov-name">{{ project()!.name }}</h2>
+        <div class="ov-imgs">
+          @for (img of project()!.imgs; track $index) {
+            <div class="ov-img" [style.background]="img">
+              <svg width="100%" height="100%" viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
+                <rect width="200" height="125" fill="transparent" rx="4"/>
+                <path d="M0 0 L200 125 M200 0 L0 125" stroke="var(--bord)" stroke-width="1" opacity=".25"/>
+              </svg>
+            </div>
+          }
+        </div>
+        <div class="ov-sections">
+          <div>
+            <p class="ov-h">ABOUT THIS PROJECT</p>
+            <p class="ov-desc">
+              <strong>{{ project()!.purpose }}</strong><br/><br/>
+              {{ project()!.desc }}
+            </p>
+            <div class="ov-tags">
+              @for (tag of project()!.tags; track tag) {
+                <span class="ptag">{{ tag }}</span>
+              }
+            </div>
+            <div class="ov-links">
+              @if (project()!.live) {
+                @for (link of project()!.live!; track link.url) {
+                  <a [href]="link.url" target="_blank" rel="noopener" class="btn btn-fill btn-sm">{{ link.name }}</a>
+                }
+              }
+              @if (project()!.github) {
+                <a [href]="project()!.github!" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub →</a>
+              }
+              @if (!project()!.live && !project()!.github) {
+                <span class="links-coming">Links coming soon</span>
+              }
+            </div>
+          </div>
+          <div>
+            <p class="ov-h">KEY FEATURES</p>
+            <ul class="ov-features">
+              @for (feat of project()!.features; track feat) {
+                <li>{{ feat }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+--- DIRECTORY: src\app\components\project-overlay\project-overlay.component.ts ---
+import { Component, input, output, signal } from '@angular/core';
+import { Project } from '../../models/portfolio.models';
+
+@Component({
+  selector: 'app-project-overlay',
+  standalone: true,
+  templateUrl: './project-overlay.component.html',
+  styleUrl: './project-overlay.component.css',
+})
+export class ProjectOverlayComponent {
+  project = input<Project | null>(null);
+  closed = output<void>();
+  isClosing = signal(false);
+
+  close() {
+    this.isClosing.set(true);
+    setTimeout(() => {
+      this.isClosing.set(false);
+      this.closed.emit();
+    }, 500); // Wait for CSS animation to finish
+  }
+}
+
+--- DIRECTORY: src\app\components\projects\projects.component.css ---
+.page-projects {
+  width: 100%;
+  min-height: 100%;
+  padding: 5rem 5rem 3rem;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.pheader {
+  display: flex;
+  align-items: baseline;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both;
+}
+
+.ph2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  letter-spacing: -.04em;
+  color: var(--white);
+  line-height: 1;
+}
+
+.pcnt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+}
+
+.phr { flex: 1; height: 1px; background: var(--bord); }
+
+.plist { list-style: none; width: 100%; padding: 0; }
+
+.pi {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto 2rem;
+  align-items: center;
+  gap: 2rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--bord);
+  cursor: pointer;
+  transition: border-color .2s, padding .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+  animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both;
+}
+
+.pi:first-child { border-top: 1px solid var(--bord); }
+
+.pi:hover {
+  border-color: transparent;
+  background: var(--surf);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 8px;
+}
+.pi:hover .pnm  { color: var(--acc); }
+.pi:hover .parr { color: var(--acc); transform: translate(5px, -5px); }
+
+.pnum {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: var(--acc);
+  font-weight: 500;
+  letter-spacing: .06em;
+}
+
+.pnm {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -.02em;
+  color: var(--white);
+  line-height: 1;
+  transition: color .25s;
+  margin-bottom: .5rem;
+}
+
+.psub {
+  font-size: 1.05rem;
+  color: var(--text);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.ptgs { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
+
+.ptag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .04em;
+  padding: .3rem .6rem;
+  border-radius: 4px;
+  background: var(--surf);
+  color: var(--text);
+  border: 1px solid var(--bord);
+}
+
+.parr {
+  font-size: 1.5rem;
+  color: var(--muted);
+  transition: color .2s, transform .2s;
+}
+
+.active-page .ph2,
+.active-page .pheader { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) ease both; }
+.active-page .pi      { animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both; }
+
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
+
+.pi:nth-child(1) { animation-delay: .10s; }
+.pi:nth-child(2) { animation-delay: .18s; }
+.pi:nth-child(3) { animation-delay: .26s; }
+.pi:nth-child(4) { animation-delay: .34s; }
+.pi:nth-child(5) { animation-delay: .44s; }
+
+@media (max-width: 960px) {
+  .page-projects { padding: 6.5rem 1.5rem 4rem; }
+  .pi { grid-template-columns: auto 1fr auto; gap: 1.25rem; }
+  .pnum, .ptgs { display: none; }
+  .pnm { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+}
+
+--- DIRECTORY: src\app\components\projects\projects.component.html ---
+<section class="page-projects" [class.active-page]="active">
+  <div class="pin">
+    <div class="pheader au d0">
+      <h2 class="ph2">Selected Work</h2>
+      <span class="pcnt">05 projects</span>
+      <div class="phr" aria-hidden="true"></div>
+    </div>
+    <ul class="plist" role="list">
+      @for (proj of data.projects; track proj.num; let i = $index) {
+        <li class="pi al" 
+            [class.d1]="i === 0" [class.d2]="i === 1" [class.d3]="i === 2" [class.d4]="i === 3" [class.d5]="i === 4"
+            (click)="projectOpened.emit(i)" 
+            (mouseenter)="previewHover.emit(i)" 
+            (mouseleave)="previewHover.emit(null)"
+            role="button" tabindex="0" (keydown.enter)="projectOpened.emit(i)">
+          <span class="pnum">{{ proj.num }}</span>
+          <div>
+            <div class="pnm">{{ proj.name }}</div>
+            <div class="psub">{{ proj.subtitle }}</div>
+          </div>
+          <div class="ptgs">
+            @for (tag of proj.tags; track tag) {
+              <span class="ptag">{{ tag }}</span>
+            }
+          </div>
+          <span class="parr" aria-hidden="true">↗</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+--- DIRECTORY: src\app\components\projects\projects.component.ts ---
+import { Component, inject, output, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PortfolioDataService } from '../../data/portfolio.data';
+
+@Component({
+  selector: 'app-projects',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './projects.component.html',
+  styleUrl: './projects.component.css',
+})
+export class ProjectsComponent {
+  @Input() active = false;
+  data = inject(PortfolioDataService);
+  projectOpened = output<number>();
+  previewHover = output<number | null>();
+}
+
+--- DIRECTORY: src\app\components\sidebar\sidebar.component.css ---
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 200px;
+  background: var(--sb);
+  border-right: 1px solid var(--sbbrd);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+/* ── Logo image (replaces jk. text) ── */
+.sb-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  /* keep the old font fallback invisible if img loads */
+  font-size: 0;
+  line-height: 0;
+}
+
+.sb-logo-img {
+  height: 44px;       /* adjust to taste */
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
+  transition: opacity .2s ease;
+}
+.sb-logo:hover .sb-logo-img { opacity: .8; }
+
+.sb-nav {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.sb-line {
+  width: 1px;
+  height: 1.8rem;
+  background: var(--bord);
+  display: block;
+}
+
+.sdw {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  cursor: pointer;
+  padding: .2rem 0;
+  justify-content: center;
+  width: 100px;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+
+.sdot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  background: transparent;
+  flex-shrink: 0;
+  transition: border-color .2s, background .2s;
+}
+.sdw.on .sdot, .sdw:hover .sdot {
+  background: var(--acc);
+  border-color: var(--acc);
+}
+
+.slbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  transition: color .2s;
+  width: 52px;
+}
+.sdw.on .slbl, .sdw:hover .slbl { color: var(--white); }
+
+.sb-bot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sb-socs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .65rem;
+}
+
+.sbsoc {
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--bord);
+  color: var(--muted);
+  text-decoration: none;
+  transition: border-color .2s, color .2s;
+}
+.sbsoc:hover { border-color: var(--acc); color: var(--acc); background: var(--surf); }
+.sbsoc svg { width: 16px; height: 16px; fill: currentColor; }
+
+/* Paper-plane icon uses stroke, not fill */
+.sbsoc svg[stroke] { fill: none; }
+
+.thm {
+  width: 46px; height: 24px;
+  border-radius: 100px;
+  background: var(--surf);
+  border: 1px solid var(--bord);
+  position: relative;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.thm:hover { border-color: var(--acc); }
+
+.tknob {
+  position: absolute;
+  top: 2px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--acc);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .3s ease;
+  color: #fff;
+}
+:host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
+
+/* ── Terminal trigger — hardcoded dark purple so it looks
+   the same regardless of light/dark page theme ── */
+.term-trigger {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .07em;
+  /* Always use dark-theme violet, not var(--acc) */
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, .3);
+  border-radius: 4px;
+  padding: .3rem .55rem;
+  cursor: pointer;
+  background: none;
+  transition: color .2s, border-color .2s, background .2s;
+  margin-top: .5rem;
+}
+.term-trigger:hover {
+  color: #a78bfa;
+  border-color: #a78bfa;
+  background: rgba(139, 92, 246, .1);
+}
+
+.term-trigger-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  /* Always light lavender regardless of theme */
+  background: #a78bfa;
+  opacity: .7;
+  animation: termPulse 1.6s ease infinite;
+}
+@keyframes termPulse {
+  0%, 100% { opacity: .7; transform: scale(1); }
+  50%       { opacity: 1; transform: scale(1.3); }
+}
+
+@media (max-width: 960px) {
+  .sidebar { display: none; }
+}
+
+--- DIRECTORY: src\app\components\sidebar\sidebar.component.html ---
+<aside class="sidebar" role="navigation" aria-label="Main Navigation">
+
+  <!-- Logo: swaps between dark-mode and light-mode PNGs -->
+  <!-- Place your files at: src/assets/logo-dark.png  (for dark bg) -->
+  <!--                       src/assets/logo-light.png (for light bg) -->
+  <a href="#" (click)="goTo(0); $event.preventDefault()" class="sb-logo" aria-label="Home">
+    @if (nav.isDark()) {
+      <img src="assets/logo-dark.png" alt="Jaren Kendrick" class="sb-logo-img" />
+    } @else {
+      <img src="assets/logo-light.png" alt="Jaren Kendrick" class="sb-logo-img" />
+    }
+  </a>
+
+  <nav class="sb-nav">
+    @for (item of navItems; track item.index) {
+      <div class="sb-line"></div>
+      <button
+        class="sdw"
+        [class.on]="nav.currentPage() === item.index"
+        (click)="goTo(item.index)"
+        [attr.aria-label]="item.label"
+        [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
+        <div class="sdot"></div>
+        <span class="slbl">{{ item.short }}</span>
+      </button>
+    }
+    <div class="sb-line"></div>
+  </nav>
+
+  <div class="sb-bot">
+    <div class="sb-socs">
+      <a href="https://linkedin.com/in/jarenkendrick" target="_blank" rel="noopener" class="sbsoc" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="sbsoc" aria-label="GitHub">
+        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </a>
+      <!-- Paper plane / send icon instead of envelope -->
+      <a href="mailto:jarenkendrickyambao@gmail.com" class="sbsoc" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </a>
+    </div>
+
+    <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle dark/light mode">
+      <div class="tknob">
+        @if (nav.isDark()) {
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        } @else {
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        }
+      </div>
+    </button>
+
+    <button class="term-trigger" (click)="nav.toggleTerminal()" aria-label="Open developer terminal" title="Developer Mode">
+      <span class="term-trigger-dot"></span>[ ]_ dev
+    </button>
+  </div>
+</aside>
+
+--- DIRECTORY: src\app\components\sidebar\sidebar.component.ts ---
+import { Component, inject, effect } from '@angular/core';
+import { NavigationService } from '../../data/navigation.service';
+import { PortfolioDataService } from '../../data/portfolio.data';
+
+@Component({
+  selector: 'app-sidebar',
+  standalone: true,
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.css',
+})
+export class SidebarComponent {
+  nav = inject(NavigationService);
+  data = inject(PortfolioDataService);
+
+  readonly navItems = this.data.navItems;
+
+  constructor() {
+    effect(() => {
+      document.documentElement.dataset['theme'] = this.nav.theme();
+    });
+  }
+
+  goTo(index: number) {
+    this.nav.goTo(index, this.navItems.length);
+  }
+}
+
+
+--- DIRECTORY: src\app\components\terminal\terminal.component.css ---
+/*
+  Terminal is intentionally theme-agnostic — it always uses the dark-mode
+  lavender (#a78bfa) regardless of whether the page is in light or dark mode.
+  This means we hardcode the purple instead of using var(--acc).
+*/
+
+.terminal {
+  position: fixed;
+  bottom: 0;
+  left: 200px;
+  right: 0;
+  height: 0;
+  background: #06060d;
+  /* Hardcoded lavender border — ignores page theme */
+  border-top: 2px solid #a78bfa;
+  z-index: 9500;
+  display: flex;
+  flex-direction: column;
+  transition: height .45s cubic-bezier(.76,0,.24,1);
+  font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
+}
+
+.terminal.open { height: 55vh; }
+
+.term-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .65rem 1.5rem;
+  border-bottom: 1px solid rgba(167, 139, 250, .18);
+  flex-shrink: 0;
+  background: #080810;
+}
+
+.term-wm-dots { display: flex; gap: .45rem; align-items: center; }
+.term-wm-dots span { width: 11px; height: 11px; border-radius: 50%; }
+
+.term-title {
+  font-size: .72rem;
+  letter-spacing: .1em;
+  /* muted color hardcoded — dark bg always */
+  color: #6e6c8a;
+}
+
+.term-bar-close {
+  font-size: .9rem;
+  color: #6e6c8a;
+  cursor: pointer;
+  padding: .2rem .5rem;
+  border-radius: 3px;
+  background: none;
+  border: none;
+  transition: color .2s, background .2s;
+}
+.term-bar-close:hover {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, .08);
+}
+
+.term-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+  font-size: .82rem;
+  line-height: 1.85;
+  color: #a0a0c0;
+}
+.term-output::-webkit-scrollbar { width: 4px; }
+.term-output::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 4px; }
+
+/* All tl-* classes use hardcoded colors — never var(--acc) */
+:host ::ng-deep .tl-cmd  { color: #a78bfa; }
+:host ::ng-deep .tl-ok   { color: #34d399; }
+:host ::ng-deep .tl-err  { color: #f87171; }
+:host ::ng-deep .tl-dim  { color: #504e6a; }
+:host ::ng-deep .tl-head { color: #ffffff; font-weight: 600; }
+:host ::ng-deep .tl-acc  { color: #a78bfa; }
+:host ::ng-deep .tl-warn { color: #fbbf24; }
+
+.term-prompt-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .7rem 1.5rem;
+  border-top: 1px solid rgba(167, 139, 250, .12);
+  flex-shrink: 0;
+  background: #06060d;
+}
+
+.term-ps {
+  /* Hardcoded lavender */
+  color: #a78bfa;
+  font-size: .82rem;
+  white-space: nowrap;
+}
+
+.term-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #e0def0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem;
+  outline: none;
+  /* Hardcoded caret */
+  caret-color: #a78bfa;
+  padding: 0;
+}
+
+@media (max-width: 960px) {
+  .terminal { left: 0; }
+}
+
+--- DIRECTORY: src\app\components\terminal\terminal.component.html ---
+<div class="terminal" [class.open]="isOpen()" role="complementary" aria-label="Developer terminal">
+  <div class="term-bar">
+    <div class="term-wm-dots">
+      <span style="background:#f87171;"></span>
+      <span style="background:#fbbf24;"></span>
+      <span style="background:#34d399;"></span>
+    </div>
+    <span class="term-title">jaren&#64;portfolio:~$ — bash</span>
+    <button class="term-bar-close" (click)="close()" aria-label="Close terminal">✕</button>
+  </div>
+  <!-- Stop propagation prevents scrolling the underlying page when hovering terminal -->
+  <div class="term-output" #termOutput (wheel)="$event.stopPropagation()" (touchmove)="$event.stopPropagation()">
+    @for (line of lines(); track $index) {
+      <p [innerHTML]="line.html"></p>
+    }
+  </div>
+  <div class="term-prompt-row">
+    <span class="term-ps">jaren&#64;portfolio:~$</span>
+    <input
+      #termInput
+      type="text"
+      class="term-input"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="type 'help' to get started..."
+      aria-label="Terminal input"
+      [value]="inputValue()"
+      (input)="inputValue.set($any($event.target).value)"
+      (keydown)="onKeyDown($event)"/>
+  </div>
+</div>
+
+--- DIRECTORY: src\app\components\terminal\terminal.component.ts ---
+import { Component, signal, ViewChild, ElementRef, effect, inject } from '@angular/core';
+import { NavigationService } from '../../data/navigation.service';
+
+interface TermLine {
+  html: string;
+}
+
+@Component({
+  selector: 'app-terminal',
+  standalone: true,
+  templateUrl: './terminal.component.html',
+  styleUrl: './terminal.component.css',
+})
+export class TerminalComponent {
+  @ViewChild('termOutput') termOutput!: ElementRef<HTMLDivElement>;
+  @ViewChild('termInput') termInput!: ElementRef<HTMLInputElement>;
+
+  nav = inject(NavigationService);
+  isOpen = this.nav.terminalOpen;
+
+  readonly lines = signal<TermLine[]>([]);
+  readonly inputValue = signal('');
+
+  private history: string[] = [];
+  private histIdx = -1;
+  private booted = false;
+
+  private readonly BOOT_MSG = [
+    `<span class="tl-dim">──────────────────────────────────────────</span>`,
+    `<span class="tl-ok">  ✓ jaren-portfolio v2.5.0 [developer mode]</span>`,
+    `<span class="tl-dim">──────────────────────────────────────────</span>`,
+    `<span class="tl-dim">  System: Full Stack Portfolio • Angular 21</span>`,
+    `<span class="tl-dim">  Location: Pampanga, Philippines 🇵🇭</span>`,
+    `<span class="tl-dim">  Status: <span class="tl-ok">● seeking internship</span></span>`,
+    `<span class="tl-dim">──────────────────────────────────────────</span>`,
+    `  Type <span class="tl-acc">help</span> to see available commands.`,
+  ];
+
+  private readonly COMMANDS: Record<string, () => string[] | null> = {
+    help: () => [
+      `<span class="tl-head">Available commands:</span>`,
+      `  <span class="tl-acc">ls</span>            list projects`,
+      `  <span class="tl-acc">cat resume.txt</span> view career summary`,
+      `  <span class="tl-acc">skills</span>        show skill stack`,
+      `  <span class="tl-acc">whoami</span>        who is jaren`,
+      `  <span class="tl-acc">contact</span>       get contact info`,
+      `  <span class="tl-acc">github</span>        open github profile`,
+      `  <span class="tl-acc">run pathfinder</span> launch vr app`,
+      `  <span class="tl-acc">clear</span>         clear terminal`,
+      `  <span class="tl-acc">exit</span>          close terminal`,
+    ],
+    ls: () => [
+      `<span class="tl-head">projects/</span>`,
+      `  01  <span class="tl-acc">PathFinder</span>        <span class="tl-dim">·  Unreal 5.5 + Unity + C# · VR</span>`,
+      `  02  <span class="tl-acc">Travel Atelier</span>    <span class="tl-dim">·  Vue.js 3 + Node.js + JWT</span>`,
+      `  03  <span class="tl-acc">Dropify</span>           <span class="tl-dim">·  Vue.js 3 + MongoDB + Express</span>`,
+      `  04  <span class="tl-acc">Einstein's Art</span>    <span class="tl-dim">·  Angular + TypeScript + Netlify</span>`,
+      `  05  <span class="tl-acc">Cut the Cords</span>     <span class="tl-dim">·  HTML5 + CSS3 + JS</span>`,
+    ],
+    'cat resume.txt': () => [
+      `<span class="tl-head">== JAREN KENDRICK YAMBAO ==</span>`,
+      `<span class="tl-dim">Full Stack Developer · Game Developer · HAU IT Student</span>`,
+      ``,
+      `<span class="tl-warn">EXPERIENCE</span>`,
+      `  Game Developer @ VirtuIntelligence  <span class="tl-dim">Apr 2025 – Present</span>`,
+      `  <span class="tl-dim">• Shipped PathFinder to Meta Quest (Unreal 5.5 + Blueprints)</span>`,
+      `  <span class="tl-dim">• Building Robots vs Aliens in Unity (C#)</span>`,
+      ``,
+      `<span class="tl-warn">STACK</span>`,
+      `  Angular · Vue.js 3 · Node.js · MongoDB · C# · TypeScript`,
+      ``,
+      `<span class="tl-warn">LOOKING FOR</span>`,
+      `  Full-stack internship <span class="tl-acc">→ jarenkendrickyambao@gmail.com</span>`,
+    ],
+    skills: () => [
+      `<span class="tl-head">Technical Stack:</span>`,
+      `  Angular     <span class="tl-acc">████████░░</span> 75%  <span class="tl-dim">1 yr</span>`,
+      `  Vue.js 3    <span class="tl-acc">███████░░░</span> 70%  <span class="tl-dim">1 yr</span>`,
+      `  Node.js     <span class="tl-acc">████████░░</span> 75%  <span class="tl-dim">1 yr</span>`,
+      `  MongoDB     <span class="tl-acc">███████░░░</span> 65%  <span class="tl-dim">1 yr</span>`,
+      `  C#          <span class="tl-acc">████████░░</span> 80%  <span class="tl-dim">2 yrs</span>`,
+      `  JS / TS     <span class="tl-acc">█████████░</span> 85%  <span class="tl-dim">2 yrs</span>`,
+    ],
+    whoami: () => [
+      `<span class="tl-head">jaren kendrick yambao</span>`,
+      `<span class="tl-dim">──────────────────────────────</span>`,
+      `  Role     Full Stack Developer + Game Dev`,
+      `  Age      20 years old`,
+      `  Location Pampanga, Philippines 🇵🇭`,
+      `  Uni      Holy Angel University (2027)`,
+      `  Status   <span class="tl-ok">● Open to internship</span>`,
+      `  "I don't just write code — I ship things."`,
+    ],
+    contact: () => [
+      `<span class="tl-head">Contact info:</span>`,
+      `  Email     <span class="tl-acc">jarenkendrickyambao@gmail.com</span>`,
+      `  LinkedIn  <span class="tl-acc">linkedin.com/in/jarenkendrick</span>`,
+      `  GitHub    <span class="tl-acc">github.com/jarenkendrick14</span>`,
+    ],
+    github: () => {
+      window.open('https://github.com/jarenkendrick14', '_blank');
+      return [`<span class="tl-ok">✓ Opening github.com/jarenkendrick14...</span>`];
+    },
+    'run pathfinder': () => {
+      const outputLines = [
+        `<span class="tl-dim">Initializing VR runtime environment...</span>`,
+        `<span class="tl-ok">  ✓ Unreal Engine 5.5 loaded</span>`,
+        `<span class="tl-ok">  ✓ Meta Quest SDK connected</span>`,
+        `<span class="tl-dim">Mounting PathFinder.apk to device...</span>`,
+        `<span class="tl-ok">  ✓ APK verified (23.4 MB)</span>`,
+        `<span class="tl-dim">Launching VR session...</span>`,
+        `  <span class="tl-acc">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> 100%`,
+        `<span class="tl-ok">  ✓ PathFinder v1.0.0 running</span>`,
+        `  🥽 Put on your headset. The journey begins.`,
+      ];
+      outputLines.forEach((line, i) => {
+        setTimeout(() => this.addLine(line), i * 180);
+      });
+      return null;
+    },
+    clear: () => { this.lines.set([]); return null; },
+    exit: () => { this.close(); return null; },
+    quit: () => { this.close(); return null; },
+  };
+
+  constructor() {
+    effect(() => {
+      if (this.isOpen()) {
+        if (!this.booted) {
+          this.booted = true;
+          this.BOOT_MSG.forEach((msg, i) => {
+            setTimeout(() => this.addLine(msg), i * 55);
+          });
+          // Auto-run 'help' command after booting
+          setTimeout(() => this.runCmd('help'), (this.BOOT_MSG.length * 55) + 300);
+        }
+        setTimeout(() => this.termInput?.nativeElement.focus(), 460);
+      }
+    });
+  }
+
+  close() { this.nav.terminalOpen.set(false); }
+
+  onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      const val = this.inputValue();
+      this.inputValue.set('');
+      this.runCmd(val);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.histIdx < this.history.length - 1) {
+        this.histIdx++;
+        this.inputValue.set(this.history[this.histIdx] || '');
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.histIdx > 0) { this.histIdx--; this.inputValue.set(this.history[this.histIdx]); }
+      else { this.histIdx = -1; this.inputValue.set(''); }
+    }
+  }
+
+  private runCmd(raw: string) {
+    const cmd = raw.trim().toLowerCase();
+    if (!cmd) return;
+    this.history.unshift(raw);
+    this.histIdx = -1;
+    this.addLine(`<span class="tl-dim">jaren@portfolio:~$</span> <span class="tl-cmd">${this.esc(raw)}</span>`);
+    const fn = this.COMMANDS[cmd];
+    if (fn) {
+      const result = fn();
+      if (result) result.forEach(l => this.addLine(l));
+    } else {
+      this.addLine(`<span class="tl-err">bash: ${this.esc(cmd)}: command not found. Type 'help'.</span>`);
+    }
+    this.addLine('');
+  }
+
+  // Handle scroll ONLY when adding lines, allowing manual scrolling otherwise
+  private addLine(html: string) {
+    this.lines.update(l => [...l, { html }]);
+    setTimeout(() => {
+      if (this.termOutput?.nativeElement) {
+        this.termOutput.nativeElement.scrollTop = this.termOutput.nativeElement.scrollHeight;
+      }
+    }, 10);
+  }
+
+  private esc(s: string) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+}
+
+--- DIRECTORY: src\app\components\testimonials\testimonials.component.css ---
+:host {
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--surf);
+}
+
+.page-testimonials {
+  width: 100%;
+  min-height: 100vh;
+  padding: 5rem 5rem 3rem;
+}
+
+.pin { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
+.sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
+.st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
+.shr { flex: 1; height: 1px; background: var(--bord); }
+
+.exph {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  letter-spacing: -.04em;
+  color: var(--white);
+  margin-bottom: 4rem;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .10s ease both;
+}
+
+.tmg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: stretch; }
+
+.tmc {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  background: var(--bg);
+  padding: 2.5rem;
+  transition: border-color .25s;
+  position: relative;
+  overflow: hidden;
+  animation: scaleIn .5s cubic-bezier(.22,1,.36,1) ease both;
+  cursor: none;
+}
+.tmc:nth-child(1) { animation-delay: .18s; }
+.tmc:nth-child(2) { animation-delay: .26s; }
+.tmc:nth-child(3) { animation-delay: .34s; }
+
+.tmc::before {
+  content: '"';
+  position: absolute;
+  top: -1rem; right: 1.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 8rem;
+  color: var(--bord);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.tmc:hover { border-color: rgba(139,92,246,.4); }
+
+.tmq {
+  font-size: 1.1rem;
+  color: var(--white);
+  line-height: 1.75;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+}
+
+.tma {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+  border-top: 1px solid var(--bord);
+  padding-top: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.tmav {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--surf);
+  border: 1px solid var(--bord);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--white);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.tmname { font-size: 1rem; font-weight: 600; color: var(--white); }
+.placeholder-note { font-size: .75rem; color: var(--muted); font-weight: 300; }
+.tmrole { font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--muted); letter-spacing: .04em; margin-top: .2rem; }
+
+@keyframes fadeUp  { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.88); }       to { opacity: 1; transform: scale(1); } }
+
+@media (max-width: 960px) {
+  .page-testimonials { padding: 6.5rem 1.5rem 4rem; }
+  .tmg { grid-template-columns: 1fr; }
+}
+
+--- DIRECTORY: src\app\components\testimonials\testimonials.component.html ---
+<section class="page-testimonials" [class.active-page]="active">
+  <div class="pin">
+    <div class="slabel au d0">
+      <span class="sn">06</span><span class="st">/ what people say</span>
+      <div class="shr"></div>
+    </div>
+    <h2 class="exph au d1">Testimonials.</h2>
+    <div class="tmg">
+      @for (tm of data.testimonials; track tm.name; let i = $index) {
+        <div class="tmc as" [ngClass]="i === 0 ? 'd2' : i === 1 ? 'd3' : 'd4'">
+          <p class="tmq">{{ tm.quote }}</p>
+          <div class="tma">
+            <div class="tmav">{{ tm.initial }}</div>
+            <div>
+              <p class="tmname">
+                {{ tm.name }}
+                @if (tm.placeholder) {
+                  <span class="placeholder-note">(placeholder)</span>
+                }
+              </p>
+              <p class="tmrole">{{ tm.role }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+--- DIRECTORY: src\app\components\testimonials\testimonials.component.ts ---
+import { Component, inject, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PortfolioDataService } from '../../data/portfolio.data';
+
+@Component({
+  selector: 'app-testimonials',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './testimonials.component.html',
+  styleUrl: './testimonials.component.css',
+})
+export class TestimonialsComponent {
+  @Input() active = false;
+  data = inject(PortfolioDataService);
+}
+
+--- DIRECTORY: src\app\data\navigation.service.ts ---
+import { Injectable, signal, computed } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class NavigationService {
+  readonly currentPage = signal<number>(0);
+  readonly isAnimating = signal<boolean>(false);
+  readonly theme = signal<'dark' | 'light'>('dark');
+  
+  // Added terminal state management
+  readonly terminalOpen = signal<boolean>(false);
+
+  readonly isDark = computed(() => this.theme() === 'dark');
+
+  constructor() {
+    const saved = localStorage.getItem('jk-theme') as 'dark' | 'light' | null;
+    if (saved) this.theme.set(saved);
+  }
+
+  goTo(next: number, total: number): void {
+    if (next === this.currentPage() || this.isAnimating() || next < 0 || next >= total) return;
+    this.isAnimating.set(true);
+    this.currentPage.set(next);
+    setTimeout(() => this.isAnimating.set(false), 520);
+  }
+
+  toggleTheme(): void {
+    const next = this.theme() === 'dark' ? 'light' : 'dark';
+    this.theme.set(next);
+    localStorage.setItem('jk-theme', next);
+  }
+
+  // Added method to toggle terminal
+  toggleTerminal(): void {
+    this.terminalOpen.update(v => !v);
+  }
+}
+
+--- DIRECTORY: src\app\data\portfolio.data.ts ---
+import { Injectable } from '@angular/core';
+import { Project, Certificate, BlogPost, Testimonial, NavItem } from '../models/portfolio.models';
+
+@Injectable({ providedIn: 'root' })
+export class PortfolioDataService {
+
+  readonly navItems: NavItem[] = [
+    { label: 'Home', short: 'Home', index: 0 },
+    { label: 'About', short: 'About', index: 1 },
+    { label: 'Work', short: 'Work', index: 2 },
+    { label: 'Experience', short: 'Exp.', index: 3 },
+    { label: 'Blog', short: 'Blog', index: 4 },
+    { label: 'Testimonials', short: 'reviews', index: 5 },
+    { label: 'Contact', short: 'Contact', index: 6 },
+  ];
+
+  readonly projects: Project[] = [
+    {
+      num: '01', name: 'PathFinder',
+      subtitle: 'VR self-discovery app · Unreal Engine 5.5 + Unity',
+      tags: ['Unreal Engine 5.5', 'Unity', 'C#', 'VR'],
+      desc: 'A VR self-discovery app built in Unreal Engine 5.5 using Blueprints for gameplay systems. Users interact with metaphorical cards, with Wit.ai handling voice-to-text. Also deployed an Android companion app built in Unity.',
+      purpose: 'Engineered immersive, privacy-first VR mechanics and a scalable Android companion app for VirtuIntelligence.',
+      features: ['Interactive card mechanics in VR', 'AI voice journaling via Wit.ai', 'Local data persistence for privacy', 'Cross-platform deployment'],
+      live: [{ name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/' }, { name: 'Google Play ↗', url: 'https://play.google.com/store/' }],
+      github: null,
+      imgs: ['rgba(167,139,250,.12)', 'rgba(167,139,250,.08)', 'rgba(167,139,250,.05)']
+    },
+    {
+      num: '02', name: 'Travel Atelier',
+      subtitle: 'Full-stack travel booking platform · Vue.js + Node.js',
+      tags: ['Vue.js 3', 'Node.js', 'Express', 'JWT'],
+      desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches. Built a robust REST API backend for user management and booking workflows.',
+      purpose: 'Architected a complete full-stack application demonstrating secure data flow from database to frontend UI.',
+      features: ['JWT-based authentication system', 'Protected routing and navigation', 'Backend-connected dynamic forms', 'Real-time destination filtering'],
+      live: null, github: 'https://github.com/jarenkendrick14',
+      imgs: ['rgba(96,165,250,.12)', 'rgba(96,165,250,.08)', 'rgba(96,165,250,.05)']
+    },
+    {
+      num: '03', name: 'Dropify',
+      subtitle: 'E-commerce platform · admin panel, robust auth system',
+      tags: ['Vue.js 3', 'MongoDB', 'Express', 'Node.js'],
+      desc: 'Comprehensive e-commerce platform including a secure user cart system, checkout flow, and a dedicated admin dashboard for managing products and orders.',
+      purpose: 'Designed a scalable database schema in MongoDB and integrated it with a responsive Vue 3 frontend.',
+      features: ['Persistent cart and checkout architecture', 'Full CRUD admin dashboard', 'Secure user authentication', 'RESTful API integration'],
+      live: null, github: 'https://github.com/jarenkendrick14',
+      imgs: ['rgba(52,211,153,.12)', 'rgba(52,211,153,.08)', 'rgba(52,211,153,.05)']
+    },
+    {
+      num: '04', name: "Einstein's Art",
+      subtitle: 'Dynamic company website for a hand-painted bag brand',
+      tags: ['Angular', 'TypeScript', 'Netlify'],
+      desc: "Company website for a local brand built in Angular. Implemented client-side routing, dynamic rendering components, and a custom employee directory.",
+      purpose: "Built a fast, scalable frontend structure using Angular best practices and structural directives.",
+      features: ['Angular client-side routing', 'Dynamic product rendering', 'Conditional component styling', 'Deployed directly to Netlify'],
+      live: [{ name: 'Live Demo ↗', url: 'https://69359c7c680ce1935fafb306--prelim-project-einsteins-art.netlify.app/' }],
+      github: null,
+      imgs: ['rgba(167,139,250,.12)', 'rgba(167,139,250,.08)', 'rgba(124,58,237,.06)']
+    },
+    {
+      num: '05', name: 'Cut the Cords',
+      subtitle: 'Wireless peripherals showcase · responsive vanilla web',
+      tags: ['HTML5', 'CSS3', 'JavaScript'],
+      desc: 'Responsive showcase website built without frameworks. Focused on clean semantic HTML, flexible CSS grids, and vanilla JS interactions.',
+      purpose: 'Demonstrated strong foundational web skills, focusing on accessibility and responsive design.',
+      features: ['Semantic HTML architecture', 'CSS Grid and Flexbox layouts', 'Fully responsive across all devices', 'Live deployment via GitHub Pages'],
+      live: [{ name: 'Live Demo ↗', url: 'https://jarenkendrick14.github.io/CTC-Website/about.html' }],
+      github: 'https://github.com/jarenkendrick14/CTC-Website',
+      imgs: ['rgba(196,181,253,.12)', 'rgba(196,181,253,.08)', 'rgba(167,139,250,.05)']
+    }
+  ];
+
+  readonly certificates: Certificate[] = [
+    { name: 'CompTIA IT Fundamentals (ITF+)', issuer: 'CompTIA', abbr: 'COMP', color: '#c8202f', date: 'Nov 2023', url: 'https://www.comptia.org/certifications/it-fundamentals' },
+    { name: 'Responsive Web Design', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Sep 2024', url: 'https://www.freecodecamp.org/certification/jarenkendrickyambao-rwd/responsive-web-design' },
+    { name: 'JavaScript Essentials 1', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Oct 2024', url: 'https://skillsforall.com/course/javascript-essentials-1' },
+    { name: 'Introduction to Figma', issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Sep 2024', url: 'https://www.simplilearn.com/' },
+    { name: 'Introduction to PHP', issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Feb 2025', url: 'https://www.simplilearn.com/' },
+    { name: 'Back End Development & APIs', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025', url: 'https://www.freecodecamp.org/certification/jarenkendrickyambao-bedaa/back-end-development-and-apis' },
+    { name: 'Legacy JS Algorithms & Data Structures', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025', url: 'https://www.freecodecamp.org/certification/jarenkendrickyambao-ljaads/javascript-algorithms-and-data-structures-v8' },
+    { name: 'Digital Marketing', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jul 2025', url: 'https://academy.hubspot.com/' },
+    { name: 'Endpoint Security', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Aug 2025', url: 'https://skillsforall.com/' },
+    { name: 'CCNA: Introduction to Networks', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'May 2025', url: 'https://skillsforall.com/' },
+    { name: 'Content Marketing', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Sep 2025', url: 'https://academy.hubspot.com/' },
+    { name: 'Digital Advertising', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Oct 2025', url: 'https://academy.hubspot.com/' },
+    { name: 'SEO', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jan 2026', url: 'https://academy.hubspot.com/' },
+  ];
+
+  readonly blogPosts: BlogPost[] = [
+    {
+      date: 'January 2025',
+      title: 'From Game Dev to Full Stack: What Shipping a VR App Taught Me',
+      excerpt: 'When I shipped PathFinder to the Meta Quest store, I learned more about software development than any tutorial ever taught me. Here\'s what directly translates to web development.',
+      content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p><h3>Users don't read. They react.</h3><p>In VR, if a UI isn't immediately intuitive, users just stop. They look around confused. There are no tooltips, no second chances, no "skip tutorial" button. I learned to design every interaction for the first <em>three seconds</em> — no assumptions about prior knowledge.</p><p>That thinking now applies to every web interface I build. Before writing a single line of frontend code, I ask: what does a user see first? What do they click? Why would they scroll? What would make them leave? Questions I used to skip. I don't anymore.</p><h3>State management is state management</h3><p>Unity's component system is event-driven and reactive. A player picks up an item — the inventory updates, the HUD reflects it, the game state records it. Sound familiar? When I picked up Vue.js and its Composition API, the mental model was <strong>already there</strong>. Data changes, view updates. The syntax was different. The thinking wasn't.</p><p>C# gave me a very clear sense of data flow and component responsibility before I ever wrote a composable. I think that's a genuine advantage — understanding architecture before you're handed a framework that handles it for you.</p><h3>Performance is non-negotiable</h3><p>In VR, a frame drop makes you nauseous. Literally. That obsession transferred directly to web development. I check bundle sizes. I lazy-load images. I debounce API calls. Not because a tutorial told me to — because I've felt the pain of ignoring performance and watched someone rip a headset off their face.</p><h3>Shipping teaches more than studying</h3><p>PathFinder had to pass Meta's content review. It had to work on multiple headset hardware configurations. It needed a separate Android companion app in Unity — a completely different toolchain, different lifecycle, different debugging process. None of that is in any course.</p><p>Real software has constraints that force you to problem-solve in ways tutorials never reach. I now expect the last 30% of any project to be the hardest. I plan for it instead of being surprised by it.</p><p>If you're a web developer who hasn't shipped something to a real user or a real store — do it once. The clarity it gives you about what "done" actually means is worth every painful hour.</p>`
+    },
+    {
+      date: 'December 2024',
+      title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
+      excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
+      content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p><h3>The case for vanilla first</h3><p>I've done it. Cut the Cords was pure HTML, CSS, and JavaScript. No build step. No dependencies. Total control. I knew exactly what every line did because I wrote every line. For a showcase site — a product page, a portfolio — vanilla is often the right answer.</p><p>It's fast, it's transparent, and it forces you to understand fundamentals. If you've never built a simple SPA without a framework, you don't really know what frameworks are solving for you. I mean that seriously.</p><h3>But Travel Atelier wasn't a showcase</h3><p>It needed <strong>JWT authentication</strong>, <strong>protected routing</strong>, reactive form state, live destination search, a customer messages dashboard, and a Node.js REST API backend — all wired together. Building that in vanilla JS wasn't a learning exercise. It was reinventing wheels that Vue already shipped, tested, and documented.</p><p>Vue's Composition API handles reactivity, component state, and routing with patterns tested by millions of developers. I wasn't going to out-architect that in a weekend. The framework earned its place.</p><h3>Why Vue specifically, not React?</h3><p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p><p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p><h3>What I'd do differently</h3><p>Spend two weeks in vanilla JavaScript before touching any framework. Not because frameworks are bad — but because you don't fully appreciate what they give you until you've felt the pain of doing it yourself. Reactivity, component lifecycle, two-way binding — these are harder concepts when a framework is handling them invisibly for you.</p><p><em>Understanding the "why" behind your tools makes you significantly better at using them.</em></p><p>Pick the right tool. But understand what the tool is doing for you. That understanding is the difference between a developer who can use a framework and a developer who can build without one.</p>`
+    }
+  ];
+
+  readonly testimonials: Testimonial[] = [
+    { quote: '"Jaren\'s ability to ship functional, well-designed applications is impressive. The architecture in his VR app shows real care for the end user and system stability."', name: 'Carlos M.', role: 'Senior Developer · VirtuIntelligence', initial: 'C', placeholder: true },
+    { quote: '"Working with Jaren is refreshing. He takes ownership, communicates effectively, and the code he submits is clean and functional on the first pull request."', name: 'Mikaella T.', role: 'Classmate & Collaborator · HAU', initial: 'M', placeholder: true },
+    { quote: '"The web application Jaren built exceeded expectations. Clean database structure, solid API design, and delivered on time. A strong full-stack candidate."', name: 'Prof. [Name]', role: 'IT Instructor · Holy Angel University', initial: 'P', placeholder: true },
+  ];
+}
+
+
+--- DIRECTORY: src\app\directives\decrypt.directive.ts ---
+import { Directive, ElementRef, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+
+@Directive({
+  selector: '[appDecrypt]',
+  standalone: true
+})
+export class DecryptDirective implements OnChanges {
+  @Input('appDecrypt') targetText = '';
+  @Input() active = false; // Trigger from parent component
+  @Input() delay = 600;    // Wait for page slide (default 600ms)
+
+  private el = inject(ElementRef);
+  private readonly GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*<>/[]{}|';
+  private originalHTML = '';
+  private plainText = '';
+  private running = false;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['targetText']) {
+      this.originalHTML = this.el.nativeElement.innerHTML;
+      this.plainText = this.targetText || this.el.nativeElement.textContent.trim();
+    }
+
+    // Only run if the component is physically active AND not already running
+    if (changes['active'] && this.active) {
+      if (!this.running) {
+        this.running = true; // Lock execution immediately 
+        setTimeout(() => this.runEffect(), this.delay);
+      }
+    }
+  }
+
+  private runEffect() {
+    const el = this.el.nativeElement;
+    
+    // 1. Lock Dimensions to prevent layout jumping
+    const rect = el.getBoundingClientRect();
+    el.style.width = `${rect.width}px`;
+    el.style.height = `${rect.height}px`;
+    el.style.display = 'block'; 
+    el.style.whiteSpace = 'nowrap'; 
+    el.style.overflow = 'hidden';
+
+    if (!this.originalHTML) this.originalHTML = el.innerHTML;
+    el.classList.add('decrypting');
+
+    const len = this.plainText.length;
+    let frame = 0;
+    const duration = 800;
+    const totalFrames = Math.round(duration / 40);
+    
+    const iv = setInterval(() => {
+      const progress = frame / totalFrames;
+      let scrambled = '';
+      
+      for (let i = 0; i < len; i++) {
+        const ch = this.plainText[i];
+        if (ch === ' ' || ch === '\n') { 
+          scrambled += ' '; 
+        } else if (progress > i / len) { 
+          scrambled += ch; 
+        } else { 
+          scrambled += this.GLYPHS[Math.floor(Math.random() * this.GLYPHS.length)]; 
+        }
+      }
+      
+      el.textContent = scrambled;
+      frame++;
+      
+      if (frame >= totalFrames) {
+        // 2. Restore Original HTML (tags and all)
+        el.innerHTML = this.originalHTML;
+        
+        // 3. Unlock Dimensions
+        el.style.width = ''; 
+        el.style.height = '';
+        el.style.display = '';
+        el.style.whiteSpace = '';
+        el.style.overflow = '';
+        
+        el.classList.remove('decrypting');
+        this.running = false; // Release lock
+        clearInterval(iv);
+      }
+    }, 40);
+  }
+}
+
+--- DIRECTORY: src\app\models\portfolio.models.ts ---
+export interface Project {
+  num: string;
+  name: string;
+  tags: string[];
+  desc: string;
+  purpose: string;
+  features: string[];
+  live: { name: string; url: string }[] | null;
+  github: string | null;
+  imgs: string[];
+  subtitle: string;
+}
+
+export interface Certificate {
+  name: string;
+  issuer: string;
+  abbr: string;
+  color: string;
+  date: string;
+  expires?: string;
+  url: string;
+}
+
+export interface BlogPost {
+  date: string;
+  title: string;
+  excerpt: string;
+  content: string;
+}
+
+export interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+  initial: string;
+  placeholder?: boolean;
+}
+
+export interface NavItem {
+  label: string;
+  short: string;
+  index: number;
+}
+
+
+--- DIRECTORY: src\index.html ---
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jaren Kendrick — Full Stack Developer</title>
+  <meta name="description" content="20-year-old IT student at Holy Angel University building full-stack web apps with Angular, Vue.js & Node.js. Part-time Game Developer at VirtuIntelligence." />
+  <base href="/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+
+
+--- DIRECTORY: src\main.ts ---
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { AppComponent } from './app/app.component';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    // ✦ Angular 21 Zoneless Mode — no zone.js needed
+    provideZonelessChangeDetection(),
+  ],
+}).catch(err => console.error(err));
+
+--- DIRECTORY: src\styles.css ---
+/* ══════════ GOOGLE FONTS ══════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ══════════ DESIGN TOKENS ══════════ */
+:root {
+  --bg: #09090f;
+  --sb: #0d0d16;
+  --surf: #111120;
+  --bord: #2a2a40;
+  /* Toned-down from #a78bfa → less pastel, more solid violet */
+  --acc: #8b5cf6;
+  --acc2: #6d28d9;
+  --white: #ffffff;
+  --text: #e0def0;
+  --muted: #a4a1c6;
+  --sub: #c2c0dc;
+  --sbbrd: #1a1a2e;
+}
+
+[data-theme="light"] {
+  --bg: #f4f2f9;
+  --sb: #ebe8f5;
+  --surf: #e0ddf0;
+  --bord: #c8c3e0;
+  --acc: #7c3aed;
+  --acc2: #6d28d9;
+  --white: #1a1826;
+  --text: #2d2b3b;
+  --muted: #5c597a;
+  --sub: #44425e;
+  --sbbrd: #d0cceb;
+}
+
+/* ══════════ RESET ══════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  transition: background-color .35s ease, color .35s ease;
+  cursor: none;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+*, *::before, *::after {
+  transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+
+@media (max-width: 960px) {
+  body { overflow: auto; height: auto; cursor: auto; }
+  button, a { cursor: pointer !important; }
+}
+
+.decrypting { color: var(--acc) !important; }
+
+/* ══════════ GLOBAL ANIMATIONS — more prominent distances ══════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(-44px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(44px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ══════════ BASE STATE (hidden) ══════════ */
+.au, .al, .ar, .as {
+  opacity: 0;
+  transition: opacity 0.1s ease 0.6s;
+}
+
+/* ══════════ ACTIVE STATE ══════════ */
+.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp  .55s cubic-bezier(.22,1,.36,1) both; }
+.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) both; }
+.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .55s cubic-bezier(.22,1,.36,1) both; }
+.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .5s cubic-bezier(.22,1,.36,1) both; }
+
+/* Stagger Delays */
+.active .d0, .active-page .d0 { animation-delay: .04s !important; }
+.active .d1, .active-page .d1 { animation-delay: .10s !important; }
+.active .d2, .active-page .d2 { animation-delay: .18s !important; }
+.active .d3, .active-page .d3 { animation-delay: .26s !important; }
+.active .d4, .active-page .d4 { animation-delay: .34s !important; }
+.active .d5, .active-page .d5 { animation-delay: .44s !important; }
+
+/* ══════════ SEAMLESS SLIDE-OUT (both directions) ══════════
+   When a page slides OUT — either up (.prev) or down (.next) —
+   its content must stay fully visible for the whole 0.6s slide.
+   
+   .prev  = page that slid up and off (scroll DOWN)
+   .next  = page that slid down and off (scroll UP)
+   
+   Both are off-screen via translateY(±100%), so opacity:1 here
+   causes zero visual bleed. The !important beats Angular's
+   higher-specificity attribute-scoped component styles.
+══════════════════════════════════════════════════════════════ */
+.page-section.prev .au,
+.page-section.prev .al,
+.page-section.prev .ar,
+.page-section.prev .as,
+.page-section.next .au,
+.page-section.next .al,
+.page-section.next .ar,
+.page-section.next .as {
+  opacity: 1 !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+--- DIRECTORY: tsconfig.app.json ---
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}
+
+
+--- DIRECTORY: tsconfig.json ---
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "lib": ["ES2022", "dom"]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}
+

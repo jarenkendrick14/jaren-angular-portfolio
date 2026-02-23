@@ -22,12 +22,14 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   readonly certAnimClass = signal('');
 
   readonly skills = [
+    { name: 'JavaScript', time: '2 yrs', pct: 85 },
+    { name: 'TypeScript', time: '1.5 yrs', pct: 80 },
     { name: 'Angular', time: '1 yr', pct: 75 },
     { name: 'Node.js & Express', time: '1 yr', pct: 75 },
-    { name: 'MongoDB', time: '1 yr', pct: 65 },
-    { name: 'C# (Backend Logic)', time: '2 yrs', pct: 80 },
     { name: 'Vue.js 3', time: '1 yr', pct: 70 },
-    { name: 'JavaScript / TypeScript', time: '2 yrs', pct: 85 },
+    { name: 'C#', time: '1 yr', pct: 70 },
+    { name: 'MongoDB', time: '1 yr', pct: 65 },
+    { name: 'PostgreSQL', time: '6 mo', pct: 55 },
   ];
 
   readonly sphereTags = [
@@ -36,7 +38,8 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
     { text: 'TypeScript', color: '#3178c6' }, { text: 'C#', color: '#9b59b6' },
     { text: 'Unity', color: '#a78bfa' }, { text: 'Express.js', color: '#a4a1c6' },
     { text: 'REST APIs', color: '#60a5fa' }, { text: 'Git', color: '#f05030' },
-    { text: 'VR / XR', color: '#f59e0b' }, { text: 'Netlify', color: '#00c7b7' },
+    { text: 'PostgreSQL', color: '#336791' }, { text: 'Prisma', color: '#2d3748' },
+    { text: 'Ionic', color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
   ];
 
   get currentCert(): Certificate {

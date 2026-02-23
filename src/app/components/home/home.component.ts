@@ -38,6 +38,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   // Keep a bound reference so we can remove the listener on destroy
   private _docMouseMove!: (e: MouseEvent) => void;
   private _docMouseLeave!: () => void;
+  private _resizeHandler!: () => void;
 
   get featuredProjects() {
     return this.featuredIndices.map(i => ({ project: this.data.projects[i], index: i }));
@@ -48,7 +49,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d')!;
     this.resize();
-    window.addEventListener('resize', () => this.resize());
+    this._resizeHandler = () => this.resize();
+    window.addEventListener('resize', this._resizeHandler);
 
     /*
       FIX: Use document-level mousemove instead of canvas.mousemove.
@@ -78,13 +80,21 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     cancelAnimationFrame(this.animId);
     document.removeEventListener('mousemove',  this._docMouseMove);
     document.removeEventListener('mouseleave', this._docMouseLeave);
-    window.removeEventListener('resize', () => this.resize());
+    if (this._resizeHandler) {
+      window.removeEventListener('resize', this._resizeHandler);
+    }
   }
 
   private resize() {
-    const container = this.canvas.parentElement;
-    const W = container ? container.offsetWidth  : window.innerWidth;
-    const H = container ? Math.max(container.scrollHeight, window.innerHeight) : window.innerHeight;
+    /*
+      FIX: Use the canvas element's own CSS layout dimensions
+      (clientWidth / clientHeight) so that the drawing resolution
+      always matches the displayed size 1:1. This prevents the
+      coordinate mismatch that caused the grid repulsion effect
+      to drift from the cursor at the bottom of the page.
+    */
+    const W = this.canvas.clientWidth;
+    const H = this.canvas.clientHeight;
 
     this.canvas.width  = W;
     this.canvas.height = H;

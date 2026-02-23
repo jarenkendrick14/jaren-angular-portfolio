@@ -60,8 +60,8 @@
 /* Filled icons (LinkedIn, GitHub) */
 .soico svg { width: 22px; height: 22px; fill: currentColor; }
 
-/* Stroke-based paper-plane icon override */
-.soico-send svg {
+/* Stroke-based envelope icon override */
+.soico-mail svg {
   fill: none;
   stroke: currentColor;
   stroke-width: 2;

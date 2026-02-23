@@ -27,7 +27,17 @@ export class PortfolioDataService {
       imgs: ['rgba(167,139,250,.12)', 'rgba(167,139,250,.08)', 'rgba(167,139,250,.05)']
     },
     {
-      num: '02', name: 'Travel Atelier',
+      num: '02', name: 'Symposium',
+      subtitle: 'Real-time AI-mediated chat platform · Angular + Ionic + Node.js',
+      tags: ['Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'Prisma', 'WebSockets'],
+      desc: 'A full-stack real-time chat application with an AI mediator powered by xAI\'s Grok. Features WebSocket-based messaging, streaming AI responses, configurable turn management, and a full @mention system. Built with Angular 21 + Ionic 8 for cross-platform support and a Node.js/Express backend with PostgreSQL via Prisma ORM.',
+      purpose: 'Architected a complete real-time communication platform with AI integration, demonstrating proficiency in WebSocket protocols, streaming APIs, and full-stack TypeScript development.',
+      features: ['Real-time WebSocket messaging with auto-reconnect', 'Streaming AI responses via xAI Grok', 'Turn management system (strict & round-robin)', '@mention system with live-filtered dropdown', 'Cross-platform via Ionic + Capacitor'],
+      live: null, github: 'https://github.com/jarenkendrick14',
+      imgs: ['rgba(56,189,248,.12)', 'rgba(56,189,248,.08)', 'rgba(56,189,248,.05)']
+    },
+    {
+      num: '03', name: 'Travel Atelier',
       subtitle: 'Full-stack travel booking platform · Vue.js + Node.js',
       tags: ['Vue.js 3', 'Node.js', 'Express', 'JWT'],
       desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches. Built a robust REST API backend for user management and booking workflows.',
@@ -37,17 +47,17 @@ export class PortfolioDataService {
       imgs: ['rgba(96,165,250,.12)', 'rgba(96,165,250,.08)', 'rgba(96,165,250,.05)']
     },
     {
-      num: '03', name: 'Dropify',
-      subtitle: 'E-commerce platform · admin panel, robust auth system',
-      tags: ['Vue.js 3', 'MongoDB', 'Express', 'Node.js'],
-      desc: 'Comprehensive e-commerce platform including a secure user cart system, checkout flow, and a dedicated admin dashboard for managing products and orders.',
-      purpose: 'Designed a scalable database schema in MongoDB and integrated it with a responsive Vue 3 frontend.',
-      features: ['Persistent cart and checkout architecture', 'Full CRUD admin dashboard', 'Secure user authentication', 'RESTful API integration'],
+      num: '04', name: 'Dropify',
+      subtitle: 'E-commerce platform · Vue.js + MongoDB + Express',
+      tags: ['Vue.js 3', 'MongoDB', 'Express', 'Node.js', 'Pinia'],
+      desc: 'Comprehensive e-commerce platform for a streetwear brand, featuring a full shopping experience with persistent cart, checkout flow, JWT authentication, and a dedicated admin dashboard for managing products, users, and orders.',
+      purpose: 'Designed a scalable MongoDB schema with embedded cart architecture and integrated it with a reactive Vue 3 + Pinia frontend.',
+      features: ['Persistent cart with server-synced state', 'Full CRUD admin dashboard (products, users, orders)', 'JWT authentication with role-based access', 'Product search, sort, and paginated filtering'],
       live: null, github: 'https://github.com/jarenkendrick14',
       imgs: ['rgba(52,211,153,.12)', 'rgba(52,211,153,.08)', 'rgba(52,211,153,.05)']
     },
     {
-      num: '04', name: "Einstein's Art",
+      num: '05', name: "Einstein's Art",
       subtitle: 'Dynamic company website for a hand-painted bag brand',
       tags: ['Angular', 'TypeScript', 'Netlify'],
       desc: "Company website for a local brand built in Angular. Implemented client-side routing, dynamic rendering components, and a custom employee directory.",
@@ -56,17 +66,6 @@ export class PortfolioDataService {
       live: [{ name: 'Live Demo ↗', url: 'https://69359c7c680ce1935fafb306--prelim-project-einsteins-art.netlify.app/' }],
       github: null,
       imgs: ['rgba(167,139,250,.12)', 'rgba(167,139,250,.08)', 'rgba(124,58,237,.06)']
-    },
-    {
-      num: '05', name: 'Cut the Cords',
-      subtitle: 'Wireless peripherals showcase · responsive vanilla web',
-      tags: ['HTML5', 'CSS3', 'JavaScript'],
-      desc: 'Responsive showcase website built without frameworks. Focused on clean semantic HTML, flexible CSS grids, and vanilla JS interactions.',
-      purpose: 'Demonstrated strong foundational web skills, focusing on accessibility and responsive design.',
-      features: ['Semantic HTML architecture', 'CSS Grid and Flexbox layouts', 'Fully responsive across all devices', 'Live deployment via GitHub Pages'],
-      live: [{ name: 'Live Demo ↗', url: 'https://jarenkendrick14.github.io/CTC-Website/about.html' }],
-      github: 'https://github.com/jarenkendrick14/CTC-Website',
-      imgs: ['rgba(196,181,253,.12)', 'rgba(196,181,253,.08)', 'rgba(167,139,250,.05)']
     }
   ];
 
@@ -97,7 +96,7 @@ export class PortfolioDataService {
       date: 'December 2024',
       title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
       excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
-      content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p><h3>The case for vanilla first</h3><p>I've done it. Cut the Cords was pure HTML, CSS, and JavaScript. No build step. No dependencies. Total control. I knew exactly what every line did because I wrote every line. For a showcase site — a product page, a portfolio — vanilla is often the right answer.</p><p>It's fast, it's transparent, and it forces you to understand fundamentals. If you've never built a simple SPA without a framework, you don't really know what frameworks are solving for you. I mean that seriously.</p><h3>But Travel Atelier wasn't a showcase</h3><p>It needed <strong>JWT authentication</strong>, <strong>protected routing</strong>, reactive form state, live destination search, a customer messages dashboard, and a Node.js REST API backend — all wired together. Building that in vanilla JS wasn't a learning exercise. It was reinventing wheels that Vue already shipped, tested, and documented.</p><p>Vue's Composition API handles reactivity, component state, and routing with patterns tested by millions of developers. I wasn't going to out-architect that in a weekend. The framework earned its place.</p><h3>Why Vue specifically, not React?</h3><p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p><p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p><h3>What I'd do differently</h3><p>Spend two weeks in vanilla JavaScript before touching any framework. Not because frameworks are bad — but because you don't fully appreciate what they give you until you've felt the pain of doing it yourself. Reactivity, component lifecycle, two-way binding — these are harder concepts when a framework is handling them invisibly for you.</p><p><em>Understanding the "why" behind your tools makes you significantly better at using them.</em></p><p>Pick the right tool. But understand what the tool is doing for you. That understanding is the difference between a developer who can use a framework and a developer who can build without one.</p>`
+      content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p><h3>The case for vanilla first</h3><p>I've done it. I've built projects with pure HTML, CSS, and JavaScript. No build step. No dependencies. Total control. I knew exactly what every line did because I wrote every line. For a showcase site — a product page, a portfolio — vanilla is often the right answer.</p><p>It's fast, it's transparent, and it forces you to understand fundamentals. If you've never built a simple SPA without a framework, you don't really know what frameworks are solving for you. I mean that seriously.</p><h3>But Travel Atelier wasn't a showcase</h3><p>It needed <strong>JWT authentication</strong>, <strong>protected routing</strong>, reactive form state, live destination search, a customer messages dashboard, and a Node.js REST API backend — all wired together. Building that in vanilla JS wasn't a learning exercise. It was reinventing wheels that Vue already shipped, tested, and documented.</p><p>Vue's Composition API handles reactivity, component state, and routing with patterns tested by millions of developers. I wasn't going to out-architect that in a weekend. The framework earned its place.</p><h3>Why Vue specifically, not React?</h3><p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p><p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p><h3>What I'd do differently</h3><p>Spend two weeks in vanilla JavaScript before touching any framework. Not because frameworks are bad — but because you don't fully appreciate what they give you until you've felt the pain of doing it yourself. Reactivity, component lifecycle, two-way binding — these are harder concepts when a framework is handling them invisibly for you.</p><p><em>Understanding the "why" behind your tools makes you significantly better at using them.</em></p><p>Pick the right tool. But understand what the tool is doing for you. That understanding is the difference between a developer who can use a framework and a developer who can build without one.</p>`
     }
   ];
 

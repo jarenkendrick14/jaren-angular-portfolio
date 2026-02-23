@@ -14,9 +14,9 @@ export class ExperienceComponent {
     {
       period: 'Apr 2025 — Present',
       org: 'VirtuIntelligence · Part-time · Remote',
-      title: 'Game Developer',
-      desc: 'Building VR applications using Unreal Engine 5.5 Blueprints. Shipped PathFinder (VR journaling app) in Unity. Currently developing an action title, <em>\'Robots vs Aliens\'</em>, in Unity. Writing complex game systems in C# has heavily sharpened my backend logic, object-oriented design, and ability to architect scalable features.',
-      tags: ['Unreal 5.5', 'Blueprints', 'Unity', 'C#', 'Backend Logic'],
+      title: 'Game/App Developer',
+      desc: 'Shipped PathFinder, a VR self-discovery app, to the Meta Quest store using Unreal Engine 5.5 Blueprints and Unity. Currently developing <em>Robots vs Aliens</em>, an action VR title in Unity (C#). Built Symposium, a real-time AI-mediated chat platform using Angular, Ionic, Node.js, and PostgreSQL. Working across diverse tech stacks has strengthened my full-stack architecture and problem-solving skills.',
+      tags: ['Unreal 5.5', 'Blueprints', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL'],
     },
     {
       period: 'Jun 2023 — 2027',
