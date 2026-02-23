@@ -33,7 +33,8 @@ export class PortfolioDataService {
       desc: 'A full-stack real-time chat application with an AI mediator powered by xAI\'s Grok. Features WebSocket-based messaging, streaming AI responses, configurable turn management, and a full @mention system. Built with Angular 21 + Ionic 8 for cross-platform support and a Node.js/Express backend with PostgreSQL via Prisma ORM.',
       purpose: 'Architected a complete real-time communication platform with AI integration, demonstrating proficiency in WebSocket protocols, streaming APIs, and full-stack TypeScript development.',
       features: ['Real-time WebSocket messaging with auto-reconnect', 'Streaming AI responses via xAI Grok', 'Turn management system (strict & round-robin)', '@mention system with live-filtered dropdown', 'Cross-platform via Ionic + Capacitor'],
-      live: null, github: 'https://github.com/jarenkendrick14',
+      live: [{ name: 'Live Site ↗', url: 'https://symposium.jarenkendrick.com/' }],
+      github: null,
       imgs: ['rgba(56,189,248,.12)', 'rgba(56,189,248,.08)', 'rgba(56,189,248,.05)']
     },
     {
@@ -43,7 +44,8 @@ export class PortfolioDataService {
       desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches. Built a robust REST API backend for user management and booking workflows.',
       purpose: 'Architected a complete full-stack application demonstrating secure data flow from database to frontend UI.',
       features: ['JWT-based authentication system', 'Protected routing and navigation', 'Backend-connected dynamic forms', 'Real-time destination filtering'],
-      live: null, github: 'https://github.com/jarenkendrick14',
+      live: [{ name: 'Live Site ↗', url: 'https://travel-atelier.jarenkendrick.com/' }],
+      github: 'https://github.com/jarenkendrick14/travel-atelier',
       imgs: ['rgba(96,165,250,.12)', 'rgba(96,165,250,.08)', 'rgba(96,165,250,.05)']
     },
     {
@@ -53,7 +55,8 @@ export class PortfolioDataService {
       desc: 'Comprehensive e-commerce platform for a streetwear brand, featuring a full shopping experience with persistent cart, checkout flow, JWT authentication, and a dedicated admin dashboard for managing products, users, and orders.',
       purpose: 'Designed a scalable MongoDB schema with embedded cart architecture and integrated it with a reactive Vue 3 + Pinia frontend.',
       features: ['Persistent cart with server-synced state', 'Full CRUD admin dashboard (products, users, orders)', 'JWT authentication with role-based access', 'Product search, sort, and paginated filtering'],
-      live: null, github: 'https://github.com/jarenkendrick14',
+      live: [{ name: 'Live Site ↗', url: 'https://dropify.jarenkendrick.com/' }],
+      github: 'https://github.com/jarenkendrick14/dropify',
       imgs: ['rgba(52,211,153,.12)', 'rgba(52,211,153,.08)', 'rgba(52,211,153,.05)']
     },
     {
@@ -64,7 +67,7 @@ export class PortfolioDataService {
       purpose: "Built a fast, scalable frontend structure using Angular best practices and structural directives.",
       features: ['Angular client-side routing', 'Dynamic product rendering', 'Conditional component styling', 'Deployed directly to Netlify'],
       live: [{ name: 'Live Demo ↗', url: 'https://69359c7c680ce1935fafb306--prelim-project-einsteins-art.netlify.app/' }],
-      github: null,
+      github: 'https://github.com/jarenkendrick14/einsteins-art',
       imgs: ['rgba(167,139,250,.12)', 'rgba(167,139,250,.08)', 'rgba(124,58,237,.06)']
     }
   ];

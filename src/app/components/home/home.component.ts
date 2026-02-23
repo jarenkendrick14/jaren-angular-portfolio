@@ -35,7 +35,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private readonly RESTORE = 0.07;
   private readonly DAMP   = 0.82;
 
-  // Keep a bound reference so we can remove the listener on destroy
   private _docMouseMove!: (e: MouseEvent) => void;
   private _docMouseLeave!: () => void;
   private _resizeHandler!: () => void;
@@ -48,18 +47,13 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.canvas = document.getElementById('bg-canvas') as HTMLCanvasElement;
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d')!;
-    this.resize();
+
+    // Initial resize — slight delay so the DOM has settled and scrollHeight is accurate
+    setTimeout(() => this.resize(), 50);
+
     this._resizeHandler = () => this.resize();
     window.addEventListener('resize', this._resizeHandler);
 
-    /*
-      FIX: Use document-level mousemove instead of canvas.mousemove.
-      The canvas sits at z-index:0 under content (z-index:1), so when
-      the cursor is over text, buttons, cards, etc., the canvas never
-      receives mouse events — causing dead zones.
-      Tracking at document level and converting to canvas-local coords
-      fixes this for ALL whitespace and content areas.
-    */
     this._docMouseMove = (e: MouseEvent) => {
       const rect = this.canvas.getBoundingClientRect();
       this.cmx = e.clientX - rect.left;
@@ -80,24 +74,26 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     cancelAnimationFrame(this.animId);
     document.removeEventListener('mousemove',  this._docMouseMove);
     document.removeEventListener('mouseleave', this._docMouseLeave);
-    if (this._resizeHandler) {
-      window.removeEventListener('resize', this._resizeHandler);
-    }
+    if (this._resizeHandler) window.removeEventListener('resize', this._resizeHandler);
   }
 
   private resize() {
     /*
-      FIX: Use the canvas element's own CSS layout dimensions
-      (clientWidth / clientHeight) so that the drawing resolution
-      always matches the displayed size 1:1. This prevents the
-      coordinate mismatch that caused the grid repulsion effect
-      to drift from the cursor at the bottom of the page.
+      FIX: Canvas must cover the FULL scrollable content of the page section,
+      not just the viewport-sized container. Use the scroll container's
+      scrollHeight so the grid extends behind the featured projects section.
     */
-    const W = this.canvas.clientWidth;
-    const H = this.canvas.clientHeight;
+    const section = this.canvas.closest('.page-section') as HTMLElement;
+    const W = this.canvas.clientWidth || (section ? section.clientWidth : window.innerWidth);
+    const H = section
+      ? Math.max(section.scrollHeight, section.clientHeight)
+      : window.innerHeight;
 
+    // Override CSS height so the canvas physically stretches
+    this.canvas.style.height = H + 'px';
     this.canvas.width  = W;
     this.canvas.height = H;
+
     this.pts = [];
     this.vx  = [];
     this.vy  = [];

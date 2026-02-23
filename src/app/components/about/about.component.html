@@ -5,6 +5,16 @@
       <div class="shr"></div>
     </div>
 
+    <!-- COUNTER STATS -->
+    <div class="stats-strip au d1">
+      @for (c of counters; track c.label) {
+        <div class="stat-item">
+          <span class="stat-num">{{ c.current() }}{{ c.suffix }}</span>
+          <span class="stat-label">{{ c.label }}</span>
+        </div>
+      }
+    </div>
+
     <div class="ag">
       <div>
         <h2 class="apull al d1">A builder who actually <em>ships</em>.</h2>
@@ -34,14 +44,10 @@
               @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
             </button>
           </div>
-
-          <!-- 3D SPHERE (Centered Container) -->
           <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
             <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
             <div class="sphere-hint">drag to spin</div>
           </div>
-
-          <!-- SKILL BARS -->
           @if (skillsExpanded()) {
             <ul class="skl" role="list">
               @for (sk of skills; track sk.name; let i = $index) {
@@ -51,7 +57,6 @@
                     <span class="sk-time">{{ sk.time }}</span>
                   </div>
                   <div class="sk-bar">
-                    <!-- Pass the target width via custom property to prevent flashing -->
                     <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
                   </div>
                 </li>
@@ -94,7 +99,74 @@
             }
           </div>
         </div>
+
+        <!-- GITHUB HEATMAP -->
+        <div class="blk ar d4">
+          <div class="blkh">
+            GitHub Activity
+            @if (!heatmapLoading() && !heatmapError()) {
+              <span class="heatmap-total">{{ heatmapTotal() }} contributions</span>
+            }
+          </div>
+          <div class="heatmap-wrap">
+            @if (heatmapLoading()) {
+              <div class="heatmap-loading">
+                <span class="heatmap-pulse"></span>
+                Loading contributions...
+              </div>
+            } @else if (heatmapError()) {
+              <div class="heatmap-fallback">
+                <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="heatmap-link">
+                  View on GitHub ↗
+                </a>
+              </div>
+            } @else {
+              <div class="heatmap-grid">
+                @for (week of heatmapWeeks(); track $index) {
+                  <div class="heatmap-col">
+                    @for (day of week; track day.date) {
+                      <div class="heatmap-cell"
+                        [style.background]="getHeatColor(day.level)"
+                        [title]="day.count + ' contributions on ' + day.date">
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="heatmap-legend">
+                <span class="heatmap-legend-label">Less</span>
+                <div class="heatmap-cell" [style.background]="getHeatColor(0)"></div>
+                <div class="heatmap-cell" [style.background]="getHeatColor(1)"></div>
+                <div class="heatmap-cell" [style.background]="getHeatColor(2)"></div>
+                <div class="heatmap-cell" [style.background]="getHeatColor(3)"></div>
+                <div class="heatmap-cell" [style.background]="getHeatColor(4)"></div>
+                <span class="heatmap-legend-label">More</span>
+              </div>
+            }
+          </div>
+
+          <!-- RECENT COMMITS -->
+          @if (recentCommits().length > 0) {
+            <div class="commits-list">
+              <div class="commits-label">Recent Commits</div>
+              @for (commit of recentCommits(); track commit.sha) {
+                <a class="commit-row" [href]="commit.url" target="_blank" rel="noopener">
+                  <span class="commit-sha">{{ commit.sha }}</span>
+                  <span class="commit-msg">{{ commit.message }}</span>
+                  <span class="commit-meta">
+                    <span class="commit-repo">{{ commit.repo }}</span>
+                    <span class="commit-time">{{ commit.date }}</span>
+                  </span>
+                </a>
+              }
+            </div>
+          } @else if (commitsLoading()) {
+            <div class="commits-list">
+              <div class="heatmap-loading" style="padding: .75rem 0;"><span class="heatmap-pulse"></span> Loading commits...</div>
+            </div>
+          }
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 </section>

@@ -11,19 +11,17 @@
   padding: 2rem 0;
 }
 
-/* ── Logo image (replaces jk. text) ── */
 .sb-logo {
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  /* keep the old font fallback invisible if img loads */
   font-size: 0;
   line-height: 0;
 }
 
 .sb-logo-img {
-  height: 44px;       /* adjust to taste */
+  height: 44px;
   width: auto;
   max-width: 140px;
   object-fit: contain;
@@ -111,8 +109,6 @@
 }
 .sbsoc:hover { border-color: var(--acc); color: var(--acc); background: var(--surf); }
 .sbsoc svg { width: 16px; height: 16px; fill: currentColor; }
-
-/* Paper-plane icon uses stroke, not fill */
 .sbsoc svg[stroke] { fill: none; }
 
 .thm {
@@ -141,42 +137,67 @@
 }
 :host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
 
-/* ── Terminal trigger — hardcoded dark purple so it looks
-   the same regardless of light/dark page theme ── */
+/* ══════════ TERMINAL TRIGGER — PROMINENT ══════════ */
 .term-trigger {
   display: flex;
   align-items: center;
-  gap: .4rem;
+  gap: .5rem;
   font-family: 'JetBrains Mono', monospace;
-  font-size: .6rem;
+  font-size: .68rem;
   letter-spacing: .07em;
-  /* Always use dark-theme violet, not var(--acc) */
-  color: #8b5cf6;
-  border: 1px solid rgba(139, 92, 246, .3);
-  border-radius: 4px;
-  padding: .3rem .55rem;
-  cursor: pointer;
-  background: none;
-  transition: color .2s, border-color .2s, background .2s;
-  margin-top: .5rem;
-}
-.term-trigger:hover {
   color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, .4);
+  border-radius: 6px;
+  padding: .45rem .75rem;
+  cursor: pointer;
+  background: rgba(139, 92, 246, .06);
+  transition: color .2s, border-color .2s, background .2s, box-shadow .2s;
+  margin-top: .5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.term-trigger:hover {
+  color: #c4b5fd;
   border-color: #a78bfa;
-  background: rgba(139, 92, 246, .1);
+  background: rgba(139, 92, 246, .12);
+  box-shadow: 0 0 16px rgba(139, 92, 246, .25), 0 0 4px rgba(139, 92, 246, .15);
+}
+
+/* Subtle animated glow sweep */
+.term-trigger::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,.12), transparent);
+  animation: termSweep 3s ease infinite;
+}
+@keyframes termSweep {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
 }
 
 .term-trigger-dot {
-  width: 6px; height: 6px;
+  width: 7px; height: 7px;
   border-radius: 50%;
-  /* Always light lavender regardless of theme */
   background: #a78bfa;
-  opacity: .7;
+  opacity: .8;
   animation: termPulse 1.6s ease infinite;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
+
+.term-trigger-text {
+  position: relative;
+  z-index: 1;
+}
+
 @keyframes termPulse {
-  0%, 100% { opacity: .7; transform: scale(1); }
-  50%       { opacity: 1; transform: scale(1.3); }
+  0%, 100% { opacity: .7; transform: scale(1); box-shadow: 0 0 0 0 rgba(167,139,250,.4); }
+  50%      { opacity: 1; transform: scale(1.3); box-shadow: 0 0 8px 2px rgba(167,139,250,.3); }
 }
 
 @media (max-width: 960px) {

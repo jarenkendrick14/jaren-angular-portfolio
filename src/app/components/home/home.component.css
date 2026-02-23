@@ -10,9 +10,10 @@
 
 #bg-canvas {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  /* height is set dynamically by JS to match scrollHeight */
   z-index: 0;
   pointer-events: all;
 }
@@ -84,16 +85,43 @@
   flex-wrap: wrap;
 }
 
+/* ══════════ PHOTO — bigger, centered, decorative rings ══════════ */
 .h-photo {
-  width: 220px;
-  height: 220px;
+  width: 280px;
+  height: 280px;
   flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* Outer decorative ring */
+.h-photo::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1px dashed var(--bord);
+  opacity: .5;
+  animation: spinSlow 30s linear infinite;
+}
+
+/* Inner decorative ring */
+.h-photo::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(139,92,246,.2);
+}
+
+@keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .h-photo-placeholder {
   width: 100%;
   height: 100%;
-  border: 2px dashed var(--bord);
+  border: 2px solid var(--bord);
   border-radius: 50%;
   background: var(--surf);
   display: flex;
@@ -102,8 +130,10 @@
   color: var(--muted);
   overflow: hidden;
   transition: border-color .3s;
+  position: relative;
+  z-index: 1;
 }
-.h-photo-placeholder:hover { border-color: var(--acc); border-style: solid; }
+.h-photo-placeholder:hover { border-color: var(--acc); }
 
 .feat-section { position: relative; z-index: 1; }
 
@@ -197,7 +227,6 @@
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
 
-/* Updated keyframes — more prominent distances */
 @keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes fadeRight { from { opacity: 0; transform: translateX(44px); }  to { opacity: 1; transform: translateX(0); } }
@@ -205,7 +234,7 @@
 
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 4rem; }
-  .h-top-grid { flex-direction: column-reverse; align-items: flex-start; gap: 2.5rem; margin-bottom: 4rem; }
-  .h-photo { width: 160px; height: 160px; }
+  .h-top-grid { flex-direction: column-reverse; align-items: center; gap: 2.5rem; margin-bottom: 4rem; }
+  .h-photo { width: 200px; height: 200px; }
   .feat-grid { grid-template-columns: 1fr; }
 }

@@ -1,9 +1,7 @@
 import { Component, signal, ViewChild, ElementRef, effect, inject } from '@angular/core';
 import { NavigationService } from '../../data/navigation.service';
 
-interface TermLine {
-  html: string;
-}
+interface TermLine { html: string; }
 
 @Component({
   selector: 'app-terminal',
@@ -29,76 +27,89 @@ export class TerminalComponent {
     `<span class="tl-dim">──────────────────────────────────────────</span>`,
     `<span class="tl-ok">  ✓ jaren-portfolio v2.5.0 [developer mode]</span>`,
     `<span class="tl-dim">──────────────────────────────────────────</span>`,
-    `<span class="tl-dim">  System: Full Stack Portfolio • Angular 21</span>`,
-    `<span class="tl-dim">  Location: Pampanga, Philippines 🇵🇭</span>`,
-    `<span class="tl-dim">  Status: <span class="tl-ok">● seeking internship</span></span>`,
+    `<span class="tl-dim">  System:</span> <span class="tl-val">Full Stack Portfolio • Angular 21</span>`,
+    `<span class="tl-dim">  Location:</span> <span class="tl-val">Pampanga, Philippines</span> 🇵🇭`,
+    `<span class="tl-dim">  Status:</span> <span class="tl-ok">● seeking internship</span>`,
     `<span class="tl-dim">──────────────────────────────────────────</span>`,
     `  Type <span class="tl-acc">help</span> to see available commands.`,
   ];
 
   private readonly COMMANDS: Record<string, () => string[] | null> = {
     help: () => [
-      `<span class="tl-head">Available commands:</span>`,
-      `  <span class="tl-acc">ls</span>            list projects`,
-      `  <span class="tl-acc">cat resume.txt</span> view career summary`,
-      `  <span class="tl-acc">skills</span>        show skill stack`,
-      `  <span class="tl-acc">whoami</span>        who is jaren`,
-      `  <span class="tl-acc">contact</span>       get contact info`,
-      `  <span class="tl-acc">github</span>        open github profile`,
-      `  <span class="tl-acc">run pathfinder</span> launch vr app`,
-      `  <span class="tl-acc">clear</span>         clear terminal`,
-      `  <span class="tl-acc">exit</span>          close terminal`,
+      ``,
+      `<span class="tl-head">  COMMANDS</span>`,
+      `<span class="tl-dim">  ──────────────────────────────</span>`,
+      `  <span class="tl-acc">ls</span>              <span class="tl-dim">list projects</span>`,
+      `  <span class="tl-acc">cat resume.txt</span>  <span class="tl-dim">view career summary</span>`,
+      `  <span class="tl-acc">skills</span>          <span class="tl-dim">show skill stack</span>`,
+      `  <span class="tl-acc">whoami</span>          <span class="tl-dim">who is jaren</span>`,
+      `  <span class="tl-acc">contact</span>         <span class="tl-dim">get contact info</span>`,
+      `  <span class="tl-acc">github</span>          <span class="tl-dim">open github profile</span>`,
+      `  <span class="tl-acc">run pathfinder</span>  <span class="tl-dim">launch vr app</span>`,
+      `  <span class="tl-acc">clear</span>           <span class="tl-dim">clear terminal</span>`,
+      `  <span class="tl-acc">exit</span>            <span class="tl-dim">close terminal</span>`,
     ],
     ls: () => [
-      `<span class="tl-head">projects/</span>`,
-      `  01  <span class="tl-acc">PathFinder</span>        <span class="tl-dim">·  Unreal 5.5 + Unity + C# · VR</span>`,
-      `  02  <span class="tl-acc">Symposium</span>         <span class="tl-dim">·  Angular + Ionic + Node.js + PostgreSQL</span>`,
-      `  03  <span class="tl-acc">Travel Atelier</span>    <span class="tl-dim">·  Vue.js 3 + Node.js + JWT</span>`,
-      `  04  <span class="tl-acc">Dropify</span>           <span class="tl-dim">·  Vue.js 3 + MongoDB + Express</span>`,
-      `  05  <span class="tl-acc">Einstein's Art</span>    <span class="tl-dim">·  Angular + TypeScript + Netlify</span>`,
+      ``,
+      `<span class="tl-head">  projects/</span>`,
+      `<span class="tl-dim">  ──────────────────────────────</span>`,
+      `  <span class="tl-dim">01</span>  <span class="tl-head">PathFinder</span>        <span class="tl-dim">·</span> <span class="tl-val">Unreal 5.5 + Unity</span>   <span class="tl-warn">VR</span>`,
+      `  <span class="tl-dim">02</span>  <span class="tl-head">Symposium</span>         <span class="tl-dim">·</span> <span class="tl-val">Angular + Node.js</span>    <span class="tl-warn">REAL-TIME</span>`,
+      `  <span class="tl-dim">03</span>  <span class="tl-head">Travel Atelier</span>    <span class="tl-dim">·</span> <span class="tl-val">Vue.js 3 + Node.js</span>   <span class="tl-warn">FULL-STACK</span>`,
+      `  <span class="tl-dim">04</span>  <span class="tl-head">Dropify</span>           <span class="tl-dim">·</span> <span class="tl-val">Vue.js 3 + MongoDB</span>   <span class="tl-warn">E-COMMERCE</span>`,
+      `  <span class="tl-dim">05</span>  <span class="tl-head">Einstein's Art</span>    <span class="tl-dim">·</span> <span class="tl-val">Angular + TypeScript</span> <span class="tl-warn">DEPLOYED</span>`,
     ],
     'cat resume.txt': () => [
-      `<span class="tl-head">== JAREN KENDRICK YAMBAO ==</span>`,
-      `<span class="tl-dim">Full Stack Developer · Game/App Developer · HAU IT Student</span>`,
       ``,
-      `<span class="tl-warn">EXPERIENCE</span>`,
-      `  Game/App Developer @ VirtuIntelligence  <span class="tl-dim">Apr 2025 – Present</span>`,
-      `  <span class="tl-dim">• Shipped PathFinder to Meta Quest (Unreal 5.5 + Unity)</span>`,
-      `  <span class="tl-dim">• Built Symposium real-time AI chat (Angular + Ionic + Node.js)</span>`,
-      `  <span class="tl-dim">• Building Robots vs Aliens in Unity (C#)</span>`,
+      `<span class="tl-head">  ╔══════════════════════════════════╗</span>`,
+      `<span class="tl-head">  ║   JAREN KENDRICK YAMBAO          ║</span>`,
+      `<span class="tl-head">  ╚══════════════════════════════════╝</span>`,
+      `  <span class="tl-dim">Full Stack Developer · Game/App Developer · HAU IT Student</span>`,
       ``,
-      `<span class="tl-warn">STACK</span>`,
-      `  Angular · Vue.js 3 · Node.js · PostgreSQL · MongoDB · C# · TypeScript`,
+      `  <span class="tl-warn">▸ EXPERIENCE</span>`,
+      `  <span class="tl-acc">  Game/App Developer</span> <span class="tl-dim">@ VirtuIntelligence</span>  <span class="tl-dim">Apr 2025 – Present</span>`,
+      `    <span class="tl-val">• Shipped PathFinder to Meta Quest (Unreal 5.5 + Unity)</span>`,
+      `    <span class="tl-val">• Built Symposium real-time AI chat (Angular + Node.js)</span>`,
+      `    <span class="tl-val">• Building Robots vs Aliens mobile game (Unity + C#)</span>`,
       ``,
-      `<span class="tl-warn">LOOKING FOR</span>`,
-      `  Full-stack internship <span class="tl-acc">→ jarenkendrickyambao@gmail.com</span>`,
+      `  <span class="tl-warn">▸ STACK</span>`,
+      `    <span class="tl-val">Angular · Vue.js 3 · Node.js · PostgreSQL · MongoDB · C# · TypeScript</span>`,
+      ``,
+      `  <span class="tl-warn">▸ LOOKING FOR</span>`,
+      `    <span class="tl-val">Full-stack internship</span> <span class="tl-acc">→ jarenkendrickyambao@gmail.com</span>`,
     ],
     skills: () => [
-      `<span class="tl-head">Technical Stack:</span>`,
-      `  JavaScript <span class="tl-acc">█████████░</span> 85%  <span class="tl-dim">2 yrs</span>`,
-      `  TypeScript  <span class="tl-acc">████████░░</span> 80%  <span class="tl-dim">1.5 yrs</span>`,
-      `  Angular     <span class="tl-acc">████████░░</span> 75%  <span class="tl-dim">1 yr</span>`,
-      `  Node.js     <span class="tl-acc">████████░░</span> 75%  <span class="tl-dim">1 yr</span>`,
-      `  Vue.js 3    <span class="tl-acc">███████░░░</span> 70%  <span class="tl-dim">1 yr</span>`,
-      `  C#          <span class="tl-acc">███████░░░</span> 70%  <span class="tl-dim">1 yr</span>`,
-      `  MongoDB     <span class="tl-acc">███████░░░</span> 65%  <span class="tl-dim">1 yr</span>`,
-      `  PostgreSQL  <span class="tl-acc">██████░░░░</span> 55%  <span class="tl-dim">6 mo</span>`,
+      ``,
+      `  <span class="tl-head">Technical Stack</span>`,
+      `<span class="tl-dim">  ──────────────────────────────</span>`,
+      `  <span class="tl-val">JavaScript</span>  <span class="tl-acc">█████████░</span> <span class="tl-head">85%</span>  <span class="tl-dim">2 yrs</span>`,
+      `  <span class="tl-val">TypeScript</span>  <span class="tl-acc">████████░░</span> <span class="tl-head">80%</span>  <span class="tl-dim">1.5 yrs</span>`,
+      `  <span class="tl-val">Angular</span>     <span class="tl-acc">████████░░</span> <span class="tl-head">75%</span>  <span class="tl-dim">1 yr</span>`,
+      `  <span class="tl-val">Node.js</span>     <span class="tl-acc">████████░░</span> <span class="tl-head">75%</span>  <span class="tl-dim">1 yr</span>`,
+      `  <span class="tl-val">Vue.js 3</span>    <span class="tl-acc">███████░░░</span> <span class="tl-head">70%</span>  <span class="tl-dim">1 yr</span>`,
+      `  <span class="tl-val">C#</span>          <span class="tl-acc">███████░░░</span> <span class="tl-head">70%</span>  <span class="tl-dim">1 yr</span>`,
+      `  <span class="tl-val">MongoDB</span>     <span class="tl-acc">███████░░░</span> <span class="tl-head">65%</span>  <span class="tl-dim">1 yr</span>`,
+      `  <span class="tl-val">PostgreSQL</span>  <span class="tl-acc">██████░░░░</span> <span class="tl-head">55%</span>  <span class="tl-dim">6 mo</span>`,
     ],
     whoami: () => [
-      `<span class="tl-head">jaren kendrick yambao</span>`,
-      `<span class="tl-dim">──────────────────────────────</span>`,
-      `  Role     Full Stack Developer + Game/App Dev`,
-      `  Age      20 years old`,
-      `  Location Pampanga, Philippines 🇵🇭`,
-      `  Uni      Holy Angel University (2027)`,
-      `  Status   <span class="tl-ok">● Open to internship</span>`,
-      `  "I don't just write code — I ship things."`,
+      ``,
+      `  <span class="tl-head">jaren kendrick yambao</span>`,
+      `<span class="tl-dim">  ──────────────────────────────</span>`,
+      `  <span class="tl-acc">Role</span>      <span class="tl-val">Full Stack Developer + Game/App Dev</span>`,
+      `  <span class="tl-acc">Age</span>       <span class="tl-val">20 years old</span>`,
+      `  <span class="tl-acc">Location</span>  <span class="tl-val">Pampanga, Philippines</span> 🇵🇭`,
+      `  <span class="tl-acc">Uni</span>       <span class="tl-val">Holy Angel University (2027)</span>`,
+      `  <span class="tl-acc">Status</span>    <span class="tl-ok">● Open to internship</span>`,
+      ``,
+      `  <span class="tl-quote">"I don't just write code — I ship things."</span>`,
     ],
     contact: () => [
-      `<span class="tl-head">Contact info:</span>`,
-      `  Email     <span class="tl-acc">jarenkendrickyambao@gmail.com</span>`,
-      `  LinkedIn  <span class="tl-acc">linkedin.com/in/jarenkendrick</span>`,
-      `  GitHub    <span class="tl-acc">github.com/jarenkendrick14</span>`,
+      ``,
+      `  <span class="tl-head">Contact</span>`,
+      `<span class="tl-dim">  ──────────────────────────────</span>`,
+      `  <span class="tl-acc">Email</span>     <span class="tl-val">jarenkendrickyambao@gmail.com</span>`,
+      `  <span class="tl-acc">LinkedIn</span>  <span class="tl-val">linkedin.com/in/jarenkendrick</span>`,
+      `  <span class="tl-acc">GitHub</span>    <span class="tl-val">github.com/jarenkendrick14</span>`,
     ],
     github: () => {
       window.open('https://github.com/jarenkendrick14', '_blank');
@@ -131,10 +142,7 @@ export class TerminalComponent {
       if (this.isOpen()) {
         if (!this.booted) {
           this.booted = true;
-          this.BOOT_MSG.forEach((msg, i) => {
-            setTimeout(() => this.addLine(msg), i * 55);
-          });
-          // Auto-run 'help' command after booting
+          this.BOOT_MSG.forEach((msg, i) => { setTimeout(() => this.addLine(msg), i * 55); });
           setTimeout(() => this.runCmd('help'), (this.BOOT_MSG.length * 55) + 300);
         }
         setTimeout(() => this.termInput?.nativeElement.focus(), 460);
@@ -150,15 +158,10 @@ export class TerminalComponent {
       this.inputValue.set('');
       this.runCmd(val);
     } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      e.stopPropagation();
-      if (this.histIdx < this.history.length - 1) {
-        this.histIdx++;
-        this.inputValue.set(this.history[this.histIdx] || '');
-      }
+      e.preventDefault(); e.stopPropagation();
+      if (this.histIdx < this.history.length - 1) { this.histIdx++; this.inputValue.set(this.history[this.histIdx] || ''); }
     } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault(); e.stopPropagation();
       if (this.histIdx > 0) { this.histIdx--; this.inputValue.set(this.history[this.histIdx]); }
       else { this.histIdx = -1; this.inputValue.set(''); }
     }
@@ -171,16 +174,11 @@ export class TerminalComponent {
     this.histIdx = -1;
     this.addLine(`<span class="tl-dim">jaren@portfolio:~$</span> <span class="tl-cmd">${this.esc(raw)}</span>`);
     const fn = this.COMMANDS[cmd];
-    if (fn) {
-      const result = fn();
-      if (result) result.forEach(l => this.addLine(l));
-    } else {
-      this.addLine(`<span class="tl-err">bash: ${this.esc(cmd)}: command not found. Type 'help'.</span>`);
-    }
+    if (fn) { const result = fn(); if (result) result.forEach(l => this.addLine(l)); }
+    else { this.addLine(`<span class="tl-err">bash: ${this.esc(cmd)}: command not found. Type 'help'.</span>`); }
     this.addLine('');
   }
 
-  // Handle scroll ONLY when adding lines, allowing manual scrolling otherwise
   private addLine(html: string) {
     this.lines.update(l => [...l, { html }]);
     setTimeout(() => {
@@ -190,7 +188,5 @@ export class TerminalComponent {
     }, 10);
   }
 
-  private esc(s: string) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
+  private esc(s: string) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 }
