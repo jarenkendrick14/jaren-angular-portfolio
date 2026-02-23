@@ -17,7 +17,6 @@ export interface Certificate {
   abbr: string;
   color: string;
   date: string;
-  expires?: string;
   url: string;
 }
 
@@ -26,6 +25,7 @@ export interface BlogPost {
   title: string;
   excerpt: string;
   content: string;
+  img?: string; // Optional image path
 }
 
 export interface Testimonial {
@@ -34,6 +34,7 @@ export interface Testimonial {
   role: string;
   initial: string;
   placeholder?: boolean;
+  img?: string; // Optional image path
 }
 
 export interface NavItem {

@@ -10,13 +10,23 @@
         <div class="tmc as" [ngClass]="i === 0 ? 'd2' : i === 1 ? 'd3' : 'd4'">
           <p class="tmq">{{ tm.quote }}</p>
           <div class="tma">
-            <div class="tmav">{{ tm.initial }}</div>
+            
+            <!-- UPDATED AVATAR LOGIC -->
+            <div class="tmav" style="overflow:hidden;">
+              <img [src]="tm.img" [alt]="tm.name" 
+                   style="width:100%; height:100%; object-fit:cover;"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              
+              <!-- Fallback if image fails -->
+              <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
+                {{ tm.initial }}
+              </div>
+            </div>
+
             <div>
               <p class="tmname">
                 {{ tm.name }}
-                @if (tm.placeholder) {
-                  <span class="placeholder-note">(placeholder)</span>
-                }
+                @if (tm.placeholder) { <span class="placeholder-note"></span> }
               </p>
               <p class="tmrole">{{ tm.role }}</p>
             </div>

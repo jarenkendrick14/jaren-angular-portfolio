@@ -1,160 +1,156 @@
 <section class="page-resume" [class.active-page]="active">
-  <div class="pin">
+  <div class="res-layout">
 
-    <!-- SECTION LABEL -->
-    <div class="slabel au d0">
-      <span class="sn">04</span><span class="st">/ resume</span>
-      <div class="shr"></div>
-    </div>
+    <!-- ═══════════ LEFT COLUMN ═══════════ -->
+    <div class="res-left">
 
-    <!-- ═══════════ RESUME HEADER ═══════════ -->
-    <div class="res-header au d1">
-      <div class="res-header-left">
-        <h2 class="res-name">Jaren Kendrick Yambao</h2>
-        <p class="res-title">Full Stack Developer · Game/App Developer</p>
-        <p class="res-location">Pampanga, Philippines</p>
-      </div>
-      <div class="res-header-right">
-        <a href="mailto:jarenkendrickyambao@gmail.com" class="res-contact-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13L2 4"/></svg>
-          jarenkendrickyambao&#64;gmail.com
-        </a>
-        <a href="https://linkedin.com/in/jarenkendrick" target="_blank" rel="noopener" class="res-contact-link">
-          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          linkedin.com/in/jarenkendrick
-        </a>
-        <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="res-contact-link">
-          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          github.com/jarenkendrick14
-        </a>
-      </div>
-    </div>
-
-    <!-- ═══════════ EXPERIENCE ═══════════ -->
-    <div class="res-section au d2">
-      <h3 class="res-section-title">Experience</h3>
-      <div class="res-divider"></div>
-      @for (job of experience; track job.company) {
-        <div class="res-entry">
-          <div class="res-entry-side">
-            <span class="res-entry-period">{{ job.period }}</span>
-            <span class="res-entry-type">{{ job.type }}</span>
-          </div>
-          <div class="res-entry-main">
-            <div class="res-entry-header">
-              <h4 class="res-entry-title">{{ job.title }}</h4>
-              <span class="res-entry-company">{{ job.company }}</span>
-            </div>
-            <ul class="res-bullets">
-              @for (bullet of job.bullets; track $index) {
-                <li [innerHTML]="bullet"></li>
-              }
-            </ul>
-            <div class="res-tags">
-              @for (tag of job.tags; track tag) {
-                <span class="res-tag">{{ tag }}</span>
-              }
-            </div>
-          </div>
+      <!-- HEADER -->
+      <div class="res-header au d0">
+        <div>
+          <h2 class="res-name">Jaren Kendrick Yambao</h2>
+          <p class="res-title">Full Stack Developer · Game/App Developer</p>
+          <p class="res-location">Pampanga, Philippines</p>
         </div>
-      }
-    </div>
-
-    <!-- ═══════════ EDUCATION ═══════════ -->
-    <div class="res-section au d3">
-      <h3 class="res-section-title">Education</h3>
-      <div class="res-divider"></div>
-      @for (edu of education; track edu.school) {
-        <div class="res-entry">
-          <div class="res-entry-side">
-            <span class="res-entry-period">{{ edu.period }}</span>
-            <span class="res-entry-type">{{ edu.location }}</span>
-          </div>
-          <div class="res-entry-main">
-            <div class="res-entry-header">
-              <h4 class="res-entry-title">{{ edu.degree }}</h4>
-              <span class="res-entry-company">{{ edu.school }}</span>
-            </div>
-            <p class="res-edu-detail">{{ edu.detail }}</p>
-          </div>
-        </div>
-      }
-    </div>
-
-    <!-- ═══════════ SKILLS — two columns ═══════════ -->
-    <div class="res-section au d4">
-      <h3 class="res-section-title">Technical Skills</h3>
-      <div class="res-divider"></div>
-      <div class="res-skills-grid">
-        <!-- LEFT: Proficiency bars -->
-        <div class="res-skills-bars">
-          @for (sk of skills; track sk.name; let i = $index) {
-            <div class="sk-row">
-              <div class="sk-info">
-                <span class="sk-name">{{ sk.name }}</span>
-                <span class="sk-meta">{{ sk.time }} · {{ sk.pct }}%</span>
-              </div>
-              <div class="sk-bar">
-                <div class="sk-fill"
-                  [style.width]="barsReady() ? sk.pct + '%' : '0%'"
-                  [style.transition-delay]="(i * 0.08) + 's'">
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-        <!-- RIGHT: Tools & technologies -->
-        <div class="res-tools">
-          <div class="res-tools-label">Tools & Technologies</div>
-          <div class="res-tools-grid">
-            @for (tool of toolsList; track tool) {
-              <span class="res-tool-chip">{{ tool }}</span>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════ CERTIFICATIONS — FULL GRID ═══════════ -->
-    <div class="res-section au d5">
-      <h3 class="res-section-title">Certifications<span class="res-cert-count">{{ data.certificates.length }}</span></h3>
-      <div class="res-divider"></div>
-      <div class="cert-grid">
-        @for (cert of data.certificates; track cert.name; let i = $index) {
-          <a class="cert-card" [href]="cert.url" target="_blank" rel="noopener"
-             [style.animation-delay]="(i * 0.04) + 's'">
-            <div class="cert-card-accent" [style.background]="cert.color"></div>
-            <div class="cert-card-body">
-              <div class="cert-card-issuer">
-                <div class="cert-badge" [style.background]="cert.color">{{ cert.abbr }}</div>
-                <span class="cert-issuer-name">{{ cert.issuer }}</span>
-              </div>
-              <div class="cert-card-name">{{ cert.name }}</div>
-              <div class="cert-card-footer">
-                <span class="cert-card-date">{{ cert.date }}</span>
-                <span class="cert-card-view">View ↗</span>
-              </div>
-            </div>
+        <div class="res-header-contacts">
+          <a href="mailto:jarenkendrickyambao@gmail.com" class="res-contact-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13L2 4"/></svg>
+            jarenkendrickyambao&#64;gmail.com
           </a>
+          <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="res-contact-link">
+            <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            github.com/jarenkendrick14
+          </a>
+          <!-- Download: no target="_blank" so browser downloads directly -->
+          <a href="assets/Jaren_Kendrick_Resume.pdf" class="res-dl-btn" download="Jaren_Kendrick_Resume.pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download PDF
+          </a>
+        </div>
+      </div>
+
+      <!-- EXPERIENCE -->
+      <div class="res-section au d1">
+        <h3 class="res-section-title">Experience</h3>
+        <div class="res-divider"></div>
+        @for (job of experience; track job.company) {
+          <div class="res-entry">
+            <div class="res-entry-side">
+              <span class="res-entry-period">{{ job.period }}</span>
+              <span class="res-entry-type">{{ job.type }}</span>
+            </div>
+            <div class="res-entry-main">
+              <div class="res-entry-header">
+                <h4 class="res-entry-title">{{ job.title }}</h4>
+                <span class="res-entry-company">{{ job.company }}</span>
+              </div>
+              <ul class="res-bullets">
+                @for (bullet of job.bullets; track $index) {
+                  <li [innerHTML]="bullet"></li>
+                }
+              </ul>
+              <div class="res-tags">
+                @for (tag of job.tags; track tag) {
+                  <span class="res-tag">{{ tag }}</span>
+                }
+              </div>
+            </div>
+          </div>
         }
       </div>
-    </div>
 
-    <!-- ═══════════ DOWNLOAD BUTTON ═══════════ -->
-    <div class="res-download au d6">
-      <div class="res-download-inner">
-        <div class="res-download-text">
-          <h4>Want a copy?</h4>
-          <p>Download the full PDF version of my resume.</p>
-        </div>
-        <a href="Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
-          <svg style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          Download Resume (PDF)
-        </a>
+      <!-- EDUCATION -->
+      <div class="res-section au d2">
+        <h3 class="res-section-title">Education</h3>
+        <div class="res-divider"></div>
+        @for (edu of education; track edu.school) {
+          <div class="res-entry">
+            <div class="res-entry-side">
+              <span class="res-entry-period">{{ edu.period }}</span>
+              <span class="res-entry-type">{{ edu.location }}</span>
+            </div>
+            <div class="res-entry-main">
+              <div class="res-entry-header">
+                <h4 class="res-entry-title">{{ edu.degree }}</h4>
+                <span class="res-entry-company">{{ edu.school }}</span>
+              </div>
+              <p class="res-edu-detail">{{ edu.detail }}</p>
+            </div>
+          </div>
+        }
       </div>
-    </div>
 
-  </div>
+    </div><!-- /res-left -->
+
+    <!-- ═══════════ RIGHT COLUMN ═══════════ -->
+    <div class="res-right">
+
+      <!-- SKILLS -->
+      <div class="res-section au d2">
+        <h3 class="res-section-title">Technical Skills</h3>
+        <div class="res-divider"></div>
+        @for (sk of skills; track sk.name; let i = $index) {
+          <div class="sk-row">
+            <div class="sk-info">
+              <span class="sk-name">{{ sk.name }}</span>
+              <span class="sk-meta">{{ sk.pct }}%</span>
+            </div>
+            <div class="sk-bar">
+              <div class="sk-fill"
+                [style.width]="barsReady() ? sk.pct + '%' : '0%'"
+                [style.transition-delay]="(i * 0.07) + 's'">
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Tools row -->
+        <div class="res-tools-grid" style="margin-top:.85rem;">
+          @for (tool of toolsList; track tool) {
+            <span class="res-tool-chip">{{ tool }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- CERTIFICATIONS — CAROUSEL -->
+      <div class="res-section au d3">
+        <div class="cert-header">
+          <h3 class="res-section-title" style="margin-bottom:0;">Certifications</h3>
+          <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
+        </div>
+        <div class="res-divider"></div>
+        <div class="cert-carousel">
+          <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous cert">‹</button>
+          <div class="cert-card-wrap" [ngClass]="certAnimClass()">
+            <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
+              <div class="cert-top" [style.background]="currentCert.color + '22'">
+                <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
+                <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
+              </div>
+              <div class="cert-body">
+                <div class="cert-name">{{ currentCert.name }}</div>
+                <div class="cert-meta">
+                  <div class="cert-date">{{ currentCert.date }}</div>
+                  <div class="cert-view">View ↗</div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <button class="cert-nav" (click)="certNav(1)" aria-label="Next cert">›</button>
+        </div>
+        <!-- Dot indicators -->
+        <div class="cert-dots">
+          @for (cert of data.certificates; track $index) {
+            <button class="cert-dot" [class.on]="$index === certIndex()"
+              (click)="certNav($index > certIndex() ? 1 : -1)"
+              [attr.aria-label]="'Cert ' + ($index + 1)">
+            </button>
+          }
+        </div>
+      </div>
+
+    </div><!-- /res-right -->
+
+  </div><!-- /res-layout -->
 </section>

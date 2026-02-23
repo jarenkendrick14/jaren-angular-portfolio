@@ -6,7 +6,7 @@ export class NavigationService {
   readonly isAnimating = signal<boolean>(false);
   readonly theme = signal<'dark' | 'light'>('dark');
   
-  // Added terminal state management
+  // Terminal state management
   readonly terminalOpen = signal<boolean>(false);
 
   readonly isDark = computed(() => this.theme() === 'dark');
@@ -29,7 +29,6 @@ export class NavigationService {
     localStorage.setItem('jk-theme', next);
   }
 
-  // Added method to toggle terminal
   toggleTerminal(): void {
     this.terminalOpen.update(v => !v);
   }

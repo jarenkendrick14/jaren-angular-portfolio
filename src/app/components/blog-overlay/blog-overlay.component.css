@@ -132,3 +132,26 @@
   .bp-top { padding: 1.5rem; }
   .bp-body { padding: 2rem 1.5rem; }
 }
+
+
+
+/* ── Inline blog images ── */
+:host ::ng-deep .bp-content img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--bord);
+  margin: 2rem 0;
+  display: block;
+}
+
+:host ::ng-deep .bp-content .blog-img-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: -1.25rem;
+  margin-bottom: 2rem;
+  letter-spacing: .03em;
+}

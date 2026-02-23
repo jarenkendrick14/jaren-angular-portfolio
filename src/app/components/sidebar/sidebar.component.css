@@ -21,9 +21,9 @@
 }
 
 .sb-logo-img {
-  height: 44px;
+  height: 64px;         /* Increased from 44px */
   width: auto;
-  max-width: 140px;
+  max-width: 180px;     /* Increased from 140px */
   object-fit: contain;
   display: block;
   transition: opacity .2s ease;

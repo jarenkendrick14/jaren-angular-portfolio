@@ -22,7 +22,6 @@
             </a>
           </li>
           <li>
-            <!-- Envelope mail icon -->
             <a href="mailto:jarenkendrickyambao@gmail.com" class="solink">
               <span class="soico soico-mail">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -30,34 +29,46 @@
                   <path d="M22 4L12 13L2 4"/>
                 </svg>
               </span>
-              jarenkendrickyambao@gmail.com
+              jarenkendrickyambao&#64;gmail.com
             </a>
           </li>
         </ul>
       </div>
 
       <div class="cform au d2">
+        <!-- Honeypot for spam bots -->
+        <input type="text" name="botcheck" style="display:none !important;" tabindex="-1" autocomplete="off">
+
         <div class="frow">
           <div class="fg">
             <label for="fn">Name</label>
-            <input type="text" id="fn" placeholder="Your name" [value]="formData().name" (input)="updateField('name', $any($event.target).value)" autocomplete="name"/>
+            <input type="text" id="fn" placeholder="Your name" [value]="formData().name" (input)="updateField('name', $any($event.target).value)" autocomplete="name" [disabled]="sending()"/>
           </div>
           <div class="fg">
             <label for="fe">Email</label>
-            <input type="email" id="fe" placeholder="you@company.com" [value]="formData().email" (input)="updateField('email', $any($event.target).value)" autocomplete="email"/>
+            <input type="email" id="fe" placeholder="you@company.com" [value]="formData().email" (input)="updateField('email', $any($event.target).value)" autocomplete="email" [disabled]="sending()"/>
           </div>
         </div>
         <div class="fg">
           <label for="fs">Subject</label>
-          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..." [value]="formData().subject" (input)="updateField('subject', $any($event.target).value)"/>
+          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..." [value]="formData().subject" (input)="updateField('subject', $any($event.target).value)" [disabled]="sending()"/>
         </div>
         <div class="fg">
           <label for="fm">Message</label>
-          <textarea id="fm" placeholder="Tell me about what you're building..." [value]="formData().message" (input)="updateField('message', $any($event.target).value)"></textarea>
+          <textarea id="fm" placeholder="Tell me about what you're building..." [value]="formData().message" (input)="updateField('message', $any($event.target).value)" [disabled]="sending()"></textarea>
         </div>
-        <button type="button" class="btn btn-fill" (click)="submit()" style="width:100%;">Send Message</button>
+        <button type="button" class="btn btn-fill" (click)="submit()" style="width:100%;" [disabled]="sending()">
+          @if (sending()) {
+            Sending...
+          } @else {
+            Send Message
+          }
+        </button>
         @if (submitted()) {
           <div class="fsok" role="status" aria-live="polite">✓ Sent — I'll get back to you soon.</div>
+        }
+        @if (errorMsg()) {
+          <div class="fserr" role="alert">⚠ {{ errorMsg() }}</div>
         }
       </div>
     </div>

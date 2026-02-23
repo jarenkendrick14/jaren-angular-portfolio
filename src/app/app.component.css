@@ -56,6 +56,15 @@
   width: 100% !important;
 }
 
+/* Resume should fill exact viewport with no internal scroll */
+:host ::ng-deep .page-resume {
+  position: static !important;
+  height: 100% !important;
+  min-height: unset !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
 /* ══════════ SCROLLBAR ══════════ */
 .page-section::-webkit-scrollbar { width: 6px; }
 .page-section::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
@@ -67,12 +76,23 @@
   background: var(--sb); border-bottom: 1px solid var(--sbbrd);
   z-index: 500; align-items: center; justify-content: space-between; padding: 0 1.5rem;
 }
-.mlogo { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: 1.8rem; color: var(--white); text-decoration: none; }
+.mlogo { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-weight: 600; 
+  font-style: italic; 
+  font-size: 2.2rem; /* Increased from 1.8rem */
+  color: var(--white); 
+  text-decoration: none; 
+}
 .mlogo span { color: var(--acc); font-style: normal; }
 .mnr { display: flex; align-items: center; gap: 1.5rem; }
 .thm { width: 46px; height: 24px; border-radius: 100px; background: var(--surf); border: 1px solid var(--bord); position: relative; cursor: none; }
 .tknob { position: absolute; top: 2px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; transition: transform .3s ease; color: #fff; }
-[data-theme="light"] .tknob { transform: translateX(20px); }
+
+/* FIX: was [data-theme="light"] .tknob — Angular scoping breaks global selectors.
+   :host-context() pierces through to the document root correctly. */
+:host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
+
 .mbg { display: flex; flex-direction: column; gap: 6px; background: none; border: none; padding: 4px; cursor: none; }
 .mbg span { display: block; width: 26px; height: 2px; background: var(--white); transition: all .25s; }
 .mbg.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
@@ -102,15 +122,56 @@
 #prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
 .psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
+/* ══════════ PREVIEW CARD INNER STYLING ══════════ */
+.psc-img-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.psc-overlay {
+  position: absolute;
+  inset: 0;
+  /* Adds a smooth dark gradient at the bottom so the text is always readable */
+  background: linear-gradient(to top, rgba(9, 9, 15, 0.95) 0%, rgba(9, 9, 15, 0) 60%);
+}
+
+.psc-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 1;
+}
+
+.psc-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.psc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--acc);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ══════════ MOBILE STACKING ══════════ */
 @media (max-width: 960px) {
-  /*
-    KEY FIX: .main-content must be position:relative (not fixed) on mobile
-    so page sections stack in normal document flow and scrollIntoView works.
-  */
   .main-content {
     position: relative;
     left: 0;
@@ -118,7 +179,14 @@
     bottom: auto;
     right: 0;
     overflow: visible;
-    padding-top: 70px; /* offset for fixed mobnav */
+    padding-top: 70px;
+  }
+
+  /* Resume back to scrollable on mobile */
+  :host ::ng-deep .page-resume {
+    height: auto !important;
+    overflow: visible !important;
+    min-height: 100vh !important;
   }
 
   .mobnav { display: flex; }

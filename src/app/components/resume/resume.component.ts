@@ -16,6 +16,19 @@ export class ResumeComponent implements OnChanges {
   private barsAnimated = false;
   readonly barsReady = signal(false);
 
+  /* ── Cert Carousel ── */
+  readonly certIndex = signal(0);
+  readonly certAnimClass = signal('');
+
+  get currentCert() { return this.data.certificates[this.certIndex()]; }
+  get certTotal()   { return this.data.certificates.length; }
+
+  certNav(dir: number) {
+    this.certAnimClass.set('');
+    this.certIndex.update(i => (i + dir + this.certTotal) % this.certTotal);
+    setTimeout(() => this.certAnimClass.set(dir > 0 ? 'cert-in' : 'cert-in-r'), 10);
+  }
+
   readonly experience = [
     {
       period: 'Apr 2025 — Present',
@@ -23,12 +36,12 @@ export class ResumeComponent implements OnChanges {
       type: 'Part-time · Remote',
       title: 'Game/App Developer',
       bullets: [
-        'Shipped <strong>PathFinder</strong>, a VR self-discovery app, to the Meta Quest store using Unreal Engine 5.5 Blueprints; built its Android companion in Unity.',
-        'Architected <strong>Symposium</strong>, a full-stack real-time AI-mediated chat platform (Angular 21 + Ionic 8 + Node.js + PostgreSQL) with WebSocket messaging and streaming xAI Grok responses.',
+        'Shipped <strong>PathFinder</strong> VR app to Meta Quest store using Unreal Engine 5.5 Blueprints; built its Android companion in Unity.',
+        'Architected <strong>Symposium</strong>, a full-stack real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket + streaming xAI Grok.',
         'Currently developing <strong>Robots vs Aliens</strong>, a mobile action game in Unity (C#) with procedural level generation.',
-        'Collaborate asynchronously with remote team across multiple time zones, managing own sprint tasks and code reviews.',
+        'Managing own sprint tasks and code reviews across multiple time zones.',
       ],
-      tags: ['Unreal 5.5', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'Prisma', 'WebSockets'],
+      tags: ['Unreal 5.5', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets'],
     },
   ];
 
@@ -38,7 +51,7 @@ export class ResumeComponent implements OnChanges {
       school: 'Holy Angel University',
       location: 'Pampanga, Philippines',
       degree: 'BS Information Technology',
-      detail: 'Specialization in Web Development. Coursework in full-stack architecture, database systems, software engineering, networking fundamentals, and deployment workflows. Maintaining strong academic standing while working part-time as a developer.',
+      detail: 'Specialization in Web Development. Coursework in full-stack architecture, database systems, software engineering, networking, and deployment workflows. Maintaining strong academic standing while working part-time.',
     },
   ];
 

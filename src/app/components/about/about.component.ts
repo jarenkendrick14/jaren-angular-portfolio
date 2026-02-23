@@ -30,10 +30,10 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     { target: 13, label: 'Certifications',   suffix: '', current: signal(0) },
     { target: 2,  label: 'Years Coding',     suffix: '+', current: signal(0) },
   ];
-  private counterRan = false;
 
   /* ── GitHub Heatmap ── */
   readonly heatmapWeeks = signal<HeatmapDay[][]>([]);
+  readonly heatmapMonths = signal<{ col: number, label: string }[]>([]);
   readonly heatmapTotal = signal(0);
   readonly heatmapLoading = signal(true);
   readonly heatmapError = signal(false);
@@ -80,9 +80,9 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['active'] && this.active && !this.counterRan) {
-      this.counterRan = true;
-      // Small delay so the slide animation is underway
+    if (changes['active'] && this.active) {
+      // RESET AND ANIMATE EVERY TIME
+      this.counters.forEach(c => c.current.set(0));
       setTimeout(() => this.animateCounters(), 350);
     }
   }
@@ -95,7 +95,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   ngOnDestroy() { cancelAnimationFrame(this.animId); }
 
-  /* ── Counter Animation ── */
   private animateCounters() {
     this.counters.forEach(c => {
       const duration = 1400;
@@ -104,7 +103,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       let step = 0;
       const iv = setInterval(() => {
         step++;
-        // Ease-out cubic
         const t = step / steps;
         const eased = 1 - Math.pow(1 - t, 3);
         c.current.set(Math.round(eased * c.target));
@@ -113,29 +111,90 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  /* ── GitHub Heatmap ── */
+  /* ── 100% ACCURATE DIRECT GITHUB HTML SCRAPER ── */
   private async fetchHeatmap() {
     try {
-      const res = await fetch('https://github-contributions-api.jogruber.de/v4/jarenkendrick14?y=last');
-      if (!res.ok) throw new Error('API error');
-      const data = await res.json();
-      const contributions: HeatmapDay[] = data.contributions || [];
-      this.heatmapTotal.set(data.total?.lastYear || contributions.reduce((s: number, d: HeatmapDay) => s + d.count, 0));
+      const url = 'https://corsproxy.io/?https://github.com/users/jarenkendrick14/contributions';
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Proxy fetch failed');
+      const html = await res.text();
 
-      // Take last 20 weeks (140 days) for compact display
-      const recent = contributions.slice(-140);
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
 
-      // Group into weeks (columns of 7)
-      const weeks: HeatmapDay[][] = [];
-      for (let i = 0; i < recent.length; i += 7) {
-        weeks.push(recent.slice(i, i + 7));
+      const h2 = doc.querySelector('h2.f4');
+      if (h2) {
+        const match = h2.textContent?.match(/([\d,]+)\s+contributions/);
+        if (match) this.heatmapTotal.set(parseInt(match[1].replace(/,/g, ''), 10));
       }
-      this.heatmapWeeks.set(weeks);
+
+      const dayMap = new Map<string, { count: number, level: number }>();
+      const cells = doc.querySelectorAll('td.ContributionCalendar-day');
+      
+      cells.forEach(cell => {
+        const date = cell.getAttribute('data-date');
+        const level = parseInt(cell.getAttribute('data-level') || '0', 10);
+        if (date) dayMap.set(date, { count: 0, level });
+      });
+
+      if (dayMap.size === 0) throw new Error('No cells found');
+
+      this.generateGrid(dayMap);
       this.heatmapLoading.set(false);
-    } catch {
+    } catch (err) {
       this.heatmapError.set(true);
       this.heatmapLoading.set(false);
     }
+  }
+
+  private generateGrid(dayMap: Map<string, { count: number, level: number }>) {
+    const WEEKS_TO_SHOW = 20; 
+    const weeks: HeatmapDay[][] = [];
+    const months: { col: number, label: string }[] = [];
+    
+    const today = new Date();
+    const endOffset = 6 - today.getDay(); 
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + endOffset);
+
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - (WEEKS_TO_SHOW * 7) + 1);
+
+    let lastMonth = -1;
+
+    for (let w = 0; w < WEEKS_TO_SHOW; w++) {
+      const week: HeatmapDay[] = [];
+      
+      const weekStart = new Date(startDate);
+      weekStart.setDate(startDate.getDate() + (w * 7));
+      const m = weekStart.getMonth();
+      
+      if (m !== lastMonth) {
+        months.push({ col: w, label: weekStart.toLocaleString('default', { month: 'short' }) });
+        lastMonth = m;
+      }
+
+      for (let d = 0; d < 7; d++) {
+        const cellDate = new Date(startDate);
+        cellDate.setDate(startDate.getDate() + (w * 7) + d);
+        
+        const year = cellDate.getFullYear();
+        const month = String(cellDate.getMonth() + 1).padStart(2, '0');
+        const day = String(cellDate.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+
+        const data = dayMap.get(dateStr);
+        week.push({
+          date: dateStr,
+          count: data ? data.count : 0,
+          level: data ? data.level : 0 
+        });
+      }
+      weeks.push(week);
+    }
+    
+    this.heatmapMonths.set(months);
+    this.heatmapWeeks.set(weeks);
   }
 
   /* ── Recent Commits ── */
@@ -177,18 +236,17 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   getHeatColor(level: number): string {
-    // Match GitHub's green gradient but in our accent purple
     const colors = [
-      'var(--bg)',                  // level 0 — empty
-      'rgba(139,92,246,0.2)',      // level 1
-      'rgba(139,92,246,0.45)',     // level 2
-      'rgba(139,92,246,0.7)',      // level 3
-      'rgba(139,92,246,1)',        // level 4
+      'var(--bg)',                  
+      'rgba(139,92,246,0.2)',      
+      'rgba(139,92,246,0.45)',     
+      'rgba(139,92,246,0.7)',      
+      'rgba(139,92,246,1)',        
     ];
     return colors[Math.min(level, 4)];
   }
 
-  /* ── Sphere ── */
+  /* ── Custom Vanilla JS Sphere ── */
   private initSphere() {
     const RADIUS = 95;
     const items = this.sphereTags.map((tag, i) => {

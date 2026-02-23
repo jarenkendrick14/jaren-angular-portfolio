@@ -1,5 +1,6 @@
 <section class="page-about" [class.active-page]="active">
   <div class="pin">
+    
     <div class="slabel au d0">
       <span class="sn">02</span><span class="st">/ about me</span>
       <div class="shr"></div>
@@ -16,14 +17,25 @@
     </div>
 
     <div class="ag">
-      <div>
-        <h2 class="apull al d1">A builder who actually <em>ships</em>.</h2>
+      
+      <!-- LEFT COLUMN: Bio -->
+<div>
+  <!-- Profile Image -->
+  <div class="bio-img-wrap al d1">
+    <!-- Updated with a reliable placeholder -->
+    <img src="assets/images/profile-about.jpg" 
+         alt="Profile" 
+         onerror="this.style.display='none'">
+  </div>
+
+  <h2 class="apull al d1">Full Stack Architecture. <br><em>Immersive</em> Interactive Experiences.</h2>
         <div class="abio au d2">
-          <p>I'm a Full Stack Developer specializing in <strong>Angular, Node.js, and PostgreSQL</strong>. I build complete systems: from designing secure database schemas and REST APIs to crafting intuitive frontend interfaces.</p>
-          <p>I also work as a Game/App Developer, building VR experiences and real-time web applications. Working with <strong>C#</strong> in Unity has helped reinforce my backend logic and architectural thinking.</p>
-          <p>I don't just write code; I care about shipping functional, maintainable products. I am looking for a full-stack internship where I can contribute to real-world codebases.</p>
+          <p>I am a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
+          <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
+          <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
+          
           <div style="margin-top:2rem;">
-            <a href="Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
+            <a href="assets/Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
               <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/>
@@ -35,8 +47,10 @@
         </div>
       </div>
 
+      <!-- RIGHT COLUMN: Blocks -->
       <div>
-        <!-- SKILLS SECTION -->
+        
+        <!-- SKILLS -->
         <div class="blk ar d2">
           <div class="blkh">
             Technical Skills
@@ -44,10 +58,12 @@
               @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
             </button>
           </div>
+
           <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
             <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
             <div class="sphere-hint">drag to spin</div>
           </div>
+
           @if (skillsExpanded()) {
             <ul class="skl" role="list">
               @for (sk of skills; track sk.name; let i = $index) {
@@ -65,12 +81,13 @@
           }
         </div>
 
-        <!-- CERT CAROUSEL -->
+        <!-- CERTIFICATIONS -->
         <div class="blk ar d3">
           <div class="cert-header">
             <div class="blkh" style="margin-bottom:0;">Certifications</div>
             <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
           </div>
+          
           <div class="cert-carousel">
             <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
             <div class="cert-card-wrap" [ngClass]="certAnimClass()">
@@ -90,6 +107,7 @@
             </div>
             <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
           </div>
+          
           <div class="cert-dots">
             @for (cert of data.certificates; track $index) {
               <button class="cert-dot" [class.on]="$index === certIndex()"
@@ -100,7 +118,7 @@
           </div>
         </div>
 
-        <!-- GITHUB HEATMAP -->
+        <!-- HEATMAP -->
         <div class="blk ar d4">
           <div class="blkh">
             GitHub Activity
@@ -108,31 +126,52 @@
               <span class="heatmap-total">{{ heatmapTotal() }} contributions</span>
             }
           </div>
+          
           <div class="heatmap-wrap">
             @if (heatmapLoading()) {
-              <div class="heatmap-loading">
-                <span class="heatmap-pulse"></span>
-                Loading contributions...
-              </div>
+              <div class="heatmap-loading"><span class="heatmap-pulse"></span> Loading...</div>
             } @else if (heatmapError()) {
               <div class="heatmap-fallback">
-                <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="heatmap-link">
-                  View on GitHub ↗
-                </a>
+                <a href="https://github.com/jarenkendrick14" target="_blank" class="heatmap-link">View on GitHub ↗</a>
               </div>
             } @else {
-              <div class="heatmap-grid">
-                @for (week of heatmapWeeks(); track $index) {
-                  <div class="heatmap-col">
-                    @for (day of week; track day.date) {
-                      <div class="heatmap-cell"
-                        [style.background]="getHeatColor(day.level)"
-                        [title]="day.count + ' contributions on ' + day.date">
+              
+              <div class="heatmap-container">
+                <div class="heatmap-months">
+                  <div class="hm-spacer"></div>
+                  <div class="hm-months-grid">
+                    @for (m of heatmapMonths(); track m.col) {
+                      <span class="hm-month" [style.grid-column]="m.col + 1">{{ m.label }}</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="heatmap-body">
+                  <div class="heatmap-days">
+                    <span></span>
+                    <span>Mon</span>
+                    <span></span>
+                    <span>Wed</span>
+                    <span></span>
+                    <span>Fri</span>
+                    <span></span>
+                  </div>
+
+                  <div class="heatmap-grid">
+                    @for (week of heatmapWeeks(); track $index) {
+                      <div class="heatmap-col">
+                        @for (day of week; track day.date) {
+                          <div class="heatmap-cell"
+                            [style.background]="getHeatColor(day.level)"
+                            [title]="day.count > 0 ? day.count + ' contributions on ' + day.date : day.date">
+                          </div>
+                        }
                       </div>
                     }
                   </div>
-                }
+                </div>
               </div>
+
               <div class="heatmap-legend">
                 <span class="heatmap-legend-label">Less</span>
                 <div class="heatmap-cell" [style.background]="getHeatColor(0)"></div>
@@ -145,7 +184,7 @@
             }
           </div>
 
-          <!-- RECENT COMMITS -->
+          <!-- COMMITS -->
           @if (recentCommits().length > 0) {
             <div class="commits-list">
               <div class="commits-label">Recent Commits</div>
@@ -165,8 +204,9 @@
               <div class="heatmap-loading" style="padding: .75rem 0;"><span class="heatmap-pulse"></span> Loading commits...</div>
             </div>
           }
-          </div>
         </div>
+
       </div>
     </div>
+  </div>
 </section>

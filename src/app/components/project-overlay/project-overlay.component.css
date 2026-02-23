@@ -12,12 +12,12 @@
 
 @keyframes overlayOut {
   from { transform: translateX(0); }
-  to { transform: translateX(100%); }
+  to   { transform: translateX(100%); }
 }
 
 @keyframes overlayIn {
   from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  to   { transform: translateX(0); }
 }
 
 .ov-backdrop {
@@ -38,16 +38,16 @@
 .ov-panel::-webkit-scrollbar { width: 6px; }
 .ov-panel::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
+/* FIX: Remove position:sticky — it was creating a static box-shadow that
+   didn't move with the slide-in animation, making the shadow look "stuck" */
 .ov-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 2rem 3rem;
   border-bottom: 1px solid var(--bord);
-  position: sticky;
-  top: 0;
   background: var(--bg);
-  z-index: 1;
+  /* Changed from sticky → uses a bottom border instead; looks correct during animation */
 }
 
 .ov-num {
@@ -73,31 +73,34 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--sub);
+  color: var(--muted);
   font-size: 1.2rem;
   cursor: pointer;
-  background: none;
+  background: transparent;
   transition: border-color .2s, color .2s;
 }
 .ov-close:hover { border-color: var(--acc); color: var(--acc); }
 
-.ov-body { padding: 3rem 4rem; flex: 1; }
+.ov-body {
+  padding: 3rem;
+  flex: 1;
+}
 
 .ov-name {
   font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
   font-weight: 600;
-  font-size: clamp(3rem, 5vw, 4.5rem);
-  letter-spacing: -.04em;
   color: var(--white);
-  line-height: 1;
-  margin-bottom: 2.5rem;
+  letter-spacing: -.03em;
+  margin-bottom: 2rem;
+  line-height: 1.1;
 }
 
 .ov-imgs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-bottom: 3rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: .75rem;
+  margin-bottom: 2.5rem;
 }
 
 .ov-img {
@@ -105,94 +108,95 @@
   border-radius: 6px;
   border: 1px solid var(--bord);
   overflow: hidden;
+  transition: border-color .2s;
 }
+.ov-img:hover { border-color: var(--acc); }
 
 .ov-sections {
   display: grid;
   grid-template-columns: 1.2fr .8fr;
-  gap: 4rem;
+  gap: 3rem;
 }
 
 .ov-h {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .75rem;
-  letter-spacing: .1em;
-  color: var(--muted);
-  margin-bottom: .85rem;
+  font-size: .72rem;
+  letter-spacing: .12em;
   text-transform: uppercase;
+  color: var(--acc);
+  font-weight: 700;
+  margin-bottom: .85rem;
 }
 
 .ov-desc {
-  font-size: 1.05rem;
-  color: var(--text);
-  line-height: 1.85;
-  font-weight: 300;
-}
-
-.ov-features {
-  list-style: none;
-}
-.ov-features li {
   font-size: 1rem;
   color: var(--text);
   line-height: 1.75;
-  padding: .5rem 0;
-  border-bottom: 1px solid var(--bord);
   font-weight: 300;
+  margin-bottom: 1.5rem;
 }
-.ov-features li:last-child { border-bottom: none; }
-.ov-features li::before { content: '→ '; color: var(--acc); }
+.ov-desc strong { color: var(--white); font-weight: 600; }
 
-.ov-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin-top: 2rem;
-}
-
-.ov-links {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
+.ov-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.5rem; }
 
 .ptag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .75rem;
+  font-size: .7rem;
   letter-spacing: .04em;
-  padding: .3rem .6rem;
+  padding: .3rem .65rem;
   border-radius: 4px;
   background: var(--surf);
   color: var(--text);
   border: 1px solid var(--bord);
 }
 
-.links-coming {
-  font-size: .85rem;
-  color: var(--muted);
-  font-family: 'JetBrains Mono', monospace;
+.ov-links { display: flex; flex-wrap: wrap; gap: .75rem; }
+.links-coming { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--muted); font-style: italic; }
+
+.ov-features {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+.ov-features li {
+  font-size: .95rem;
+  color: var(--text);
+  line-height: 1.65;
+  font-weight: 300;
+  padding-left: 1.25rem;
+  position: relative;
+}
+.ov-features li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--acc);
+  font-size: .8rem;
+  top: .2rem;
 }
 
+/* Buttons used inside overlay */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: .6rem;
-  justify-content: center;
+  padding: .65rem 1.2rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: .88rem;
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
   text-decoration: none;
   border: none;
+  transition: transform .2s, box-shadow .2s;
 }
 .btn:hover { transform: translateY(-2px); }
 .btn-fill { background: var(--acc); color: #fff; }
 .btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
-.btn-sm { padding: .65rem 1.2rem; font-size: .88rem; }
 
 @media (max-width: 960px) {
   .ov-backdrop { display: none; }
