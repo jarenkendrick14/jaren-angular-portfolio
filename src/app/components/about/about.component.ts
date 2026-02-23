@@ -114,7 +114,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   /* ── 100% ACCURATE DIRECT GITHUB HTML SCRAPER ── */
   private async fetchHeatmap() {
     try {
-      const url = 'https://corsproxy.io/?https://github.com/users/jarenkendrick14/contributions';
+      const url = '/api/github';
       const res = await fetch(url);
       if (!res.ok) throw new Error('Proxy fetch failed');
       const html = await res.text();
