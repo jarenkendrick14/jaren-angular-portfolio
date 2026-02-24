@@ -84,7 +84,7 @@
 }
 
 .mlogo img {
-  height: 42px; /* Fits perfectly inside the 70px nav bar */
+  height: 42px;
   width: auto;
   object-fit: contain;
 }
@@ -94,8 +94,6 @@
 .thm { width: 46px; height: 24px; border-radius: 100px; background: var(--surf); border: 1px solid var(--bord); position: relative; cursor: none; }
 .tknob { position: absolute; top: 2px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; transition: transform .3s ease; color: #fff; }
 
-/* FIX: was [data-theme="light"] .tknob — Angular scoping breaks global selectors.
-   :host-context() pierces through to the document root correctly. */
 :host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
 
 .mbg { display: flex; flex-direction: column; gap: 6px; background: none; border: none; padding: 4px; cursor: none; }
@@ -127,7 +125,7 @@
 #prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
 .psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
-/* ══════════ PREVIEW CARD INNER STYLING ══════════ */
+
 .psc-img-wrap {
   position: absolute;
   inset: 0;
@@ -139,7 +137,6 @@
 .psc-overlay {
   position: absolute;
   inset: 0;
-  /* Adds a smooth dark gradient at the bottom so the text is always readable */
   background: linear-gradient(to top, rgba(9, 9, 15, 0.95) 0%, rgba(9, 9, 15, 0) 60%);
 }
 
@@ -175,8 +172,17 @@
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ══════════ MOBILE STACKING ══════════ */
+/* ══════════════════════════════════════════════════════════
+   MOBILE STACKING — everything scrolls normally, no slider
+══════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
+
+  /* ── Unlock the body so the whole page can scroll ── */
+  :host-context(body) {
+    overflow: auto !important;
+    height: auto !important;
+  }
+
   .main-content {
     position: relative;
     left: 0;
@@ -197,9 +203,12 @@
   .mobnav { display: flex; }
 
   .app-root {
-    overflow: auto;
+    /* ⚠️ KEY FIX: remove fixed viewport lock on mobile */
+    overflow: visible;
     height: auto;
+    min-height: 100vh;
     display: block;
+    width: 100%;
   }
 
   .page-slider {
@@ -209,16 +218,26 @@
     flex-direction: column;
   }
 
-  .page-section {
+  /* ⚠️ KEY FIX: override ALL transform/positioning so sections stack vertically */
+  .page-section,
+  .page-section.active,
+  .page-section.prev,
+  .page-section.next {
     position: relative !important;
+    inset: auto !important;
     height: auto !important;
+    min-height: 100vh !important;
+    width: 100% !important;
     transform: none !important;
     transition: none !important;
     opacity: 1 !important;
-    min-height: 100vh !important;
     overflow: visible !important;
     display: block !important;
+    will-change: auto !important;
   }
 
   #cdot, #cring, #prvw { display: none !important; }
+
+  /* Disable custom cursor on touch devices */
+  .thm, .mbg { cursor: pointer; }
 }

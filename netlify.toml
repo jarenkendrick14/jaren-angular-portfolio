@@ -1,9 +1,22 @@
+# ── Build settings ────────────────────────────────────────────────────────────
 [build]
+  publish = "dist/portfolio/browser"
   command = "npm run build"
-  functions = "netlify/functions"
-  publish = "dist/jaren-portfolio/browser"
 
+# ── Proxy: GitHub contributions heatmap (avoids CORS entirely) ────────────────
+# Requests to /github-contributions/* are forwarded server-side to GitHub.
+# Since Netlify makes the request, GitHub sees a normal server request — no CORS.
 [[redirects]]
-  from = "/api/github"
-  to = "https://github.com/users/jarenkendrick14/contributions"
+  from   = "/github-contributions"
+  to     = "https://github.com/users/jarenkendrick14/contributions"
+  status = 200
+  force  = true
+
+  [redirects.headers]
+    X-Forwarded-Host = "github.com"
+
+# ── SPA fallback: all routes serve index.html (required for Angular routing) ──
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
   status = 200

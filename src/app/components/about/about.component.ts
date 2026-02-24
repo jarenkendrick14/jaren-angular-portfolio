@@ -32,35 +32,35 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   ];
 
   /* ── GitHub Heatmap ── */
-  readonly heatmapWeeks = signal<HeatmapDay[][]>([]);
-  readonly heatmapMonths = signal<{ col: number, label: string }[]>([]);
-  readonly heatmapTotal = signal(0);
+  readonly heatmapWeeks   = signal<HeatmapDay[][]>([]);
+  readonly heatmapMonths  = signal<{ col: number, label: string }[]>([]);
+  readonly heatmapTotal   = signal(0);
   readonly heatmapLoading = signal(true);
-  readonly heatmapError = signal(false);
+  readonly heatmapError   = signal(false);
 
   /* ── Recent Commits ── */
-  readonly recentCommits = signal<Commit[]>([]);
+  readonly recentCommits  = signal<Commit[]>([]);
   readonly commitsLoading = signal(true);
 
   readonly skills = [
-    { name: 'JavaScript', time: '2 yrs', pct: 85 },
-    { name: 'TypeScript', time: '1.5 yrs', pct: 80 },
-    { name: 'Angular', time: '1 yr', pct: 75 },
-    { name: 'Node.js & Express', time: '1 yr', pct: 75 },
-    { name: 'Vue.js 3', time: '1 yr', pct: 70 },
-    { name: 'C#', time: '1 yr', pct: 70 },
-    { name: 'MongoDB', time: '1 yr', pct: 65 },
-    { name: 'PostgreSQL', time: '6 mo', pct: 55 },
+    { name: 'JavaScript',      time: '2 yrs',   pct: 85 },
+    { name: 'TypeScript',      time: '1.5 yrs', pct: 80 },
+    { name: 'Angular',         time: '1 yr',    pct: 75 },
+    { name: 'Node.js & Express', time: '1 yr',  pct: 75 },
+    { name: 'Vue.js 3',        time: '1 yr',    pct: 70 },
+    { name: 'C#',              time: '1 yr',    pct: 70 },
+    { name: 'MongoDB',         time: '1 yr',    pct: 65 },
+    { name: 'PostgreSQL',      time: '6 mo',    pct: 55 },
   ];
 
   readonly sphereTags = [
-    { text: 'Angular', color: '#dd0031' }, { text: 'Vue.js 3', color: '#42b883' },
-    { text: 'Node.js', color: '#339933' }, { text: 'MongoDB', color: '#47a248' },
-    { text: 'TypeScript', color: '#3178c6' }, { text: 'C#', color: '#9b59b6' },
-    { text: 'Unity', color: '#a78bfa' }, { text: 'Express.js', color: '#7a7a9c' },
-    { text: 'REST APIs', color: '#60a5fa' }, { text: 'Git', color: '#f05030' },
-    { text: 'PostgreSQL', color: '#336791' }, { text: 'Prisma', color: '#7c8cf8' },
-    { text: 'Ionic', color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
+    { text: 'Angular',     color: '#dd0031' }, { text: 'Vue.js 3',   color: '#42b883' },
+    { text: 'Node.js',     color: '#339933' }, { text: 'MongoDB',    color: '#47a248' },
+    { text: 'TypeScript',  color: '#3178c6' }, { text: 'C#',         color: '#9b59b6' },
+    { text: 'Unity',       color: '#a78bfa' }, { text: 'Express.js', color: '#7a7a9c' },
+    { text: 'REST APIs',   color: '#60a5fa' }, { text: 'Git',        color: '#f05030' },
+    { text: 'PostgreSQL',  color: '#336791' }, { text: 'Prisma',     color: '#7c8cf8' },
+    { text: 'Ionic',       color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
   ];
 
   get currentCert(): Certificate { return this.data.certificates[this.certIndex()]; }
@@ -81,7 +81,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['active'] && this.active) {
-      // RESET AND ANIMATE EVERY TIME
       this.counters.forEach(c => c.current.set(0));
       setTimeout(() => this.animateCounters(), 350);
     }
@@ -111,51 +110,54 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-private async fetchHeatmap() {
+  private async fetchHeatmap() {
     try {
-      // FIXED: Uses allorigins, a reliable proxy that works flawlessly on Netlify
-      const target = encodeURIComponent('https://github.com/users/jarenkendrick14/contributions');
-      const url = `https://api.allorigins.win/raw?url=${target}`;
-      
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('Proxy fetch failed');
+      // ✅ Uses Netlify's own proxy rewrite defined in netlify.toml.
+      // The browser requests /github-contributions (same origin = no CORS).
+      // Netlify's edge forwards it server-side to GitHub.
+      const res = await fetch('/github-contributions', {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+      if (!res.ok) throw new Error(`Proxy responded ${res.status}`);
       const html = await res.text();
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
 
+      // Parse total contributions count
       const h2 = doc.querySelector('h2.f4');
       if (h2) {
         const match = h2.textContent?.match(/([\d,]+)\s+contributions/);
         if (match) this.heatmapTotal.set(parseInt(match[1].replace(/,/g, ''), 10));
       }
 
-      const dayMap = new Map<string, { count: number, level: number }>();
+      // Parse contribution cells
+      const dayMap = new Map<string, { count: number; level: number }>();
       const cells = doc.querySelectorAll('td.ContributionCalendar-day');
-      
       cells.forEach(cell => {
-        const date = cell.getAttribute('data-date');
+        const date  = cell.getAttribute('data-date');
         const level = parseInt(cell.getAttribute('data-level') || '0', 10);
         if (date) dayMap.set(date, { count: 0, level });
       });
 
-      if (dayMap.size === 0) throw new Error('No cells found');
+      if (dayMap.size === 0) throw new Error('No cells parsed — GitHub may have changed their markup');
 
       this.generateGrid(dayMap);
       this.heatmapLoading.set(false);
     } catch (err) {
+      console.warn('[Heatmap] fetch failed:', err);
       this.heatmapError.set(true);
       this.heatmapLoading.set(false);
     }
   }
 
-  private generateGrid(dayMap: Map<string, { count: number, level: number }>) {
-    const WEEKS_TO_SHOW = 20; 
+  private generateGrid(dayMap: Map<string, { count: number; level: number }>) {
+    const WEEKS_TO_SHOW = 20;
     const weeks: HeatmapDay[][] = [];
-    const months: { col: number, label: string }[] = [];
-    
+    const months: { col: number; label: string }[] = [];
+
     const today = new Date();
-    const endOffset = 6 - today.getDay(); 
+    const endOffset = 6 - today.getDay();
     const endDate = new Date(today);
     endDate.setDate(today.getDate() + endOffset);
 
@@ -166,11 +168,10 @@ private async fetchHeatmap() {
 
     for (let w = 0; w < WEEKS_TO_SHOW; w++) {
       const week: HeatmapDay[] = [];
-      
       const weekStart = new Date(startDate);
       weekStart.setDate(startDate.getDate() + (w * 7));
       const m = weekStart.getMonth();
-      
+
       if (m !== lastMonth) {
         months.push({ col: w, label: weekStart.toLocaleString('default', { month: 'short' }) });
         lastMonth = m;
@@ -179,22 +180,18 @@ private async fetchHeatmap() {
       for (let d = 0; d < 7; d++) {
         const cellDate = new Date(startDate);
         cellDate.setDate(startDate.getDate() + (w * 7) + d);
-        
-        const year = cellDate.getFullYear();
+
+        const year  = cellDate.getFullYear();
         const month = String(cellDate.getMonth() + 1).padStart(2, '0');
-        const day = String(cellDate.getDate()).padStart(2, '0');
+        const day   = String(cellDate.getDate()).padStart(2, '0');
         const dateStr = `${year}-${month}-${day}`;
 
         const data = dayMap.get(dateStr);
-        week.push({
-          date: dateStr,
-          count: data ? data.count : 0,
-          level: data ? data.level : 0 
-        });
+        week.push({ date: dateStr, count: data?.count ?? 0, level: data?.level ?? 0 });
       }
       weeks.push(week);
     }
-    
+
     this.heatmapMonths.set(months);
     this.heatmapWeeks.set(weeks);
   }
@@ -212,9 +209,11 @@ private async fetchHeatmap() {
           for (const c of ev.payload.commits) {
             if (commits.length >= 5) break;
             commits.push({
-              sha: c.sha?.substring(0, 7) || '', message: c.message?.split('\n')[0] || '',
-              repo: repoName, date: this.timeAgo(new Date(ev.created_at)),
-              url: `https://github.com/${ev.repo?.name}/commit/${c.sha}`,
+              sha:     c.sha?.substring(0, 7) || '',
+              message: c.message?.split('\n')[0] || '',
+              repo:    repoName,
+              date:    this.timeAgo(new Date(ev.created_at)),
+              url:     `https://github.com/${ev.repo?.name}/commit/${c.sha}`,
             });
           }
           if (commits.length >= 5) break;
@@ -239,11 +238,11 @@ private async fetchHeatmap() {
 
   getHeatColor(level: number): string {
     const colors = [
-      'var(--bg)',                  
-      'rgba(139,92,246,0.2)',      
-      'rgba(139,92,246,0.45)',     
-      'rgba(139,92,246,0.7)',      
-      'rgba(139,92,246,1)',        
+      'var(--bg)',
+      'rgba(139,92,246,0.2)',
+      'rgba(139,92,246,0.45)',
+      'rgba(139,92,246,0.7)',
+      'rgba(139,92,246,1)',
     ];
     return colors[Math.min(level, 4)];
   }
@@ -252,22 +251,22 @@ private async fetchHeatmap() {
   private initSphere() {
     const RADIUS = 95;
     const items = this.sphereTags.map((tag, i) => {
-      const phi = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
+      const phi   = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const el = document.createElement('span');
-      el.className = 'sphere-tag';
-      el.textContent = tag.text;
-      el.style.color = tag.color;
-      el.style.position = 'absolute';
-      el.style.background = 'var(--surf)';
-      el.style.padding = '4px 8px';
+      const el    = document.createElement('span');
+      el.className          = 'sphere-tag';
+      el.textContent        = tag.text;
+      el.style.color        = tag.color;
+      el.style.position     = 'absolute';
+      el.style.background   = 'var(--surf)';
+      el.style.padding      = '4px 8px';
       el.style.borderRadius = '4px';
-      el.style.border = '1px solid var(--bord)';
-      el.style.cursor = 'grab';
-      el.style.userSelect = 'none';
-      el.style.fontFamily = "'JetBrains Mono', monospace";
-      el.style.fontSize = "12px";
-      el.style.whiteSpace = "nowrap";
+      el.style.border       = '1px solid var(--bord)';
+      el.style.cursor       = 'grab';
+      el.style.userSelect   = 'none';
+      el.style.fontFamily   = "'JetBrains Mono', monospace";
+      el.style.fontSize     = '12px';
+      el.style.whiteSpace   = 'nowrap';
       if (this.sphereContainer?.nativeElement) {
         this.sphereContainer.nativeElement.appendChild(el);
       }
@@ -277,10 +276,10 @@ private async fetchHeatmap() {
     const render = () => {
       const cosRX = Math.cos(this.rotX), sinRX = Math.sin(this.rotX);
       const cosRY = Math.cos(this.rotY), sinRY = Math.sin(this.rotY);
-      items.forEach((item) => {
-        let x = Math.sin(item.phi) * Math.cos(item.theta);
-        let y = Math.cos(item.phi);
-        let z = Math.sin(item.phi) * Math.sin(item.theta);
+      items.forEach(item => {
+        const x  = Math.sin(item.phi) * Math.cos(item.theta);
+        const y  = Math.cos(item.phi);
+        const z  = Math.sin(item.phi) * Math.sin(item.theta);
         const x2 = x * cosRY - z * sinRY;
         const z2 = x * sinRY + z * cosRY;
         const y3 = y * cosRX - z2 * sinRX;
@@ -288,9 +287,9 @@ private async fetchHeatmap() {
         const scale = (z3 + 2.2) / 3.2;
         const px = x2 * RADIUS;
         const py = y3 * RADIUS;
-        item.el.style.transform = `translate(-50%,-50%) translate(${px}px,${py}px)`;
-        item.el.style.opacity = Math.max(0.1, scale).toString();
-        item.el.style.zIndex = Math.round(scale * 20).toString();
+        item.el.style.transform   = `translate(-50%,-50%) translate(${px}px,${py}px)`;
+        item.el.style.opacity     = Math.max(0.1, scale).toString();
+        item.el.style.zIndex      = Math.round(scale * 20).toString();
         item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250, 0.6)' : 'var(--bord)';
       });
     };
