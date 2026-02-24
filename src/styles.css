@@ -1,6 +1,37 @@
-/* ═══════════════════════════════════════════════════════
-   GLOBAL RESET & BASE
-═══════════════════════════════════════════════════════ */
+/* ══════════ GOOGLE FONTS ══════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ══════════ DESIGN TOKENS ══════════ */
+:root {
+  --bg: #09090f;
+  --sb: #0d0d16;
+  --surf: #111120;
+  --bord: #2a2a40;
+  /* Toned-down from #a78bfa → less pastel, more solid violet */
+  --acc: #8b5cf6;
+  --acc2: #6d28d9;
+  --white: #ffffff;
+  --text: #e0def0;
+  --muted: #a4a1c6;
+  --sub: #c2c0dc;
+  --sbbrd: #1a1a2e;
+}
+
+[data-theme="light"] {
+  --bg: #f4f2f9;
+  --sb: #ebe8f5;
+  --surf: #e0ddf0;
+  --bord: #c8c3e0;
+  --acc: #7c3aed;
+  --acc2: #6d28d9;
+  --white: #1a1826;
+  --text: #2d2b3b;
+  --muted: #5c597a;
+  --sub: #44425e;
+  --sbbrd: #d0cceb;
+}
+
+/* ══════════ RESET ══════════ */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -8,117 +39,101 @@
 }
 
 html {
+  font-size: 16px;
   scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
 }
 
-/* ── CRITICAL MOBILE FIX ──────────────────────────────
-   Do NOT lock body/html overflow. The page-slider in
-   app.component.css handles desktop lock. On mobile,
-   Angular's media-query override needs a free body. */
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   background: var(--bg);
   color: var(--text);
-  /* NO overflow:hidden here — it breaks mobile scroll */
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  transition: background-color .35s ease, color .35s ease;
+  cursor: none;
 }
 
-/* ═══════════════════════════════════════════════════════
-   CSS DESIGN TOKENS — DARK THEME (default)
-═══════════════════════════════════════════════════════ */
-:root,
-[data-theme="dark"] {
-  /* Backgrounds */
-  --bg:    #09090f;      /* page background — near-black */
-  --surf:  #0f0f1a;      /* card / block surface */
-  --sb:    #0b0b14;      /* sidebar background */
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
 
-  /* Borders */
-  --bord:  #1e1e30;      /* default border */
-  --sbbrd: #181828;      /* sidebar border */
-
-  /* Text */
-  --white: #f0eefa;      /* primary text / headings */
-  --text:  #9998b5;      /* body text */
-  --muted: #5a5870;      /* muted / labels */
-  --sub:   #7a789a;      /* sub-text */
-
-  /* Accent */
-  --acc:   #a78bfa;      /* lavender purple */
+*, *::before, *::after {
+  transition: background-color .35s ease, border-color .35s ease, color .35s ease;
 }
 
-/* ═══════════════════════════════════════════════════════
-   CSS DESIGN TOKENS — LIGHT THEME
-═══════════════════════════════════════════════════════ */
-[data-theme="light"] {
-  /* Backgrounds */
-  --bg:    #f5f4ff;
-  --surf:  #eeedf8;
-  --sb:    #ededfa;
-
-  /* Borders */
-  --bord:  #d4d2ea;
-  --sbbrd: #dddcee;
-
-  /* Text */
-  --white: #18162e;
-  --text:  #4a485f;
-  --muted: #8e8ca8;
-  --sub:   #6e6c88;
-
-  /* Accent */
-  --acc:   #7c3aed;
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
 }
 
-/* ═══════════════════════════════════════════════════════
-   TYPOGRAPHY UTILITIES
-═══════════════════════════════════════════════════════ */
-h1, h2, h3, h4, h5, h6 {
-  line-height: 1.15;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-}
-
-img, svg {
-  display: block;
-  max-width: 100%;
-}
-
-/* ═══════════════════════════════════════════════════════
-   SCROLLBAR (desktop)
-═══════════════════════════════════════════════════════ */
-::-webkit-scrollbar        { width: 6px; }
-::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: var(--bord); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-/* ═══════════════════════════════════════════════════════
-   ANIMATION UTILITIES
-═══════════════════════════════════════════════════════ */
-.au { opacity: 0; }
-.al { opacity: 0; }
-.ar { opacity: 0; }
-.as { opacity: 0; }
-
-/* ═══════════════════════════════════════════════════════
-   MOBILE — unlock scroll on iOS Safari
-   (overrides any component that accidentally locks it)
-═══════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
-  html, body {
-    overflow: auto !important;
-    height: auto !important;
-    /* iOS momentum scrolling */
-    -webkit-overflow-scrolling: touch;
-  }
+  body { overflow: auto; height: auto; cursor: auto; }
+  button, a { cursor: pointer !important; }
+}
+
+.decrypting { color: var(--acc) !important; }
+
+/* ══════════ GLOBAL ANIMATIONS — more prominent distances ══════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(-44px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(44px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ══════════ BASE STATE (hidden) ══════════ */
+.au, .al, .ar, .as {
+  opacity: 0;
+  transition: opacity 0.1s ease 0.6s;
+}
+
+/* ══════════ ACTIVE STATE ══════════ */
+.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp  .55s cubic-bezier(.22,1,.36,1) both; }
+.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) both; }
+.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .55s cubic-bezier(.22,1,.36,1) both; }
+.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .5s cubic-bezier(.22,1,.36,1) both; }
+
+/* Stagger Delays */
+.active .d0, .active-page .d0 { animation-delay: .04s !important; }
+.active .d1, .active-page .d1 { animation-delay: .10s !important; }
+.active .d2, .active-page .d2 { animation-delay: .18s !important; }
+.active .d3, .active-page .d3 { animation-delay: .26s !important; }
+.active .d4, .active-page .d4 { animation-delay: .34s !important; }
+.active .d5, .active-page .d5 { animation-delay: .44s !important; }
+
+/* ══════════ SEAMLESS SLIDE-OUT (both directions) ══════════
+   When a page slides OUT — either up (.prev) or down (.next) —
+   its content must stay fully visible for the whole 0.6s slide.
+   
+   .prev  = page that slid up and off (scroll DOWN)
+   .next  = page that slid down and off (scroll UP)
+   
+   Both are off-screen via translateY(±100%), so opacity:1 here
+   causes zero visual bleed. The !important beats Angular's
+   higher-specificity attribute-scoped component styles.
+══════════════════════════════════════════════════════════════ */
+.page-section.prev .au,
+.page-section.prev .al,
+.page-section.prev .ar,
+.page-section.prev .as,
+.page-section.next .au,
+.page-section.next .al,
+.page-section.next .ar,
+.page-section.next .as {
+  opacity: 1 !important;
+  animation: none !important;
+  transition: none !important;
 }
