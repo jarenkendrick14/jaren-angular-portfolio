@@ -16,116 +16,95 @@
       }
     </div>
 
-    <div class="ag">
-      
-      <!-- LEFT COLUMN: Bio -->
-      <div>
+    <!-- 1. INTRO GRID: Profile & Bio -->
+    <div class="intro-grid">
+      <div class="intro-left">
         <!-- Profile Image -->
-        <div class="bio-img-wrap al d1">
-          <img src="assets/images/profile-about.jpg" width="180" height="180" loading="lazy" 
+        <div class="bio-img-wrap as d2">
+          <img src="assets/images/profile-about.jpg" width="200" height="200" loading="lazy" 
                alt="Profile" 
                onerror="this.style.display='none'">
         </div>
 
-        <!-- ✦ TAGLINE: each phrase fades in one by one on page activation ✦ -->
+        <!-- ✦ TAGLINE ✦ -->
         <h2 class="apull tagline-wrap">
           <span class="tagline-line au tl-p1">Student by day.</span>
           <span class="tagline-line au tl-p2">Developer by night.</span>
           <span class="tagline-line tagline-accent au tl-p3"><em>Always learning.</em></span>
         </h2>
-
-        <div class="abio au d2">
-          <!-- ✦ UPDATED OPENING LINE ✦ -->
-          <p>Hello! My name is Jaren. I'm a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
-          <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
-          <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
-          
-          <div style="margin-top:2rem;">
-            <a href="assets/Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
-              <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Download Resume
-            </a>
-          </div>
-        </div>
       </div>
 
-      <!-- RIGHT COLUMN: Blocks -->
-      <div>
+      <!-- Bio Text -->
+      <div class="intro-right abio au d3">
+        <p>Hello! My name is Jaren. I'm a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
+        <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
+        <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
         
-        <!-- SKILLS -->
-        <div class="blk ar d2">
-          <div class="blkh">
-            Technical Skills
-            <button class="skill-toggle-btn" (click)="toggleSkills()">
-              @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
-            </button>
-          </div>
+        <div style="margin-top:2rem;">
+          <a href="assets/Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
+            <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download Resume
+          </a>
+        </div>
+      </div>
+    </div>
 
-          <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
-            <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
-            <div class="sphere-hint">drag to spin</div>
-          </div>
-
-          @if (skillsExpanded()) {
-            <ul class="skl" role="list">
-              @for (sk of skills; track sk.name; let i = $index) {
-                <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
-                  <div class="sk-info">
-                    <span>{{ sk.name }}</span>
-                    <span class="sk-time">{{ sk.time }}</span>
-                  </div>
-                  <div class="sk-bar">
-                    <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
-                  </div>
-                </li>
-              }
-            </ul>
-          }
+    <!-- 2. DASHBOARD GRID: Tech & Certs -->
+<!-- 2. DASHBOARD GRID: 2x2 Layout -->
+    <div class="dash-grid">
+      
+      <!-- [ROW 1, LEFT] TECHNICAL SKILLS -->
+      <div class="blk dash-skills au d4">
+        <div class="blkh">
+          Technical Skills
+          <button class="skill-toggle-btn" (click)="toggleSkills()">
+            @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
+          </button>
         </div>
 
-        <!-- CERTIFICATIONS -->
-        <div class="blk ar d3">
-          <div class="cert-header">
-            <div class="blkh" style="margin-bottom:0;">Certifications</div>
-            <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
-          </div>
-          
-          <div class="cert-carousel">
-            <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
-            <div class="cert-card-wrap" [ngClass]="certAnimClass()">
-              <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
-                <div class="cert-top" [style.background]="currentCert.color + '22'">
-                  <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
-                  <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
+        <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
+          <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
+          <div class="sphere-hint">drag to spin</div>
+        </div>
+
+        @if (skillsExpanded()) {
+          <ul class="skl" role="list">
+            @for (sk of skills; track sk.name; let i = $index) {
+              <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
+                <div class="sk-info">
+                  <span>{{ sk.name }}</span>
+                  <span class="sk-time">{{ sk.time }}</span>
                 </div>
-                <div class="cert-body">
-                  <div class="cert-name">{{ currentCert.name }}</div>
-                  <div class="cert-meta">
-                    <div class="cert-date">{{ currentCert.date }}</div>
-                    <div class="cert-view">View Certificate ↗</div>
-                  </div>
+                <div class="sk-bar">
+                  <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
                 </div>
-              </a>
-            </div>
-            <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
-          </div>
-          
-          <div class="cert-dots">
-            @for (cert of data.certificates; track $index) {
-              <button class="cert-dot" [class.on]="$index === certIndex()"
-                (click)="certNav($index > certIndex() ? 1 : -1)"
-                [attr.aria-label]="'Cert ' + ($index + 1)">
-              </button>
+              </li>
             }
-          </div>
-        </div>
+          </ul>
+        }
+      </div>
 
-        <!-- HEATMAP -->
-        <div class="blk ar d4">
+      <!-- [ROW 1, RIGHT] SOFT SKILLS (NEW) -->
+      <div class="blk dash-soft-skills au d4">
+        <div class="blkh">Soft Skills</div>
+        <ul class="soft-sk-list" role="list">
+          @for (sk of softSkills; track sk.name; let i = $index) {
+            <li class="soft-sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
+              <span class="soft-sk-name">{{ sk.name }}</span>
+              <span class="soft-sk-desc">{{ sk.desc }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- [ROW 2, LEFT] GITHUB ACTIVITY -->
+      <!-- Removed "full-width" class so it sits in half the grid -->
+      <div class="blk dash-github au d5">
+        <div class="dash-github-wrap">
           <div class="blkh">
             GitHub Activity
             @if (!heatmapLoading() && !heatmapError()) {
@@ -154,13 +133,7 @@
 
                 <div class="heatmap-body">
                   <div class="heatmap-days">
-                    <span></span>
-                    <span>Mon</span>
-                    <span></span>
-                    <span>Wed</span>
-                    <span></span>
-                    <span>Fri</span>
-                    <span></span>
+                    <span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span>
                   </div>
 
                   <div class="heatmap-grid">
@@ -211,8 +184,45 @@
             </div>
           }
         </div>
-
       </div>
+
+      <!-- [ROW 2, RIGHT] CERTIFICATIONS -->
+      <div class="blk dash-certs au d5">
+        <div class="cert-header">
+          <div class="blkh" style="margin-bottom:0;">Certifications</div>
+          <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
+        </div>
+        
+        <div class="cert-carousel">
+          <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
+          <div class="cert-card-wrap" [ngClass]="certAnimClass()">
+            <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
+              <div class="cert-top" [style.background]="currentCert.color + '22'">
+                <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
+                <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
+              </div>
+              <div class="cert-body">
+                <div class="cert-name">{{ currentCert.name }}</div>
+                <div class="cert-meta">
+                  <div class="cert-date">{{ currentCert.date }}</div>
+                  <div class="cert-view">View Certificate ↗</div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
+        </div>
+        
+        <div class="cert-dots">
+          @for (cert of data.certificates; track $index) {
+            <button class="cert-dot" [class.on]="$index === certIndex()"
+              (click)="certNav($index > certIndex() ? 1 : -1)"
+              [attr.aria-label]="'Cert ' + ($index + 1)">
+            </button>
+          }
+        </div>
+      </div>
+
     </div>
   </div>
 </section>

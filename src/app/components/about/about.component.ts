@@ -63,6 +63,14 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     { text: 'Ionic',      color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
   ];
 
+  readonly softSkills = [
+    { name: 'Self-Directed Learning', desc: 'Continuously picking up new frameworks and game engines outside of university coursework.' },
+    { name: 'Adaptability', desc: 'Comfortable context-switching between VR game development (C#) and full-stack web architectures (TypeScript).' },
+    { name: 'Time Management', desc: 'Successfully balancing a full-time IT degree with part-time professional shipping deadlines.' },
+    { name: 'Communication', desc: 'Providing clear asynchronous updates and proactive blocking-issue reports in a remote team.' },
+    { name: 'Problem Solving', desc: 'Breaking down complex features (like real-time AI streaming) into actionable, scalable code.' }
+  ];
+
   get currentCert(): Certificate { return this.data.certificates[this.certIndex()]; }
   get certTotal(): number { return this.data.certificates.length; }
 

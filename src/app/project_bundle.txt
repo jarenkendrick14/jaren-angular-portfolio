@@ -28,7 +28,11 @@
 .page-section {
   display: block;
   position: absolute;
-  inset: 0;
+  /* inset: 0 → expanded for iOS < 14.1 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -89,6 +93,9 @@
   height: 42px;
   width: auto;
   object-fit: contain;
+  /* Prevent logo stretch flash on load */
+  display: block;
+  max-width: 160px;
 }
 
 .mlogo span { color: var(--acc); font-style: normal; }
@@ -120,17 +127,24 @@
 #cdot{position:fixed;width:7px;height:7px;background:var(--acc);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);}
 #cring{position:fixed;width:32px;height:32px;border:1.5px solid var(--acc);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s,opacity .25s !important;}
 #cring.big{width:55px;height:55px;opacity:.22;}
-.cl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.12em;color:var(--acc);opacity:0;transition:opacity .2s !important;user-select:none;}
+
+/* inset:0 → expanded for iOS < 14.1 */
+.cl{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.12em;color:var(--acc);opacity:0;transition:opacity .2s !important;user-select:none;}
 #cring.big .cl{opacity:1;}
 
 #prvw{position:fixed;width:290px;height:185px;border-radius:8px;overflow:hidden;pointer-events:none;z-index:9990;opacity:0;transform:translate(-50%,-65%) scale(.88);transition:opacity .28s ease,transform .28s ease !important;border:1px solid var(--bord);box-shadow:0 18px 55px rgba(0,0,0,.55);}
 #prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
-.psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
+
+/* inset:0 → expanded for iOS < 14.1 */
+.psc{position:absolute;top:0;right:0;bottom:0;left:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
 
 .psc-img-wrap {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
@@ -138,7 +152,10 @@
 
 .psc-overlay {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: linear-gradient(to top, rgba(9, 9, 15, 0.95) 0%, rgba(9, 9, 15, 0) 60%);
 }
 
@@ -179,7 +196,6 @@
 ══════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
 
-  /* ── Unlock the body so the whole page can scroll ── */
   :host-context(body) {
     overflow: auto !important;
     height: auto !important;
@@ -195,7 +211,6 @@
     padding-top: 70px;
   }
 
-  /* Resume back to scrollable on mobile */
   :host ::ng-deep .page-resume {
     height: auto !important;
     overflow: visible !important;
@@ -205,7 +220,6 @@
   .mobnav { display: flex; }
 
   .app-root {
-    /* ⚠️ KEY FIX: remove fixed viewport lock on mobile */
     overflow: visible;
     height: auto;
     min-height: 100vh;
@@ -220,13 +234,16 @@
     flex-direction: column;
   }
 
-  /* ⚠️ KEY FIX: override ALL transform/positioning so sections stack vertically */
   .page-section,
   .page-section.active,
   .page-section.prev,
   .page-section.next {
     position: relative !important;
-    inset: auto !important;
+    /* inset: auto → expanded for iOS */
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
     height: auto !important;
     min-height: 100vh !important;
     width: 100% !important;
@@ -240,7 +257,6 @@
 
   #cdot, #cring, #prvw { display: none !important; }
 
-  /* Disable custom cursor on touch devices */
   .thm, .mbg { cursor: pointer; }
 }
 
@@ -967,8 +983,41 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   color: var(--text); 
 }
 
---- DIRECTORY: components\about\about.component.html ---
+/* ══════════ TAGLINE STAGGER ANIMATION ══════════
+   Each phrase fades up one at a time when About page activates.
+   The .au base class keeps them opacity:0 until active-page fires.
+══════════════════════════════════════════════════ */
 
+.tagline-wrap {
+  /* Override the old single-element layout so spans stack vertically */
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+}
+
+.tagline-line {
+  display: block;
+  /* Inherit all apull styles (font, size, etc.) */
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--white);
+  text-align: center;
+}
+
+.tagline-line em {
+  color: var(--acc);
+  font-style: normal;
+}
+
+/* Stagger delays — each phrase waits a beat longer than the last */
+.active-page .tl-p1 { animation-delay: 0.10s !important; }
+.active-page .tl-p2 { animation-delay: 0.28s !important; }
+.active-page .tl-p3 { animation-delay: 0.46s !important; }
+
+--- DIRECTORY: components\about\about.component.html ---
 <section class="page-about" [class.active-page]="active">
   <div class="pin">
     
@@ -990,18 +1039,24 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     <div class="ag">
       
       <!-- LEFT COLUMN: Bio -->
-<div>
-  <!-- Profile Image -->
-  <div class="bio-img-wrap al d1">
-    <!-- Updated with a reliable placeholder -->
-    <img src="assets/images/profile-about.jpg" width="180" height="180" loading="lazy" 
-         alt="Profile" 
-         onerror="this.style.display='none'">
-  </div>
+      <div>
+        <!-- Profile Image -->
+        <div class="bio-img-wrap al d1">
+          <img src="assets/images/profile-about.jpg" width="180" height="180" loading="lazy" 
+               alt="Profile" 
+               onerror="this.style.display='none'">
+        </div>
 
-  <h2 class="apull al d1">20 years old.<br>Already <em>shipping</em> to production.</h2>
+        <!-- ✦ TAGLINE: each phrase fades in one by one on page activation ✦ -->
+        <h2 class="apull tagline-wrap">
+          <span class="tagline-line au tl-p1">Student by day.</span>
+          <span class="tagline-line au tl-p2">Developer by night.</span>
+          <span class="tagline-line tagline-accent au tl-p3"><em>Always learning.</em></span>
+        </h2>
+
         <div class="abio au d2">
-          <p>I am a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
+          <!-- ✦ UPDATED OPENING LINE ✦ -->
+          <p>Hello! My name is Jaren. I'm a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
           <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
           <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
           
@@ -1504,13 +1559,15 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-.pheader { display: flex; align-items: baseline; gap: 2rem; margin-bottom: 3rem; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
+/* ─── REMOVED direct animation: from .pheader — global .active-page .au handles it ─── */
+.pheader { display: flex; align-items: baseline; gap: 2rem; margin-bottom: 3rem; }
 .ph2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(3rem, 5vw, 4.5rem); letter-spacing: -.04em; color: var(--white); line-height: 1; }
 .pcnt { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .1em; }
 .phr { flex: 1; height: 1px; background: var(--bord); }
 
 .blog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
 
+/* ─── REMOVED direct animation: from .bc — global .active-page .as handles it ─── */
 .bc {
   display: flex;
   flex-direction: column;
@@ -1521,10 +1578,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   transition: transform .25s, border-color .25s;
   cursor: pointer;
   position: relative;
-  animation: scaleIn .5s cubic-bezier(.22,1,.36,1) ease both;
 }
-.bc:first-child  { animation-delay: .10s; }
-.bc:nth-child(2) { animation-delay: .18s; }
 .bc:hover { transform: translateY(-5px); border-color: var(--acc); }
 
 .bc-img { height: 200px; background: var(--bg); border-bottom: 1px solid var(--bord); overflow: hidden; }
@@ -1542,8 +1596,8 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 .bc-read    { font-size: .95rem; font-weight: 600; color: var(--acc); display: inline-flex; align-items: center; gap: .4rem; transition: gap .2s; }
 .bc:hover .bc-read { gap: .75rem; }
 
-@keyframes fadeUp  { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes scaleIn { from { opacity: 0; transform: scale(.88); }       to { opacity: 1; transform: scale(1); } }
+@keyframes fadeUp  { from { opacity: 0; transform: translateY(72px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.82); }        to { opacity: 1; transform: scale(1); } }
 
 @media (max-width: 960px) {
   .page-blog { padding: 6.5rem 1.5rem 4rem; }
@@ -2139,11 +2193,13 @@ export class ContactComponent {
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
+/* ─── REMOVED direct animation: from .slabel — global .active-page .au handles it ─── */
+.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
 .sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
 
+/* ─── REMOVED direct animation: from .exph — global .active-page .au handles it ─── */
 .exph {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
@@ -2151,22 +2207,19 @@ export class ContactComponent {
   letter-spacing: -.04em;
   color: var(--white);
   margin-bottom: 4rem;
-  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .10s ease both;
 }
 
 .tl { display: flex; flex-direction: column; }
 
+/* ─── REMOVED direct animation: from .tlr — global .active-page .al/.ar handles it ─── */
 .tlr {
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 4rem;
   padding: 3rem 0;
   border-bottom: 1px solid var(--bord);
-  animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both;
 }
 .tlr:last-child { border-bottom: none; padding-bottom: 0; }
-.tlr:first-child { padding-top: 0; animation-delay: .18s; }
-.tlr:nth-child(2) { animation-delay: .26s; }
 
 .tlpd {
   font-family: 'JetBrains Mono', monospace;
@@ -2215,8 +2268,11 @@ export class ContactComponent {
   border: 1px solid var(--bord);
 }
 
-@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
+/* Keyframes are defined in global styles.css; redeclare here so they're 
+   available if component CSS needs to reference them (e.g. for caret animations) */
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(72px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-65px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(65px); }  to { opacity: 1; transform: translateX(0); } }
 
 @media (max-width: 960px) {
   .page-experience { padding: 6.5rem 1.5rem 4rem; }
@@ -2537,20 +2593,25 @@ export class ExperienceComponent {
         </div>
       </div>
       
-      <!-- PROFILE PHOTO -->
+      <!-- PROFILE PHOTO — LCP element: fetchpriority=high, no lazy load -->
       <div class="h-photo au d3">
         <div class="h-photo-placeholder">
-          <!-- UPDATED: Now uses profile.png -->
-          <img src="assets/images/profile.png" alt="Jaren Kendrick"
-               style="width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0;"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" />
+          <!-- fetchpriority="high" tells browser to load this before other images -->
+          <picture>
+            <source srcset="assets/images/profile.webp" type="image/webp">
+            <img src="assets/images/profile.png" alt="Jaren Kendrick"
+                 fetchpriority="high"
+                 width="610" height="610"
+                 style="width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" />
+          </picture>
           <!-- Fallback Icon -->
           <svg style="display:none;" width="60" height="60" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </div>
       </div>
     </div>
 
-    <!-- FEATURED PROJECTS -->
+    <!-- FEATURED PROJECTS — lazy-load thumbnails, they're below the fold -->
     <div class="feat-section au d5">
       <p class="feat-label">Featured Projects</p>
       <div class="feat-grid">
@@ -2561,9 +2622,14 @@ export class ExperienceComponent {
                role="button" tabindex="0">
             
             <div class="feat-thumb">
-              <img [src]="item.project.imgs[1]" [alt]="item.project.name"
-                   style="width:100%;height:100%;object-fit:cover;"
-                   onerror="this.style.display='none'" />
+              <picture>
+                <source [attr.srcset]="item.project.imgs[1].replace(/\.(png|jpg)$/, '.webp')" type="image/webp">
+                <img [src]="item.project.imgs[1]" [alt]="item.project.name"
+                     loading="lazy"
+                     width="630" height="370"
+                     style="width:100%;height:100%;object-fit:cover;"
+                     onerror="this.style.display='none'" />
+              </picture>
             </div>
 
             <div class="feat-body">
@@ -2969,11 +3035,13 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       </div>
       <div class="ov-body">
         <h2 class="ov-name">{{ project()!.name }}</h2>
-<div class="ov-imgs">
+        <div class="ov-imgs">
           @for (img of project()!.imgs; track $index) {
-            
             <div class="ov-img" style="position: relative;">
-              <img [src]="img" [alt]="project()!.name" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;">
+              <!-- inset:0 replaced with explicit top/right/bottom/left for iOS 14.0 compat -->
+              <img [src]="img" [alt]="project()!.name"
+                   loading="lazy"
+                   style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block;">
             </div>
           }
         </div>
@@ -2996,10 +3064,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
                 }
               }
               @if (project()!.github) {
-                <a [href]="project()!.github!" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub →</a>
-              }
-              @if (!project()!.live && !project()!.github) {
-                <span class="links-coming">Links coming soon</span>
+                <a [href]="project()!.github" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub ↗</a>
               }
             </div>
           </div>
@@ -3052,12 +3117,12 @@ export class ProjectOverlayComponent {
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
+/* ─── REMOVED direct animation: — global .active-page .au handles .pheader ─── */
 .pheader {
   display: flex;
   align-items: baseline;
   gap: 2rem;
   margin-bottom: 3rem;
-  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both;
 }
 
 .ph2 {
@@ -3080,6 +3145,7 @@ export class ProjectOverlayComponent {
 
 .plist { list-style: none; width: 100%; padding: 0; }
 
+/* ─── REMOVED direct animation: from .pi — global .active-page .al handles it ─── */
 .pi {
   display: grid;
   grid-template-columns: 3rem 1fr auto 2rem;
@@ -3091,7 +3157,6 @@ export class ProjectOverlayComponent {
   transition: border-color .2s, padding .2s, background .2s;
   position: relative;
   overflow: hidden;
-  animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both;
 }
 
 .pi:first-child { border-top: 1px solid var(--bord); }
@@ -3151,18 +3216,15 @@ export class ProjectOverlayComponent {
   transition: color .2s, transform .2s;
 }
 
-.active-page .ph2,
-.active-page .pheader { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) ease both; }
-.active-page .pi      { animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both; }
+/* Stagger delays gated on active-page so they only fire on navigation */
+.active-page .pi:nth-child(1) { animation-delay: .12s !important; }
+.active-page .pi:nth-child(2) { animation-delay: .22s !important; }
+.active-page .pi:nth-child(3) { animation-delay: .32s !important; }
+.active-page .pi:nth-child(4) { animation-delay: .42s !important; }
+.active-page .pi:nth-child(5) { animation-delay: .52s !important; }
 
-@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
-
-.pi:nth-child(1) { animation-delay: .10s; }
-.pi:nth-child(2) { animation-delay: .18s; }
-.pi:nth-child(3) { animation-delay: .26s; }
-.pi:nth-child(4) { animation-delay: .34s; }
-.pi:nth-child(5) { animation-delay: .44s; }
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(72px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-65px); } to { opacity: 1; transform: translateX(0); } }
 
 @media (max-width: 960px) {
   .page-projects { padding: 6.5rem 1.5rem 4rem; }
@@ -3909,16 +3971,28 @@ export class ResumeComponent implements OnChanges {
   text-decoration: none;
   font-size: 0;
   line-height: 0;
+  /* ✦ FIX: reserve the exact space the image will occupy so no reflow/stretch */
+  width: 140px;
+  height: 50px;
 }
 
 .sb-logo-img {
-  height: 64px;         /* Increased from 44px */
-  width: auto;
-  max-width: 180px;     /* Increased from 140px */
+  /* ✦ FIX: explicit dimensions + object-fit prevents the momentary stretch
+     that happens when the browser doesn't know the aspect ratio yet */
+  width: 140px;
+  height: 50px;
   object-fit: contain;
   display: block;
-  transition: opacity .2s ease;
+  /* Smooth fade-in instead of popping in stretched */
+  opacity: 0;
+  animation: logoFadeIn .3s ease .1s forwards;
 }
+
+@keyframes logoFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .sb-logo:hover .sb-logo-img { opacity: .8; }
 
 .sb-nav {
@@ -4028,7 +4102,7 @@ export class ResumeComponent implements OnChanges {
 }
 :host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
 
-/* ══════════ TERMINAL TRIGGER — PROMINENT ══════════ */
+/* ══════════ TERMINAL TRIGGER ══════════ */
 .term-trigger {
   display: flex;
   align-items: center;
@@ -4055,7 +4129,6 @@ export class ResumeComponent implements OnChanges {
   box-shadow: 0 0 16px rgba(139, 92, 246, .25), 0 0 4px rgba(139, 92, 246, .15);
 }
 
-/* Subtle animated glow sweep */
 .term-trigger::after {
   content: '';
   position: absolute;
@@ -4065,8 +4138,8 @@ export class ResumeComponent implements OnChanges {
   animation: termSweep 3s ease infinite;
 }
 @keyframes termSweep {
-  0% { left: -100%; }
-  50% { left: 100%; }
+  0%   { left: -100%; }
+  50%  { left: 100%; }
   100% { left: 100%; }
 }
 
@@ -4116,7 +4189,6 @@ export class ResumeComponent implements OnChanges {
         (click)="goTo(item.index)"
         [attr.aria-label]="item.label"
         [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
-        <div class="sdot"></div>
         <span class="slbl">{{ item.short }}</span>
       </button>
     }
@@ -4194,7 +4266,6 @@ export class SidebarComponent {
 /*
   Terminal is intentionally theme-agnostic — it always uses the dark-mode
   lavender (#a78bfa) regardless of whether the page is in light or dark mode.
-  This means we hardcode the purple instead of using var(--acc).
 */
 
 .terminal {
@@ -4204,7 +4275,6 @@ export class SidebarComponent {
   right: 0;
   height: 0;
   background: #06060d;
-  /* Hardcoded lavender border — ignores page theme */
   border-top: 2px solid #a78bfa;
   z-index: 9500;
   display: flex;
@@ -4232,7 +4302,6 @@ export class SidebarComponent {
 .term-title {
   font-size: .72rem;
   letter-spacing: .1em;
-  /* muted color hardcoded — dark bg always */
   color: #6e6c8a;
 }
 
@@ -4257,19 +4326,20 @@ export class SidebarComponent {
   padding: 1rem 1.5rem;
   font-size: .82rem;
   line-height: 1.85;
-  color: #a0a0c0;
+  /* ✦ Near-white so output is actually legible against the dark bg */
+  color: #e2e0f4;
 }
 .term-output::-webkit-scrollbar { width: 4px; }
 .term-output::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 4px; }
 
-/* All tl-* classes use hardcoded colors — never var(--acc) */
 :host ::ng-deep .tl-cmd  { color: #a78bfa; }
 :host ::ng-deep .tl-ok   { color: #34d399; }
 :host ::ng-deep .tl-err  { color: #f87171; }
-:host ::ng-deep .tl-dim  { color: #504e6a; }
+:host ::ng-deep .tl-dim  { color: #8c8aaa; }
 :host ::ng-deep .tl-head { color: #ffffff; font-weight: 600; }
 :host ::ng-deep .tl-acc  { color: #a78bfa; }
 :host ::ng-deep .tl-warn { color: #fbbf24; }
+:host ::ng-deep .tl-val  { color: #e2e0f4; }
 
 .term-prompt-row {
   display: flex;
@@ -4282,7 +4352,6 @@ export class SidebarComponent {
 }
 
 .term-ps {
-  /* Hardcoded lavender */
   color: #a78bfa;
   font-size: .82rem;
   white-space: nowrap;
@@ -4292,11 +4361,11 @@ export class SidebarComponent {
   flex: 1;
   background: none;
   border: none;
+  /* ✦ FIXED: was #e0def0 (fine) — keeping same */
   color: #e0def0;
   font-family: 'JetBrains Mono', monospace;
   font-size: .82rem;
   outline: none;
-  /* Hardcoded caret */
   caret-color: #a78bfa;
   padding: 0;
 }
