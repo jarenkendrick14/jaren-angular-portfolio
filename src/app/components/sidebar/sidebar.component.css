@@ -18,16 +18,28 @@
   text-decoration: none;
   font-size: 0;
   line-height: 0;
+  /* ✦ FIX: reserve the exact space the image will occupy so no reflow/stretch */
+  width: 140px;
+  height: 50px;
 }
 
 .sb-logo-img {
-  height: 64px;         /* Increased from 44px */
-  width: auto;
-  max-width: 180px;     /* Increased from 140px */
+  /* ✦ FIX: explicit dimensions + object-fit prevents the momentary stretch
+     that happens when the browser doesn't know the aspect ratio yet */
+  width: 140px;
+  height: 50px;
   object-fit: contain;
   display: block;
-  transition: opacity .2s ease;
+  /* Smooth fade-in instead of popping in stretched */
+  opacity: 0;
+  animation: logoFadeIn .3s ease .1s forwards;
 }
+
+@keyframes logoFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .sb-logo:hover .sb-logo-img { opacity: .8; }
 
 .sb-nav {
@@ -137,7 +149,7 @@
 }
 :host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
 
-/* ══════════ TERMINAL TRIGGER — PROMINENT ══════════ */
+/* ══════════ TERMINAL TRIGGER ══════════ */
 .term-trigger {
   display: flex;
   align-items: center;
@@ -164,7 +176,6 @@
   box-shadow: 0 0 16px rgba(139, 92, 246, .25), 0 0 4px rgba(139, 92, 246, .15);
 }
 
-/* Subtle animated glow sweep */
 .term-trigger::after {
   content: '';
   position: absolute;
@@ -174,8 +185,8 @@
   animation: termSweep 3s ease infinite;
 }
 @keyframes termSweep {
-  0% { left: -100%; }
-  50% { left: 100%; }
+  0%   { left: -100%; }
+  50%  { left: 100%; }
   100% { left: 100%; }
 }
 

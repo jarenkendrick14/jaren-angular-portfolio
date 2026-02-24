@@ -383,3 +383,37 @@
   /* Ensure it has a color or it will be invisible */
   color: var(--text); 
 }
+
+/* ══════════ TAGLINE STAGGER ANIMATION ══════════
+   Each phrase fades up one at a time when About page activates.
+   The .au base class keeps them opacity:0 until active-page fires.
+══════════════════════════════════════════════════ */
+
+.tagline-wrap {
+  /* Override the old single-element layout so spans stack vertically */
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+}
+
+.tagline-line {
+  display: block;
+  /* Inherit all apull styles (font, size, etc.) */
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--white);
+  text-align: center;
+}
+
+.tagline-line em {
+  color: var(--acc);
+  font-style: normal;
+}
+
+/* Stagger delays — each phrase waits a beat longer than the last */
+.active-page .tl-p1 { animation-delay: 0.10s !important; }
+.active-page .tl-p2 { animation-delay: 0.28s !important; }
+.active-page .tl-p3 { animation-delay: 0.46s !important; }

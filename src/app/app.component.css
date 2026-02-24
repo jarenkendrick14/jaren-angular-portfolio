@@ -26,7 +26,11 @@
 .page-section {
   display: block;
   position: absolute;
-  inset: 0;
+  /* inset: 0 → expanded for iOS < 14.1 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -87,6 +91,9 @@
   height: 42px;
   width: auto;
   object-fit: contain;
+  /* Prevent logo stretch flash on load */
+  display: block;
+  max-width: 160px;
 }
 
 .mlogo span { color: var(--acc); font-style: normal; }
@@ -118,17 +125,24 @@
 #cdot{position:fixed;width:7px;height:7px;background:var(--acc);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);}
 #cring{position:fixed;width:32px;height:32px;border:1.5px solid var(--acc);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s,opacity .25s !important;}
 #cring.big{width:55px;height:55px;opacity:.22;}
-.cl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.12em;color:var(--acc);opacity:0;transition:opacity .2s !important;user-select:none;}
+
+/* inset:0 → expanded for iOS < 14.1 */
+.cl{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.12em;color:var(--acc);opacity:0;transition:opacity .2s !important;user-select:none;}
 #cring.big .cl{opacity:1;}
 
 #prvw{position:fixed;width:290px;height:185px;border-radius:8px;overflow:hidden;pointer-events:none;z-index:9990;opacity:0;transform:translate(-50%,-65%) scale(.88);transition:opacity .28s ease,transform .28s ease !important;border:1px solid var(--bord);box-shadow:0 18px 55px rgba(0,0,0,.55);}
 #prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
-.psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
+
+/* inset:0 → expanded for iOS < 14.1 */
+.psc{position:absolute;top:0;right:0;bottom:0;left:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
 
 .psc-img-wrap {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
@@ -136,7 +150,10 @@
 
 .psc-overlay {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: linear-gradient(to top, rgba(9, 9, 15, 0.95) 0%, rgba(9, 9, 15, 0) 60%);
 }
 
@@ -177,7 +194,6 @@
 ══════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
 
-  /* ── Unlock the body so the whole page can scroll ── */
   :host-context(body) {
     overflow: auto !important;
     height: auto !important;
@@ -193,7 +209,6 @@
     padding-top: 70px;
   }
 
-  /* Resume back to scrollable on mobile */
   :host ::ng-deep .page-resume {
     height: auto !important;
     overflow: visible !important;
@@ -203,7 +218,6 @@
   .mobnav { display: flex; }
 
   .app-root {
-    /* ⚠️ KEY FIX: remove fixed viewport lock on mobile */
     overflow: visible;
     height: auto;
     min-height: 100vh;
@@ -218,13 +232,16 @@
     flex-direction: column;
   }
 
-  /* ⚠️ KEY FIX: override ALL transform/positioning so sections stack vertically */
   .page-section,
   .page-section.active,
   .page-section.prev,
   .page-section.next {
     position: relative !important;
-    inset: auto !important;
+    /* inset: auto → expanded for iOS */
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
     height: auto !important;
     min-height: 100vh !important;
     width: 100% !important;
@@ -238,6 +255,5 @@
 
   #cdot, #cring, #prvw { display: none !important; }
 
-  /* Disable custom cursor on touch devices */
   .thm, .mbg { cursor: pointer; }
 }

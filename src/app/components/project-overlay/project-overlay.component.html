@@ -11,11 +11,13 @@
       </div>
       <div class="ov-body">
         <h2 class="ov-name">{{ project()!.name }}</h2>
-<div class="ov-imgs">
+        <div class="ov-imgs">
           @for (img of project()!.imgs; track $index) {
-            
             <div class="ov-img" style="position: relative;">
-              <img [src]="img" [alt]="project()!.name" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;">
+              <!-- inset:0 replaced with explicit top/right/bottom/left for iOS 14.0 compat -->
+              <img [src]="img" [alt]="project()!.name"
+                   loading="lazy"
+                   style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block;">
             </div>
           }
         </div>
@@ -38,10 +40,7 @@
                 }
               }
               @if (project()!.github) {
-                <a [href]="project()!.github!" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub →</a>
-              }
-              @if (!project()!.live && !project()!.github) {
-                <span class="links-coming">Links coming soon</span>
+                <a [href]="project()!.github" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub ↗</a>
               }
             </div>
           </div>

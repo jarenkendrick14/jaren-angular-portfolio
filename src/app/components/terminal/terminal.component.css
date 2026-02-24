@@ -1,7 +1,6 @@
 /*
   Terminal is intentionally theme-agnostic — it always uses the dark-mode
   lavender (#a78bfa) regardless of whether the page is in light or dark mode.
-  This means we hardcode the purple instead of using var(--acc).
 */
 
 .terminal {
@@ -11,7 +10,6 @@
   right: 0;
   height: 0;
   background: #06060d;
-  /* Hardcoded lavender border — ignores page theme */
   border-top: 2px solid #a78bfa;
   z-index: 9500;
   display: flex;
@@ -39,7 +37,6 @@
 .term-title {
   font-size: .72rem;
   letter-spacing: .1em;
-  /* muted color hardcoded — dark bg always */
   color: #6e6c8a;
 }
 
@@ -64,19 +61,20 @@
   padding: 1rem 1.5rem;
   font-size: .82rem;
   line-height: 1.85;
-  color: #a0a0c0;
+  /* ✦ Near-white so output is actually legible against the dark bg */
+  color: #e2e0f4;
 }
 .term-output::-webkit-scrollbar { width: 4px; }
 .term-output::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 4px; }
 
-/* All tl-* classes use hardcoded colors — never var(--acc) */
 :host ::ng-deep .tl-cmd  { color: #a78bfa; }
 :host ::ng-deep .tl-ok   { color: #34d399; }
 :host ::ng-deep .tl-err  { color: #f87171; }
-:host ::ng-deep .tl-dim  { color: #504e6a; }
+:host ::ng-deep .tl-dim  { color: #8c8aaa; }
 :host ::ng-deep .tl-head { color: #ffffff; font-weight: 600; }
 :host ::ng-deep .tl-acc  { color: #a78bfa; }
 :host ::ng-deep .tl-warn { color: #fbbf24; }
+:host ::ng-deep .tl-val  { color: #e2e0f4; }
 
 .term-prompt-row {
   display: flex;
@@ -89,7 +87,6 @@
 }
 
 .term-ps {
-  /* Hardcoded lavender */
   color: #a78bfa;
   font-size: .82rem;
   white-space: nowrap;
@@ -99,11 +96,11 @@
   flex: 1;
   background: none;
   border: none;
+  /* ✦ FIXED: was #e0def0 (fine) — keeping same */
   color: #e0def0;
   font-family: 'JetBrains Mono', monospace;
   font-size: .82rem;
   outline: none;
-  /* Hardcoded caret */
   caret-color: #a78bfa;
   padding: 0;
 }

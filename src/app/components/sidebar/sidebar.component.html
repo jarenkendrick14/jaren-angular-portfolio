@@ -18,7 +18,6 @@
         (click)="goTo(item.index)"
         [attr.aria-label]="item.label"
         [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
-        <div class="sdot"></div>
         <span class="slbl">{{ item.short }}</span>
       </button>
     }
