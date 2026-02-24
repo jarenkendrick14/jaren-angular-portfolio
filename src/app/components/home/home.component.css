@@ -213,10 +213,40 @@
 
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 2rem; }
-  .h-top-grid { flex-direction: column-reverse; align-items: flex-start; gap: 2.5rem; margin-bottom: 3rem; }
   
-  .h-photo { width: 220px; height: 220px; } /* Increased from 160px */
+  /* ✦ FIX 1: Center the Photo and Text Blocks ✦ */
+  .h-top-grid { 
+    flex-direction: column-reverse; 
+    align-items: center; /* Centers the Photo horizontally */
+    gap: 2.5rem; 
+    margin-bottom: 3rem; 
+  }
+  
+  /* ✦ FIX 2: Center the Text Content ✦ */
+  .h-text {
+    text-align: center;      /* Centers the paragraphs and headings */
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Centers flex children (like the location badge) */
+    width: 100%;
+  }
+
+  /* Ensure headings fill width so text-align works */
+  .hname { width: 100%; }
+
+  .h-photo { 
+    width: 220px; 
+    height: 220px; 
+    /* Extra safety to ensure photo doesn't float left */
+    margin: 0 auto; 
+  }
   
   .feat-grid { grid-template-columns: 1fr; }
   .btn { cursor: pointer !important; }
+
+  /* ✦ FIX 3: Center Buttons ✦ */
+  .hbtns {
+    justify-content: center;
+    margin-top: 1rem;
+  }
 }

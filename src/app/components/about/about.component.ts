@@ -98,6 +98,12 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.initSphere();
     this.fetchHeatmap();
     this.fetchCommits();
+
+    // If on mobile, run counters immediately because 
+    // the 'active' input might not trigger correctly during scrolling.
+    if (window.innerWidth < 960) {
+      setTimeout(() => this.animateCounters(), 500);
+    }
   }
 
   ngOnDestroy() { cancelAnimationFrame(this.animId); }
@@ -251,7 +257,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   /* ── Custom Vanilla JS Sphere ── */
   private initSphere() {
-    const RADIUS = 95;
+    const RADIUS = 150;
     const items = this.sphereTags.map((tag, i) => {
       const phi   = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;

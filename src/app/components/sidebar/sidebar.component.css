@@ -1,3 +1,4 @@
+/* ══════════ SIDEBAR LAYOUT ══════════ */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
@@ -11,6 +12,7 @@
   padding: 2rem 0;
 }
 
+/* ✦ LOGO: Increased size from 140px to 180px ✦ */
 .sb-logo {
   display: flex;
   align-items: center;
@@ -18,19 +20,15 @@
   text-decoration: none;
   font-size: 0;
   line-height: 0;
-  /* ✦ FIX: reserve the exact space the image will occupy so no reflow/stretch */
-  width: 140px;
-  height: 50px;
+  width: 180px;  /* Bigger width */
+  height: 80px;  /* Bigger height */
 }
 
 .sb-logo-img {
-  /* ✦ FIX: explicit dimensions + object-fit prevents the momentary stretch
-     that happens when the browser doesn't know the aspect ratio yet */
-  width: 140px;
-  height: 50px;
+  width: 180px;  /* Match container */
+  height: 80px;  /* Match container */
   object-fit: contain;
   display: block;
-  /* Smooth fade-in instead of popping in stretched */
   opacity: 0;
   animation: logoFadeIn .3s ease .1s forwards;
 }
@@ -42,58 +40,88 @@
 
 .sb-logo:hover .sb-logo-img { opacity: .8; }
 
+/* ══════════ NAVIGATION TRACK (UPDATED) ══════════ */
 .sb-nav {
   margin: auto 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
+  gap: 2rem; /* Spacing between dots */
   width: 100%;
+  padding-left: 3.5rem; /* Indent the whole group */
 }
 
-.sb-line {
+/* THE VERTICAL TRACK LINE */
+.sb-nav::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  /* Aligns line with center of dots: Padding (3.5rem) + Half Dot Width (~5px) */
+  left: calc(3.5rem + 4.5px);
   width: 1px;
-  height: 1.8rem;
   background: var(--bord);
-  display: block;
+  z-index: 0;
 }
 
 .sdw {
   display: flex;
   align-items: center;
-  gap: .7rem;
+  gap: 1.25rem;
   cursor: pointer;
-  padding: .2rem 0;
-  justify-content: center;
-  width: 100px;
   background: none;
   border: none;
   font-family: inherit;
+  position: relative;
+  z-index: 1; /* Sits on top of the line */
+  padding: 0;
 }
 
+/* THE DOT (Circle Thingy) */
 .sdot {
-  width: 9px; height: 9px;
+  width: 10px; 
+  height: 10px;
   border-radius: 50%;
+  /* Default: Hollow Ring */
   border: 1.5px solid var(--muted);
-  background: transparent;
+  background: var(--sb); /* Match sidebar bg to hide the line behind it */
   flex-shrink: 0;
-  transition: border-color .2s, background .2s;
-}
-.sdw.on .sdot, .sdw:hover .sdot {
-  background: var(--acc);
-  border-color: var(--acc);
+  transition: all 0.3s ease;
 }
 
 .slbl {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .65rem;
-  letter-spacing: .1em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   color: var(--muted);
   text-transform: uppercase;
-  transition: color .2s;
-  width: 52px;
+  transition: color 0.3s ease;
+  font-weight: 500;
 }
-.sdw.on .slbl, .sdw:hover .slbl { color: var(--white); }
 
+/* ══════════ ACTIVE STATES ══════════ */
+
+/* Active Dot: Filled, Colored, Glowing */
+.sdw.on .sdot {
+  background: var(--acc);
+  border-color: var(--acc);
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+/* Active Text: Colored & Bold */
+.sdw.on .slbl {
+  color: var(--acc);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+}
+
+/* Hover State */
+.sdw:hover .sdot { border-color: var(--text); }
+.sdw:hover .slbl { color: var(--white); }
+
+/* ══════════ BOTTOM SECTION ══════════ */
 .sb-bot {
   display: flex;
   flex-direction: column;

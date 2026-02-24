@@ -101,7 +101,7 @@ export class TerminalComponent {
       `  <span class="tl-acc">Uni</span>       <span class="tl-val">Holy Angel University (2027)</span>`,
       `  <span class="tl-acc">Status</span>    <span class="tl-ok">● Open to internship</span>`,
       ``,
-      `  <span class="tl-quote">"I don't just write code — I ship things."</span>`,
+      `  <span class="tl-quote">""Student by day. Developer by night. Always learning."</span>`,
     ],
     contact: () => [
       ``,
