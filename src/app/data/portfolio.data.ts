@@ -23,13 +23,15 @@ export class PortfolioDataService {
       desc: 'A VR self-discovery app built in Unreal Engine 5.5 using Blueprints for gameplay systems. Users interact with metaphorical cards, with Wit.ai handling voice-to-text.',
       purpose: 'Engineered immersive, privacy-first VR mechanics and a scalable Android companion app for VirtuIntelligence.',
       features: ['Interactive card mechanics in VR', 'AI voice journaling via Wit.ai', 'Local data persistence for privacy', 'Cross-platform deployment'],
-      live: [{ name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/' }, { name: 'Google Play ↗', url: '#' }],
-      
+      live: [
+        { name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/pathfinder/24710873175273758/' },
+        { name: 'Google Play ↗', url: 'https://play.google.com/store/apps/details?id=com.HumanSide.Pathfinder' }
+      ],
       github: null,
       imgs: [
-        'assets/images/pathfinder-1.png', // Fixed .png
-        'assets/images/pathfinder-2.png', // Fixed .png
-        'assets/images/pathfinder-3.jpg'  // Fixed .jpg (from your list)
+        'assets/images/pathfinder-1.png',
+        'assets/images/pathfinder-2.png',
+        'assets/images/pathfinder-3.jpg'
       ]
     },
     {
@@ -40,10 +42,10 @@ export class PortfolioDataService {
       desc: 'A full-stack real-time chat application with an AI mediator powered by xAI Grok. Features WebSocket-based messaging, streaming AI responses, and a full @mention system.',
       purpose: 'Architected a complete real-time communication platform with AI integration, demonstrating proficiency in WebSocket protocols and full-stack TypeScript.',
       features: ['Real-time WebSocket messaging', 'Streaming AI responses via xAI Grok', 'Turn management system', '@mention filtered dropdown', 'Cross-platform via Ionic'],
-      live: [{ name: 'Live Site ↗', url: 'https://symposium.jarenkendrick.com/' }],
+      live: [{ name: 'Live Site ↗', url: 'https://symposium-mauve.vercel.app/' }],
       github: null,
       imgs: [
-        'assets/images/symposium-1.png', // Fixed .png
+        'assets/images/symposium-1.png',
         'assets/images/symposium-2.png',
         'assets/images/symposium-3.png'
       ]
@@ -56,10 +58,10 @@ export class PortfolioDataService {
       desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches.',
       purpose: 'Architected a complete full-stack application demonstrating secure data flow from database to frontend UI.',
       features: ['JWT-based authentication system', 'Protected routing and navigation', 'Backend-connected dynamic forms', 'Real-time destination filtering'],
-      live: [{ name: 'Live Site ↗', url: 'https://travel-atelier.jarenkendrick.com/' }],
-      github: 'https://github.com/jarenkendrick14/travel-atelier',
+      live: null, // Placeholder as requested
+      github: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
       imgs: [
-        'assets/images/travel-atelier-1.png', // Fixed .png
+        'assets/images/travel-atelier-1.png',
         'assets/images/travel-atelier-2.png',
         'assets/images/travel-atelier-3.png'
       ]
@@ -72,10 +74,10 @@ export class PortfolioDataService {
       desc: 'Comprehensive e-commerce platform for a streetwear brand, featuring a full shopping experience with persistent cart, checkout flow, and admin dashboard.',
       purpose: 'Designed a scalable MongoDB schema with embedded cart architecture and integrated it with a reactive Vue 3 frontend.',
       features: ['Persistent cart state', 'Full CRUD admin dashboard', 'JWT authentication', 'Product search and paginated filtering'],
-      live: [{ name: 'Live Site ↗', url: 'https://dropify.jarenkendrick.com/' }],
-      github: 'https://github.com/jarenkendrick14/dropify',
+      live: [{ name: 'Live Site ↗', url: 'https://dropifystore.netlify.app/' }],
+      github: 'https://github.com/jarenkendrick14/6WCSERVER-WD303-Dropify',
       imgs: [
-        'assets/images/dropify-1.png', // Fixed .png
+        'assets/images/dropify-1.png',
         'assets/images/dropify-2.png',
         'assets/images/dropify-3.png'
       ]
@@ -88,10 +90,10 @@ export class PortfolioDataService {
       desc: "Company website for a local brand built in Angular. Implemented client-side routing, dynamic rendering components, and a custom employee directory.",
       purpose: "Built a fast, scalable frontend structure using Angular best practices and structural directives.",
       features: ['Angular client-side routing', 'Dynamic product rendering', 'Conditional component styling', 'Deployed to Netlify'],
-      live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app/' }],
-      github: 'https://github.com/jarenkendrick14/einsteins-art',
+      live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app' }],
+      github: null, // Placeholder as requested
       imgs: [
-        'assets/images/einsteins-art-1.png', // Fixed .png
+        'assets/images/einsteins-art-1.png',
         'assets/images/einsteins-art-2.png',
         'assets/images/einsteins-art-3.png'
       ]
@@ -119,9 +121,8 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'From Game Dev to Full Stack: What Shipping a VR App Taught Me',
       excerpt: 'When I shipped PathFinder to the Meta Quest store, I learned more about software development than any tutorial ever taught me. Here\'s what directly translates to web development.',
-      // Fixed: Mapped to maxresdefault.jpg
-      img: 'assets/images/maxresdefault.jpg',
-      // Fixed: Mapped internal content images to files that exist
+      // Hero Image (Video Thumbnail style)
+      img: 'assets/images/maxresdefault.jpg', 
       content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p>
 
 <img src="assets/images/blog-vr-shipping.jpg" alt="VR development workflow">
@@ -135,7 +136,6 @@ export class PortfolioDataService {
 <p>Unity's component system is event-driven and reactive. A player picks up an item — the inventory updates, the HUD reflects it, the game state records it. Sound familiar? When I picked up Vue.js and its Composition API, the mental model was <strong>already there</strong>. Data changes, view updates. The syntax was different. The thinking wasn't.</p>
 <p>C# gave me a very clear sense of data flow and component responsibility before I ever wrote a composable. I think that's a genuine advantage — understanding architecture before you're handed a framework that handles it for you.</p>
 
-<!-- Fixed: Using pathfinder-2.png as a code/system visual -->
 <img src="assets/images/pathfinder-2.png" alt="Unity and Angular side by side">
 <div class="blog-img-caption">From Unity's event systems to Angular's reactive signals — the pattern is the same.</div>
 
@@ -151,7 +151,7 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
       excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
-      // Fixed: Using existing file for hero
+      // Hero Image (Travel Atelier Home)
       img: 'assets/images/travel-atelier-1.png',
       content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p>
 
@@ -159,7 +159,6 @@ export class PortfolioDataService {
 <p>I've done it. I've built projects with pure HTML, CSS, and JavaScript. No build step. No dependencies. Total control. I knew exactly what every line did because I wrote every line. For a showcase site — a product page, a portfolio — vanilla is often the right answer.</p>
 <p>It's fast, it's transparent, and it forces you to understand fundamentals. If you've never built a simple SPA without a framework, you don't really know what frameworks are solving for you. I mean that seriously.</p>
 
-<!-- Fixed: Using existing file -->
 <img src="assets/images/blog-vue-setup.png" alt="Vue.js project setup">
 <div class="blog-img-caption">Travel Atelier's Vue.js 3 project structure — Composition API all the way.</div>
 
@@ -171,7 +170,6 @@ export class PortfolioDataService {
 <p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p>
 <p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p>
 
-<!-- Fixed: Using existing file -->
 <img src="assets/images/travel-atelier-2.png" alt="Vue.js Composition API code">
 <div class="blog-img-caption">Composables in Vue feel natural coming from Unity's component model.</div>
 
@@ -195,13 +193,12 @@ export class PortfolioDataService {
       name: 'Samantha T.',
       role: 'Classmate & Collaborator · HAU',
       initial: 'S',
-      // Fixed: .png extension
       img: 'assets/images/testimonial-samantha.png'
     },
     {
       quote: '"The web application Jaren built exceeded expectations. Clean database structure, solid API design, and delivered on time. A strong full-stack candidate."',
-      name: 'Kenneth Punsalan',
-      role: 'Classmate & Collaborator · HAU',
+      name: 'Prof. [Name]',
+      role: 'IT Instructor · Holy Angel University',
       initial: 'P',
       img: 'assets/images/testimonial-prof.jpg'
     },
