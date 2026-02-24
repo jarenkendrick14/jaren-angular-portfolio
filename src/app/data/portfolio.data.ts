@@ -23,7 +23,8 @@ export class PortfolioDataService {
       desc: 'A VR self-discovery app built in Unreal Engine 5.5 using Blueprints for gameplay systems. Users interact with metaphorical cards, with Wit.ai handling voice-to-text.',
       purpose: 'Engineered immersive, privacy-first VR mechanics and a scalable Android companion app for VirtuIntelligence.',
       features: ['Interactive card mechanics in VR', 'AI voice journaling via Wit.ai', 'Local data persistence for privacy', 'Cross-platform deployment'],
-      live: [{ name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/' }],
+      live: [{ name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/' }, { name: 'Google Play ↗', url: '#' }],
+      
       github: null,
       imgs: [
         'assets/images/pathfinder-1.png', // Fixed .png

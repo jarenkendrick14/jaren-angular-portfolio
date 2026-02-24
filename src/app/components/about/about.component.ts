@@ -111,10 +111,12 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  /* ── 100% ACCURATE DIRECT GITHUB HTML SCRAPER ── */
-  private async fetchHeatmap() {
+private async fetchHeatmap() {
     try {
-      const url = '/api/github';
+      // FIXED: Uses allorigins, a reliable proxy that works flawlessly on Netlify
+      const target = encodeURIComponent('https://github.com/users/jarenkendrick14/contributions');
+      const url = `https://api.allorigins.win/raw?url=${target}`;
+      
       const res = await fetch(url);
       if (!res.ok) throw new Error('Proxy fetch failed');
       const html = await res.text();
