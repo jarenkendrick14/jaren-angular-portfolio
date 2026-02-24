@@ -1,6 +1,7 @@
 import {
-  Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy
+  Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, effect
 } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 import { NavigationService } from './data/navigation.service';
 import { PortfolioDataService } from './data/portfolio.data';
 import { Project, BlogPost } from './models/portfolio.models';
@@ -17,6 +18,46 @@ import { ProjectOverlayComponent } from './components/project-overlay/project-ov
 import { BlogOverlayComponent } from './components/blog-overlay/blog-overlay.component';
 import { TerminalComponent } from './components/terminal/terminal.component';
 
+// ─── Per-page metadata ────────────────────────────────────────────────────────
+const PAGE_META: { title: string; description: string }[] = [
+  {
+    title: 'Jaren Kendrick — Full Stack Developer & VR Engineer',
+    description:
+      'Portfolio of Jaren Kendrick Yambao — a 20-year-old Full Stack Developer from Pampanga, PH. Builds web apps in Angular & Node.js, and ships VR experiences to the Meta Quest Store.',
+  },
+  {
+    title: 'About — Jaren Kendrick',
+    description:
+      'Learn about Jaren Kendrick: BS IT student at Holy Angel University, part-time Game/App Developer at VirtuIntelligence, and aspiring Full Stack intern with skills in Angular, Node.js, and Unreal Engine.',
+  },
+  {
+    title: 'Projects — Jaren Kendrick',
+    description:
+      'Explore Jaren\'s projects: PathFinder (Meta Quest VR app), Symposium (AI chat platform), Travel Atelier, Dropify e-commerce, and more — built with Angular, Vue.js, Node.js, and PostgreSQL.',
+  },
+  {
+    title: 'Experience — Jaren Kendrick',
+    description:
+      'Jaren\'s professional experience as a Game/App Developer at VirtuIntelligence — shipping VR apps in Unreal Engine 5.5 and building full-stack platforms with Angular and Node.js.',
+  },
+  {
+    title: 'Blog — Jaren Kendrick',
+    description:
+      'Developer blog by Jaren Kendrick — writing about shipping VR apps, choosing frameworks, and lessons learned building real software as a student developer.',
+  },
+  {
+    title: 'Testimonials — Jaren Kendrick',
+    description:
+      'What colleagues, classmates, and collaborators say about working with Jaren Kendrick as a developer and teammate.',
+  },
+  {
+    title: 'Contact — Jaren Kendrick',
+    description:
+      'Get in touch with Jaren Kendrick for internship opportunities, freelance web development, or collaboration on full-stack or VR projects.',
+  },
+];
+// ─────────────────────────────────────────────────────────────────────────────
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -29,26 +70,45 @@ import { TerminalComponent } from './components/terminal/terminal.component';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-  nav = inject(NavigationService);
+  nav  = inject(NavigationService);
   data = inject(PortfolioDataService);
+
+  private titleService = inject(Title);
+  private metaService  = inject(Meta);
 
   @ViewChild(TerminalComponent) terminal!: TerminalComponent;
   @ViewChild('cdot') cdot!: ElementRef<HTMLDivElement>;
   @ViewChild('cring') cring!: ElementRef<HTMLDivElement>;
   @ViewChild('prvw') prvw!: ElementRef<HTMLDivElement>;
 
-  readonly activeProject = signal<Project | null>(null);
+  readonly activeProject  = signal<Project | null>(null);
   readonly activeBlogPost = signal<BlogPost | null>(null);
   readonly mobileMenuOpen = signal(false);
-  readonly totalPages = this.data.navItems.length;
+  readonly totalPages     = this.data.navItems.length;
 
-  readonly cursorHover = signal(false);
+  readonly cursorHover  = signal(false);
   readonly previewActive = signal<number | null>(null);
 
   private mx = 0; private my = 0;
   private rx = 0; private ry = 0;
   private prx = 0; private pry = 0;
   private animId = 0;
+
+  constructor() {
+    // Reactively update <title> and <meta> whenever the active page changes
+    effect(() => {
+      const page = this.nav.currentPage();
+      const meta = PAGE_META[page] ?? PAGE_META[0];
+
+      this.titleService.setTitle(meta.title);
+
+      this.metaService.updateTag({ name: 'description',          content: meta.description });
+      this.metaService.updateTag({ property: 'og:title',        content: meta.title });
+      this.metaService.updateTag({ property: 'og:description',  content: meta.description });
+      this.metaService.updateTag({ name: 'twitter:title',       content: meta.title });
+      this.metaService.updateTag({ name: 'twitter:description', content: meta.description });
+    });
+  }
 
   openProject(index: number) {
     if (index === -1) { this.goTo(2); return; }
@@ -65,7 +125,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   goTo(index: number) {
     if (window.innerWidth < 960) {
-      // Mobile: scroll to section using window.scrollTo with 70px nav offset
       const sections = document.querySelectorAll('.page-section');
       const el = sections[index] as HTMLElement;
       if (el) {

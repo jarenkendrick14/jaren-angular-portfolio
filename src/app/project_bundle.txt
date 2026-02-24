@@ -1,5 +1,5 @@
 
---- DIRECTORY: app\app.component.css ---
+--- DIRECTORY: app.component.css ---
 .app-root {
   width: 100vw;
   height: 100vh;
@@ -78,7 +78,19 @@
   background: var(--sb); border-bottom: 1px solid var(--sbbrd);
   z-index: 500; align-items: center; justify-content: space-between; padding: 0 1.5rem;
 }
-.mlogo { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: 1.8rem; color: var(--white); text-decoration: none; }
+.mlogo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  text-decoration: none;
+}
+
+.mlogo img {
+  height: 42px; /* Fits perfectly inside the 70px nav bar */
+  width: auto;
+  object-fit: contain;
+}
+
 .mlogo span { color: var(--acc); font-style: normal; }
 .mnr { display: flex; align-items: center; gap: 1.5rem; }
 .thm { width: 46px; height: 24px; border-radius: 100px; background: var(--surf); border: 1px solid var(--bord); position: relative; cursor: none; }
@@ -117,6 +129,51 @@
 #prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
 .psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
+/* ══════════ PREVIEW CARD INNER STYLING ══════════ */
+.psc-img-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.psc-overlay {
+  position: absolute;
+  inset: 0;
+  /* Adds a smooth dark gradient at the bottom so the text is always readable */
+  background: linear-gradient(to top, rgba(9, 9, 15, 0.95) 0%, rgba(9, 9, 15, 0) 60%);
+}
+
+.psc-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 1;
+}
+
+.psc-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.psc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--acc);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -168,7 +225,7 @@
   #cdot, #cring, #prvw { display: none !important; }
 }
 
---- DIRECTORY: app\app.component.html ---
+--- DIRECTORY: app.component.html ---
 <div id="cdot" #cdot aria-hidden="true"></div>
 <div id="cring" #cring [class.big]="cursorHover()" aria-hidden="true"><span class="cl">VIEW</span></div>
 
@@ -193,7 +250,13 @@
   <app-sidebar />
 
   <header class="mobnav" role="banner">
-    <a href="#" class="mlogo" (click)="goTo(0); $event.preventDefault()">jk<span>.</span></a>
+<a href="#" class="mlogo" (click)="goTo(0); $event.preventDefault()">
+      @if (nav.isDark()) {
+        <img src="assets/logo-dark.png" alt="Jaren Kendrick" />
+      } @else {
+        <img src="assets/logo-light.png" alt="Jaren Kendrick" />
+      }
+    </a>
     <div class="mnr">
       <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle theme">
         <div class="tknob">
@@ -281,7 +344,7 @@
   <app-terminal #terminal />
 </div>
 
---- DIRECTORY: app\app.component.ts ---
+--- DIRECTORY: app.component.ts ---
 import {
   Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
@@ -439,7 +502,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 }
 
---- DIRECTORY: app\components\about\about.component.css ---
+--- DIRECTORY: components\about\about.component.css ---
 /* ═══════════════════════════════════════════════════════════
    ABOUT — HOST & PAGE SHELL
    ═══════════════════════════════════════════════════════════ */
@@ -528,10 +591,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 /* ══════════ MAIN GRID LAYOUT ══════════ */
 .ag { display: grid; grid-template-columns: 1.1fr .9fr; gap: 5rem; }
 
-/* ══════════ BIO TEXT ══════════ */
 .bio-img-wrap {
-  width: 120px;
-  height: 120px;
+  width: 180px;   /* Increased from 120px */
+  height: 180px;  /* Increased from 120px */
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--bord);
@@ -827,7 +889,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   color: var(--text); 
 }
 
---- DIRECTORY: app\components\about\about.component.html ---
+--- DIRECTORY: components\about\about.component.html ---
 <section class="page-about" [class.active-page]="active">
   <div class="pin">
     
@@ -1041,7 +1103,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   </div>
 </section>
 
---- DIRECTORY: app\components\about\about.component.ts ---
+--- DIRECTORY: components\about\about.component.ts ---
 import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { Certificate } from '../../models/portfolio.models';
@@ -1155,10 +1217,12 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  /* ── 100% ACCURATE DIRECT GITHUB HTML SCRAPER ── */
-  private async fetchHeatmap() {
+private async fetchHeatmap() {
     try {
-      const url = 'https://corsproxy.io/?https://github.com/users/jarenkendrick14/contributions';
+      // FIXED: Uses allorigins, a reliable proxy that works flawlessly on Netlify
+      const target = encodeURIComponent('https://github.com/users/jarenkendrick14/contributions');
+      const url = `https://api.allorigins.win/raw?url=${target}`;
+      
       const res = await fetch(url);
       if (!res.ok) throw new Error('Proxy fetch failed');
       const html = await res.text();
@@ -1359,7 +1423,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 }
 
---- DIRECTORY: app\components\blog\blog.component.css ---
+--- DIRECTORY: components\blog\blog.component.css ---
 .page-blog {
   width: 100%;
   min-height: 100%;
@@ -1416,7 +1480,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   .blog-grid { grid-template-columns: 1fr; }
 }
 
---- DIRECTORY: app\components\blog\blog.component.html ---
+--- DIRECTORY: components\blog\blog.component.html ---
 <section class="page-blog" [class.active-page]="active">
   <div class="pin">
     <div class="pheader au d0">
@@ -1446,7 +1510,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   </div>
 </section>
 
---- DIRECTORY: app\components\blog\blog.component.ts ---
+--- DIRECTORY: components\blog\blog.component.ts ---
 import { Component, inject, output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
@@ -1465,7 +1529,7 @@ export class BlogComponent {
   postOpened = output<BlogPost>();
 }
 
---- DIRECTORY: app\components\blog-overlay\blog-overlay.component.css ---
+--- DIRECTORY: components\blog-overlay\blog-overlay.component.css ---
 .blog-overlay {
   position: fixed;
   inset: 0;
@@ -1624,7 +1688,7 @@ export class BlogComponent {
   letter-spacing: .03em;
 }
 
---- DIRECTORY: app\components\blog-overlay\blog-overlay.component.html ---
+--- DIRECTORY: components\blog-overlay\blog-overlay.component.html ---
 @if (post()) {
   <div class="blog-overlay" [class.closing]="isClosing()" role="dialog" aria-modal="true" aria-label="Blog post">
   ...
@@ -1651,7 +1715,7 @@ export class BlogComponent {
   </div>
 }
 
---- DIRECTORY: app\components\blog-overlay\blog-overlay.component.ts ---
+--- DIRECTORY: components\blog-overlay\blog-overlay.component.ts ---
 import { Component, input, output, signal } from '@angular/core';
 import { BlogPost } from '../../models/portfolio.models';
 
@@ -1675,7 +1739,7 @@ export class BlogOverlayComponent {
   }
 }
 
---- DIRECTORY: app\components\contact\contact.component.css ---
+--- DIRECTORY: components\contact\contact.component.css ---
 .page-contact {
   width: 100%;
   min-height: 100%;
@@ -1835,7 +1899,7 @@ textarea { min-height: 150px; }
   transform: none !important;
 }
 
---- DIRECTORY: app\components\contact\contact.component.html ---
+--- DIRECTORY: components\contact\contact.component.html ---
 <section class="page-contact" [class.active-page]="active">
   <div class="pin">
     <h2 class="cho au d0">Hire Me.</h2>
@@ -1913,7 +1977,7 @@ textarea { min-height: 150px; }
   </div>
 </section>
 
---- DIRECTORY: app\components\contact\contact.component.ts ---
+--- DIRECTORY: components\contact\contact.component.ts ---
 import { Component, signal, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -1944,7 +2008,7 @@ export class ContactComponent {
   // 3. Check your inbox for the access key
   // 4. Replace the string below with your real key
   // ──────────────────────────────────────────────────────
-  private readonly WEB3FORMS_KEY = 'YOUR_ACCESS_KEY_HERE';
+  private readonly WEB3FORMS_KEY = '52d81049-31e9-455b-be6c-c17496e80dd7';
 
   updateField(field: string, value: string) {
     this.formData.update(d => ({ ...d, [field]: value }));
@@ -1988,7 +2052,7 @@ export class ContactComponent {
   }
 }
 
---- DIRECTORY: app\components\experience\experience.component.css ---
+--- DIRECTORY: components\experience\experience.component.css ---
 /* ════ experience.component.css ════ */
 :host {
   display: block;
@@ -2089,7 +2153,7 @@ export class ContactComponent {
   .tlr { grid-template-columns: 1fr; gap: 1rem; }
 }
 
---- DIRECTORY: app\components\experience\experience.component.html ---
+--- DIRECTORY: components\experience\experience.component.html ---
 <section class="page-experience" [class.active-page]="active">
   <div class="pin">
     <div class="slabel au d0">
@@ -2121,7 +2185,7 @@ export class ContactComponent {
   </div>
 </section>
 
---- DIRECTORY: app\components\experience\experience.component.ts ---
+--- DIRECTORY: components\experience\experience.component.ts ---
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -2152,7 +2216,7 @@ export class ExperienceComponent {
   ];
 }
 
---- DIRECTORY: app\components\home\home.component.css ---
+--- DIRECTORY: components\home\home.component.css ---
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
 .page-home {
@@ -2241,8 +2305,8 @@ export class ExperienceComponent {
 }
 
 .h-photo {
-  width: 220px;
-  height: 220px;
+  width: 300px;   /* Increased from 220px */
+  height: 300px;  /* Increased from 220px */
   flex-shrink: 0;
 }
 
@@ -2367,16 +2431,16 @@ export class ExperienceComponent {
 @keyframes scaleIn   { from { opacity: 0; transform: scale(.88); }        to { opacity: 1; transform: scale(1); } }
 
 @media (max-width: 960px) {
-  /* FIX: was padding 7rem 1.5rem 4rem — the big bottom padding caused extra space.
-     Reduce to a more modest amount. Use padding-bottom: 2rem. */
   .page-home { padding: 7rem 1.5rem 2rem; }
   .h-top-grid { flex-direction: column-reverse; align-items: flex-start; gap: 2.5rem; margin-bottom: 3rem; }
-  .h-photo { width: 160px; height: 160px; }
+  
+  .h-photo { width: 220px; height: 220px; } /* Increased from 160px */
+  
   .feat-grid { grid-template-columns: 1fr; }
   .btn { cursor: pointer !important; }
 }
 
---- DIRECTORY: app\components\home\home.component.html ---
+--- DIRECTORY: components\home\home.component.html ---
 <section class="page-home" [class.active-page]="active">
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
@@ -2406,8 +2470,8 @@ export class ExperienceComponent {
       <!-- PROFILE PHOTO -->
       <div class="h-photo au d3">
         <div class="h-photo-placeholder">
-          <!-- UPDATED PATH -->
-          <img src="assets/images/profile.jpg" alt="Jaren Kendrick"
+          <!-- UPDATED: Now uses profile.png -->
+          <img src="assets/images/profile.png" alt="Jaren Kendrick"
                style="width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0;"
                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" />
           <!-- Fallback Icon -->
@@ -2426,9 +2490,8 @@ export class ExperienceComponent {
                (mouseleave)="previewHover.emit(null)"
                role="button" tabindex="0">
             
-            <!-- UPDATED THUMBNAIL LOGIC -->
             <div class="feat-thumb">
-              <img [src]="item.project.imgs[0]" [alt]="item.project.name"
+              <img [src]="item.project.imgs[1]" [alt]="item.project.name"
                    style="width:100%;height:100%;object-fit:cover;"
                    onerror="this.style.display='none'" />
             </div>
@@ -2449,7 +2512,7 @@ export class ExperienceComponent {
   </div>
 </section>
 
---- DIRECTORY: app\components\home\home.component.ts ---
+--- DIRECTORY: components\home\home.component.ts ---
 import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input, effect } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { NavigationService } from '../../data/navigation.service';
@@ -2613,7 +2676,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 }
 
---- DIRECTORY: app\components\project-overlay\project-overlay.component.css ---
+--- DIRECTORY: components\project-overlay\project-overlay.component.css ---
 .overlay-wrap {
   position: fixed;
   inset: 0;
@@ -2822,7 +2885,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   .ov-top { padding: 1.5rem; }
 }
 
---- DIRECTORY: app\components\project-overlay\project-overlay.component.html ---
+--- DIRECTORY: components\project-overlay\project-overlay.component.html ---
 @if (project()) {
   <div class="overlay-wrap" [class.closing]="isClosing()">
     <div class="ov-backdrop" (click)="close()"></div>
@@ -2836,13 +2899,11 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       </div>
       <div class="ov-body">
         <h2 class="ov-name">{{ project()!.name }}</h2>
-        <div class="ov-imgs">
+<div class="ov-imgs">
           @for (img of project()!.imgs; track $index) {
-            <div class="ov-img" [style.background]="img">
-              <svg width="100%" height="100%" viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
-                <rect width="200" height="125" fill="transparent" rx="4"/>
-                <path d="M0 0 L200 125 M200 0 L0 125" stroke="var(--bord)" stroke-width="1" opacity=".25"/>
-              </svg>
+            
+            <div class="ov-img" style="position: relative;">
+              <img [src]="img" [alt]="project()!.name" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;">
             </div>
           }
         </div>
@@ -2886,7 +2947,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   </div>
 }
 
---- DIRECTORY: app\components\project-overlay\project-overlay.component.ts ---
+--- DIRECTORY: components\project-overlay\project-overlay.component.ts ---
 import { Component, input, output, signal } from '@angular/core';
 import { Project } from '../../models/portfolio.models';
 
@@ -2910,7 +2971,7 @@ export class ProjectOverlayComponent {
   }
 }
 
---- DIRECTORY: app\components\projects\projects.component.css ---
+--- DIRECTORY: components\projects\projects.component.css ---
 .page-projects {
   width: 100%;
   min-height: 100%;
@@ -3040,7 +3101,7 @@ export class ProjectOverlayComponent {
   .pnm { font-size: clamp(1.6rem, 7vw, 2.2rem); }
 }
 
---- DIRECTORY: app\components\projects\projects.component.html ---
+--- DIRECTORY: components\projects\projects.component.html ---
 <section class="page-projects" [class.active-page]="active">
   <div class="pin">
     <div class="pheader au d0">
@@ -3073,7 +3134,7 @@ export class ProjectOverlayComponent {
   </div>
 </section>
 
---- DIRECTORY: app\components\projects\projects.component.ts ---
+--- DIRECTORY: components\projects\projects.component.ts ---
 import { Component, inject, output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
@@ -3092,7 +3153,7 @@ export class ProjectsComponent {
   previewHover = output<number | null>();
 }
 
---- DIRECTORY: app\components\resume\resume.component.css ---
+--- DIRECTORY: components\resume\resume.component.css ---
 /* ══════════════════════════════════════════
    HOST — fills the page section exactly
 ══════════════════════════════════════════ */
@@ -3516,7 +3577,7 @@ export class ProjectsComponent {
   .cert-nav, .cert-card, .cert-dot, .res-tool-chip, .res-dl-btn { cursor: pointer !important; }
 }
 
---- DIRECTORY: app\components\resume\resume.component.html ---
+--- DIRECTORY: components\resume\resume.component.html ---
 <section class="page-resume" [class.active-page]="active">
   <div class="res-layout">
 
@@ -3674,7 +3735,7 @@ export class ProjectsComponent {
   </div><!-- /res-layout -->
 </section>
 
---- DIRECTORY: app\components\resume\resume.component.ts ---
+--- DIRECTORY: components\resume\resume.component.ts ---
 import { Component, Input, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
@@ -3757,7 +3818,7 @@ export class ResumeComponent implements OnChanges {
   }
 }
 
---- DIRECTORY: app\components\sidebar\sidebar.component.css ---
+--- DIRECTORY: components\sidebar\sidebar.component.css ---
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
@@ -3781,9 +3842,9 @@ export class ResumeComponent implements OnChanges {
 }
 
 .sb-logo-img {
-  height: 44px;
+  height: 64px;         /* Increased from 44px */
   width: auto;
-  max-width: 140px;
+  max-width: 180px;     /* Increased from 140px */
   object-fit: contain;
   display: block;
   transition: opacity .2s ease;
@@ -3964,17 +4025,15 @@ export class ResumeComponent implements OnChanges {
   .sidebar { display: none; }
 }
 
---- DIRECTORY: app\components\sidebar\sidebar.component.html ---
+--- DIRECTORY: components\sidebar\sidebar.component.html ---
 <aside class="sidebar" role="navigation" aria-label="Main Navigation">
 
-  <!-- Logo: swaps between dark-mode and light-mode PNGs -->
-  <!-- Place your files at: src/assets/logo-dark.png  (for dark bg) -->
-  <!--                       src/assets/logo-light.png (for light bg) -->
-  <a href="#" (click)="goTo(0); $event.preventDefault()" class="sb-logo" aria-label="Home">
+  <!-- Added width/height attributes to fix console warning -->
+<a href="#" (click)="goTo(0); $event.preventDefault()" class="sb-logo" aria-label="Home">
     @if (nav.isDark()) {
-      <img src="assets/logo-dark.png" alt="Jaren Kendrick" class="sb-logo-img" />
+      <img src="assets/logo-dark.png" alt="Jaren Kendrick" class="sb-logo-img" width="180" height="64" />
     } @else {
-      <img src="assets/logo-light.png" alt="Jaren Kendrick" class="sb-logo-img" />
+      <img src="assets/logo-light.png" alt="Jaren Kendrick" class="sb-logo-img" width="180" height="64" />
     }
   </a>
 
@@ -4002,7 +4061,6 @@ export class ResumeComponent implements OnChanges {
       <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="sbsoc" aria-label="GitHub">
         <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
       </a>
-      <!-- Envelope mail icon -->
       <a href="mailto:jarenkendrickyambao@gmail.com" class="sbsoc" aria-label="Email">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -4033,7 +4091,7 @@ export class ResumeComponent implements OnChanges {
   </div>
 </aside>
 
---- DIRECTORY: app\components\sidebar\sidebar.component.ts ---
+--- DIRECTORY: components\sidebar\sidebar.component.ts ---
 import { Component, inject, effect } from '@angular/core';
 import { NavigationService } from '../../data/navigation.service';
 import { PortfolioDataService } from '../../data/portfolio.data';
@@ -4062,7 +4120,7 @@ export class SidebarComponent {
 }
 
 
---- DIRECTORY: app\components\terminal\terminal.component.css ---
+--- DIRECTORY: components\terminal\terminal.component.css ---
 /*
   Terminal is intentionally theme-agnostic — it always uses the dark-mode
   lavender (#a78bfa) regardless of whether the page is in light or dark mode.
@@ -4177,7 +4235,7 @@ export class SidebarComponent {
   .terminal { left: 0; }
 }
 
---- DIRECTORY: app\components\terminal\terminal.component.html ---
+--- DIRECTORY: components\terminal\terminal.component.html ---
 <div class="terminal" [class.open]="isOpen()" role="complementary" aria-label="Developer terminal">
   <div class="term-bar">
     <div class="term-wm-dots">
@@ -4210,7 +4268,7 @@ export class SidebarComponent {
   </div>
 </div>
 
---- DIRECTORY: app\components\terminal\terminal.component.ts ---
+--- DIRECTORY: components\terminal\terminal.component.ts ---
 import { Component, signal, ViewChild, ElementRef, effect, inject } from '@angular/core';
 import { NavigationService } from '../../data/navigation.service';
 
@@ -4404,7 +4462,7 @@ export class TerminalComponent {
   private esc(s: string) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 }
 
---- DIRECTORY: app\components\testimonials\testimonials.component.css ---
+--- DIRECTORY: components\testimonials\testimonials.component.css ---
 :host {
   display: block;
   min-height: 100vh;
@@ -4518,7 +4576,7 @@ export class TerminalComponent {
   .tmg { grid-template-columns: 1fr; }
 }
 
---- DIRECTORY: app\components\testimonials\testimonials.component.html ---
+--- DIRECTORY: components\testimonials\testimonials.component.html ---
 <section class="page-testimonials" [class.active-page]="active">
   <div class="pin">
     <div class="slabel au d0">
@@ -4558,7 +4616,7 @@ export class TerminalComponent {
   </div>
 </section>
 
---- DIRECTORY: app\components\testimonials\testimonials.component.ts ---
+--- DIRECTORY: components\testimonials\testimonials.component.ts ---
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../data/portfolio.data';
@@ -4575,7 +4633,7 @@ export class TestimonialsComponent {
   data = inject(PortfolioDataService);
 }
 
---- DIRECTORY: app\data\navigation.service.ts ---
+--- DIRECTORY: data\navigation.service.ts ---
 import { Injectable, signal, computed } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
@@ -4584,7 +4642,7 @@ export class NavigationService {
   readonly isAnimating = signal<boolean>(false);
   readonly theme = signal<'dark' | 'light'>('dark');
   
-  // Added terminal state management
+  // Terminal state management
   readonly terminalOpen = signal<boolean>(false);
 
   readonly isDark = computed(() => this.theme() === 'dark');
@@ -4607,13 +4665,12 @@ export class NavigationService {
     localStorage.setItem('jk-theme', next);
   }
 
-  // Added method to toggle terminal
   toggleTerminal(): void {
     this.terminalOpen.update(v => !v);
   }
 }
 
---- DIRECTORY: app\data\portfolio.data.ts ---
+--- DIRECTORY: data\portfolio.data.ts ---
 import { Injectable } from '@angular/core';
 import { Project, Certificate, BlogPost, Testimonial, NavItem } from '../models/portfolio.models';
 
@@ -4639,11 +4696,14 @@ export class PortfolioDataService {
       desc: 'A VR self-discovery app built in Unreal Engine 5.5 using Blueprints for gameplay systems. Users interact with metaphorical cards, with Wit.ai handling voice-to-text.',
       purpose: 'Engineered immersive, privacy-first VR mechanics and a scalable Android companion app for VirtuIntelligence.',
       features: ['Interactive card mechanics in VR', 'AI voice journaling via Wit.ai', 'Local data persistence for privacy', 'Cross-platform deployment'],
-      live: [{ name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/' }],
+      live: [
+        { name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/pathfinder/24710873175273758/' },
+        { name: 'Google Play ↗', url: 'https://play.google.com/store/apps/details?id=com.HumanSide.Pathfinder' }
+      ],
       github: null,
       imgs: [
-        'assets/images/pathfinder-1.jpg',
-        'assets/images/pathfinder-2.jpg',
+        'assets/images/pathfinder-1.png',
+        'assets/images/pathfinder-2.png',
         'assets/images/pathfinder-3.jpg'
       ]
     },
@@ -4655,12 +4715,12 @@ export class PortfolioDataService {
       desc: 'A full-stack real-time chat application with an AI mediator powered by xAI Grok. Features WebSocket-based messaging, streaming AI responses, and a full @mention system.',
       purpose: 'Architected a complete real-time communication platform with AI integration, demonstrating proficiency in WebSocket protocols and full-stack TypeScript.',
       features: ['Real-time WebSocket messaging', 'Streaming AI responses via xAI Grok', 'Turn management system', '@mention filtered dropdown', 'Cross-platform via Ionic'],
-      live: [{ name: 'Live Site ↗', url: 'https://symposium.jarenkendrick.com/' }],
+      live: [{ name: 'Live Site ↗', url: 'https://symposium-mauve.vercel.app/' }],
       github: null,
       imgs: [
-        'assets/images/symposium-1.jpg',
-        'assets/images/symposium-2.jpg',
-        'assets/images/symposium-3.jpg'
+        'assets/images/symposium-1.png',
+        'assets/images/symposium-2.png',
+        'assets/images/symposium-3.png'
       ]
     },
     {
@@ -4671,12 +4731,12 @@ export class PortfolioDataService {
       desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches.',
       purpose: 'Architected a complete full-stack application demonstrating secure data flow from database to frontend UI.',
       features: ['JWT-based authentication system', 'Protected routing and navigation', 'Backend-connected dynamic forms', 'Real-time destination filtering'],
-      live: [{ name: 'Live Site ↗', url: 'https://travel-atelier.jarenkendrick.com/' }],
-      github: 'https://github.com/jarenkendrick14/travel-atelier',
+      live: null, // Placeholder as requested
+      github: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
       imgs: [
-        'assets/images/travel-atelier-1.jpg',
-        'assets/images/travel-atelier-2.jpg',
-        'assets/images/travel-atelier-3.jpg'
+        'assets/images/travel-atelier-1.png',
+        'assets/images/travel-atelier-2.png',
+        'assets/images/travel-atelier-3.png'
       ]
     },
     {
@@ -4687,12 +4747,12 @@ export class PortfolioDataService {
       desc: 'Comprehensive e-commerce platform for a streetwear brand, featuring a full shopping experience with persistent cart, checkout flow, and admin dashboard.',
       purpose: 'Designed a scalable MongoDB schema with embedded cart architecture and integrated it with a reactive Vue 3 frontend.',
       features: ['Persistent cart state', 'Full CRUD admin dashboard', 'JWT authentication', 'Product search and paginated filtering'],
-      live: [{ name: 'Live Site ↗', url: 'https://dropify.jarenkendrick.com/' }],
-      github: 'https://github.com/jarenkendrick14/dropify',
+      live: [{ name: 'Live Site ↗', url: 'https://dropifystore.netlify.app/' }],
+      github: 'https://github.com/jarenkendrick14/6WCSERVER-WD303-Dropify',
       imgs: [
-        'assets/images/dropify-1.jpg',
-        'assets/images/dropify-2.jpg',
-        'assets/images/dropify-3.jpg'
+        'assets/images/dropify-1.png',
+        'assets/images/dropify-2.png',
+        'assets/images/dropify-3.png'
       ]
     },
     {
@@ -4703,12 +4763,12 @@ export class PortfolioDataService {
       desc: "Company website for a local brand built in Angular. Implemented client-side routing, dynamic rendering components, and a custom employee directory.",
       purpose: "Built a fast, scalable frontend structure using Angular best practices and structural directives.",
       features: ['Angular client-side routing', 'Dynamic product rendering', 'Conditional component styling', 'Deployed to Netlify'],
-      live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app/' }],
-      github: 'https://github.com/jarenkendrick14/einsteins-art',
+      live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app' }],
+      github: null, // Placeholder as requested
       imgs: [
-        'assets/images/einsteins-art-1.jpg',
-        'assets/images/einsteins-art-2.jpg',
-        'assets/images/einsteins-art-3.jpg'
+        'assets/images/einsteins-art-1.png',
+        'assets/images/einsteins-art-2.png',
+        'assets/images/einsteins-art-3.png'
       ]
     }
   ];
@@ -4734,7 +4794,8 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'From Game Dev to Full Stack: What Shipping a VR App Taught Me',
       excerpt: 'When I shipped PathFinder to the Meta Quest store, I learned more about software development than any tutorial ever taught me. Here\'s what directly translates to web development.',
-      img: 'assets/images/blog-vr-gamedev.jpg',
+      // Hero Image (Video Thumbnail style)
+      img: 'assets/images/blog-vr-gamedev.webp', 
       content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p>
 
 <img src="assets/images/blog-vr-shipping.jpg" alt="VR development workflow">
@@ -4748,7 +4809,7 @@ export class PortfolioDataService {
 <p>Unity's component system is event-driven and reactive. A player picks up an item — the inventory updates, the HUD reflects it, the game state records it. Sound familiar? When I picked up Vue.js and its Composition API, the mental model was <strong>already there</strong>. Data changes, view updates. The syntax was different. The thinking wasn't.</p>
 <p>C# gave me a very clear sense of data flow and component responsibility before I ever wrote a composable. I think that's a genuine advantage — understanding architecture before you're handed a framework that handles it for you.</p>
 
-<img src="assets/images/blog-vr-code.jpg" alt="Unity and Angular side by side">
+<img src="assets/images/blog-vr-code.webp" alt="Unity and Angular side by side">
 <div class="blog-img-caption">From Unity's event systems to Angular's reactive signals — the pattern is the same.</div>
 
 <h3>Performance is non-negotiable</h3>
@@ -4763,14 +4824,15 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
       excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
-      img: 'assets/images/blog-vuejs-framework.jpg',
+      // Hero Image (Travel Atelier Home)
+      img: 'assets/images/travel-atelier-1.png',
       content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p>
 
 <h3>The case for vanilla first</h3>
 <p>I've done it. I've built projects with pure HTML, CSS, and JavaScript. No build step. No dependencies. Total control. I knew exactly what every line did because I wrote every line. For a showcase site — a product page, a portfolio — vanilla is often the right answer.</p>
 <p>It's fast, it's transparent, and it forces you to understand fundamentals. If you've never built a simple SPA without a framework, you don't really know what frameworks are solving for you. I mean that seriously.</p>
 
-<img src="assets/images/blog-vue-setup.jpg" alt="Vue.js project setup">
+<img src="assets/images/blog-vue-setup.png" alt="Vue.js project setup">
 <div class="blog-img-caption">Travel Atelier's Vue.js 3 project structure — Composition API all the way.</div>
 
 <h3>But Travel Atelier wasn't a showcase</h3>
@@ -4781,7 +4843,7 @@ export class PortfolioDataService {
 <p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p>
 <p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p>
 
-<img src="assets/images/blog-vue-code.jpg" alt="Vue.js Composition API code">
+<img src="assets/images/blog-view-code.jpeg" alt="Vue.js Composition API code">
 <div class="blog-img-caption">Composables in Vue feel natural coming from Unity's component model.</div>
 
 <h3>What I'd do differently</h3>
@@ -4801,22 +4863,22 @@ export class PortfolioDataService {
     },
     {
       quote: '"Working with Jaren is refreshing. He takes ownership, communicates effectively, and the code he submits is clean and functional on the first pull request."',
-      name: 'Samantha T.',
-      role: 'Classmate & Collaborator · HAU',
+      name: 'Samantha Tomoling',
+      role: 'Classmate & Collaborator · Holy Angel University',
       initial: 'S',
-      img: 'assets/images/testimonial-samantha.jpg'
+      img: 'assets/images/testimonial-samantha.png'
     },
     {
-      quote: '"The web application Jaren built exceeded expectations. Clean database structure, solid API design, and delivered on time. A strong full-stack candidate."',
-      name: 'Prof. [Name]',
-      role: 'IT Instructor · Holy Angel University',
+      quote: '"Jaren built a solid web application that really exceeded what we expected. Between the clean database structure and the reliable API design, he showed he is a very capable full-stack developer who stays on schedule."',
+      name: 'Kenneth Punsalan',
+      role: 'Classmate & Collaboraton · Holy Angel University',
       initial: 'P',
       img: 'assets/images/testimonial-prof.jpg'
     },
   ];
 }
 
---- DIRECTORY: app\directives\decrypt.directive.ts ---
+--- DIRECTORY: directives\decrypt.directive.ts ---
 import { Directive, ElementRef, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 
 @Directive({
@@ -4905,7 +4967,7 @@ export class DecryptDirective implements OnChanges {
   }
 }
 
---- DIRECTORY: app\models\portfolio.models.ts ---
+--- DIRECTORY: models\portfolio.models.ts ---
 export interface Project {
   num: string;
   name: string;
@@ -4949,177 +5011,4 @@ export interface NavItem {
   label: string;
   short: string;
   index: number;
-}
-
---- DIRECTORY: index.html ---
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jaren Kendrick — Full Stack Developer</title>
-  <meta name="description" content="20-year-old IT student at Holy Angel University building full-stack web apps with Angular, Vue.js & Node.js. Part-time Game Developer at VirtuIntelligence." />
-  <base href="/" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-</head>
-<body>
-  <app-root></app-root>
-</body>
-</html>
-
-
---- DIRECTORY: main.ts ---
-import { bootstrapApplication } from '@angular/platform-browser';
-import { provideZonelessChangeDetection } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http'; 
-import { AppComponent } from './app/app.component';
-
-bootstrapApplication(AppComponent, {
-  providers: [
-    // ✦ Angular 21 Zoneless Mode — no zone.js needed
-    provideZonelessChangeDetection(),
-    provideHttpClient(),
-  ],
-}).catch(err => console.error(err));
-
---- DIRECTORY: styles.css ---
-/* ══════════ GOOGLE FONTS ══════════ */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
-/* ══════════ DESIGN TOKENS ══════════ */
-:root {
-  --bg: #09090f;
-  --sb: #0d0d16;
-  --surf: #111120;
-  --bord: #2a2a40;
-  /* Toned-down from #a78bfa → less pastel, more solid violet */
-  --acc: #8b5cf6;
-  --acc2: #6d28d9;
-  --white: #ffffff;
-  --text: #e0def0;
-  --muted: #a4a1c6;
-  --sub: #c2c0dc;
-  --sbbrd: #1a1a2e;
-}
-
-[data-theme="light"] {
-  --bg: #f4f2f9;
-  --sb: #ebe8f5;
-  --surf: #e0ddf0;
-  --bord: #c8c3e0;
-  --acc: #7c3aed;
-  --acc2: #6d28d9;
-  --white: #1a1826;
-  --text: #2d2b3b;
-  --muted: #5c597a;
-  --sub: #44425e;
-  --sbbrd: #d0cceb;
-}
-
-/* ══════════ RESET ══════════ */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  transition: background-color .35s ease, color .35s ease;
-  cursor: none;
-}
-
-a { text-decoration: none; color: inherit; }
-button { cursor: pointer; border: none; background: none; font-family: inherit; }
-
-*, *::before, *::after {
-  transition: background-color .35s ease, border-color .35s ease, color .35s ease;
-}
-
-a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
-  outline: 2px solid var(--acc);
-  outline-offset: 2px;
-}
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
-
-@media (max-width: 960px) {
-  body { overflow: auto; height: auto; cursor: auto; }
-  button, a { cursor: pointer !important; }
-}
-
-.decrypting { color: var(--acc) !important; }
-
-/* ══════════ GLOBAL ANIMATIONS — more prominent distances ══════════ */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeLeft {
-  from { opacity: 0; transform: translateX(-44px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeRight {
-  from { opacity: 0; transform: translateX(44px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(.88); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* ══════════ BASE STATE (hidden) ══════════ */
-.au, .al, .ar, .as {
-  opacity: 0;
-  transition: opacity 0.1s ease 0.6s;
-}
-
-/* ══════════ ACTIVE STATE ══════════ */
-.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp  .55s cubic-bezier(.22,1,.36,1) both; }
-.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) both; }
-.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .55s cubic-bezier(.22,1,.36,1) both; }
-.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .5s cubic-bezier(.22,1,.36,1) both; }
-
-/* Stagger Delays */
-.active .d0, .active-page .d0 { animation-delay: .04s !important; }
-.active .d1, .active-page .d1 { animation-delay: .10s !important; }
-.active .d2, .active-page .d2 { animation-delay: .18s !important; }
-.active .d3, .active-page .d3 { animation-delay: .26s !important; }
-.active .d4, .active-page .d4 { animation-delay: .34s !important; }
-.active .d5, .active-page .d5 { animation-delay: .44s !important; }
-
-/* ══════════ SEAMLESS SLIDE-OUT (both directions) ══════════
-   When a page slides OUT — either up (.prev) or down (.next) —
-   its content must stay fully visible for the whole 0.6s slide.
-   
-   .prev  = page that slid up and off (scroll DOWN)
-   .next  = page that slid down and off (scroll UP)
-   
-   Both are off-screen via translateY(±100%), so opacity:1 here
-   causes zero visual bleed. The !important beats Angular's
-   higher-specificity attribute-scoped component styles.
-══════════════════════════════════════════════════════════════ */
-.page-section.prev .au,
-.page-section.prev .al,
-.page-section.prev .ar,
-.page-section.prev .as,
-.page-section.next .au,
-.page-section.next .al,
-.page-section.next .ar,
-.page-section.next .as {
-  opacity: 1 !important;
-  animation: none !important;
-  transition: none !important;
 }

@@ -58,7 +58,7 @@ export class PortfolioDataService {
       desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches.',
       purpose: 'Architected a complete full-stack application demonstrating secure data flow from database to frontend UI.',
       features: ['JWT-based authentication system', 'Protected routing and navigation', 'Backend-connected dynamic forms', 'Real-time destination filtering'],
-      live: null, // Placeholder as requested
+      live: null,
       github: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
       imgs: [
         'assets/images/travel-atelier-1.png',
@@ -91,7 +91,7 @@ export class PortfolioDataService {
       purpose: "Built a fast, scalable frontend structure using Angular best practices and structural directives.",
       features: ['Angular client-side routing', 'Dynamic product rendering', 'Conditional component styling', 'Deployed to Netlify'],
       live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app' }],
-      github: null, // Placeholder as requested
+      github: null,
       imgs: [
         'assets/images/einsteins-art-1.png',
         'assets/images/einsteins-art-2.png',
@@ -101,19 +101,71 @@ export class PortfolioDataService {
   ];
 
   readonly certificates: Certificate[] = [
-    { name: 'CompTIA IT Fundamentals (ITF+)', issuer: 'CompTIA', abbr: 'COMP', color: '#c8202f', date: 'Nov 2023', url: 'https://www.comptia.org/' },
-    { name: 'Responsive Web Design', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Sep 2024', url: 'https://www.freecodecamp.org/' },
-    { name: 'JavaScript Essentials 1', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Oct 2024', url: 'https://skillsforall.com/course/javascript-essentials-1' },
-    { name: 'Introduction to Figma', issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Sep 2024', url: 'https://www.simplilearn.com/' },
-    { name: 'Introduction to PHP', issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Feb 2025', url: 'https://www.simplilearn.com/' },
-    { name: 'Back End Development & APIs', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025', url: 'https://www.freecodecamp.org/' },
-    { name: 'Legacy JS Algorithms & Data Structures', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025', url: 'https://www.freecodecamp.org/' },
-    { name: 'Digital Marketing', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jul 2025', url: 'https://academy.hubspot.com/' },
-    { name: 'Endpoint Security', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Aug 2025', url: 'https://skillsforall.com/' },
-    { name: 'CCNA: Introduction to Networks', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'May 2025', url: 'https://skillsforall.com/' },
-    { name: 'Content Marketing', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Sep 2025', url: 'https://academy.hubspot.com/' },
-    { name: 'Digital Advertising', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Oct 2025', url: 'https://academy.hubspot.com/' },
-    { name: 'SEO', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jan 2026', url: 'https://academy.hubspot.com/' },
+    {
+      name: 'CompTIA IT Fundamentals (ITF+)',
+      issuer: 'CompTIA', abbr: 'COMP', color: '#c8202f', date: 'Nov 2023',
+      url: 'https://cp.certmetrics.com/comptia/en/public/verify/credential/0DPJNEYZN2F1QJG0'
+    },
+    {
+      name: 'Responsive Web Design',
+      issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Sep 2024',
+      url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/responsive-web-design'
+    },
+    {
+      name: 'JavaScript Essentials 1',
+      issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Oct 2024',
+      url: 'https://www.credly.com/badges/8c85d65e-a1c1-4b32-9a73-5284f689b4d4/linked_in_profile'
+    },
+    {
+      name: 'Introduction to Figma',
+      issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Sep 2024',
+      url: 'https://www.simplilearn.com/skillup-certificate-landing?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTU3MDI1MTcyOTMzMTE0OC5WbmciLCJ1c2VybmFtZSI6IkphcmVuVEtlbmRyaWNfIlhbWjhbyJ9&utm_source=shared-certificate&utm_medium=lms&utm_campaign=shared-certificate-promotion&referrer=https%3A%2F%2Flms.simplilearn.com%2Fdashboard%2Fcertificate&%24web_only=true'
+    },
+    {
+      name: 'Introduction to PHP',
+      issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Feb 2025',
+      url: 'https://www.simplilearn.com/skillup-certificate-landing?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzcyIiwiY2VydG1hWnhkGVfdXJSijoiaHR0cHM6XC9cL2NlcnRpZmljYXRlcy5zYW1wbGUubV0Xc9zaGFyZVYwWVdGh1bWJfNzM5OTQ2OV8xNzI3MTQxMzk5LnBuZyIsInVzZXJuYW1lIjoismFyZW4vUUhjPY2sgUy4gWwFtYmFvIn0%3D&utm_source=shared-certificate&utm_medium=lms&utm_campaign=shared-certificate-promotion&referrer=https%3A%2F%2Flms.simplilearn.com%2Fdashboard%2Fcertificate&%24web_only=true'
+    },
+    {
+      name: 'Back End Development & APIs',
+      issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025',
+      url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/back-end-development-and-apis'
+    },
+    {
+      name: 'Legacy JS Algorithms & Data Structures',
+      issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025',
+      url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/javascript-algorithms-and-data-structures'
+    },
+    {
+      name: 'Digital Marketing',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jul 2025',
+      url: 'https://app-na2.hubspot.com/academy/achievements/ipltmkkv/en/1/jaren-kendrick-yambao/digital-marketing'
+    },
+    {
+      name: 'Endpoint Security',
+      issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Aug 2025',
+      url: 'https://www.credly.com/badges/9f3070bc-6a7f-408a-b733-0a0e8da4943d/linked_in_profile'
+    },
+    {
+      name: 'CCNA: Introduction to Networks',
+      issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'May 2025',
+      url: 'https://www.credly.com/badges/0a2a80b2-70eb-4ecc-94a4-1cf5d1e9d5a5/linked_in_profile'
+    },
+    {
+      name: 'Content Marketing',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Sep 2025',
+      url: 'https://app-na2.hubspot.com/academy/achievements/30n1vfh7/en/1/jaren-kendrick-yambao/content-marketing'
+    },
+    {
+      name: 'Digital Advertising',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Oct 2025',
+      url: 'https://app-na2.hubspot.com/academy/achievements/hc10p6t8/en/1/jaren-yambao/digital-advertising'
+    },
+    {
+      name: 'SEO',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jan 2026',
+      url: 'https://app-na2.hubspot.com/academy/achievements/k55jkfw9/en/1/jaren-kendrick-yambao/seo'
+    },
   ];
 
   readonly blogPosts: BlogPost[] = [
@@ -121,8 +173,7 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'From Game Dev to Full Stack: What Shipping a VR App Taught Me',
       excerpt: 'When I shipped PathFinder to the Meta Quest store, I learned more about software development than any tutorial ever taught me. Here\'s what directly translates to web development.',
-      // Hero Image (Video Thumbnail style)
-      img: 'assets/images/blog-vr-gamedev.webp', 
+      img: 'assets/images/blog-vr-gamedev.webp',
       content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p>
 
 <img src="assets/images/blog-vr-shipping.jpg" alt="VR development workflow">
@@ -151,7 +202,6 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
       excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
-      // Hero Image (Travel Atelier Home)
       img: 'assets/images/travel-atelier-1.png',
       content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p>
 
@@ -198,7 +248,7 @@ export class PortfolioDataService {
     {
       quote: '"Jaren built a solid web application that really exceeded what we expected. Between the clean database structure and the reliable API design, he showed he is a very capable full-stack developer who stays on schedule."',
       name: 'Kenneth Punsalan',
-      role: 'Classmate & Collaboraton · Holy Angel University',
+      role: 'Classmate & Collaborator · Holy Angel University',
       initial: 'P',
       img: 'assets/images/testimonial-prof.jpg'
     },
