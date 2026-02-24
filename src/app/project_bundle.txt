@@ -86,7 +86,7 @@
 }
 
 .mlogo img {
-  height: 42px; /* Fits perfectly inside the 70px nav bar */
+  height: 42px;
   width: auto;
   object-fit: contain;
 }
@@ -96,8 +96,6 @@
 .thm { width: 46px; height: 24px; border-radius: 100px; background: var(--surf); border: 1px solid var(--bord); position: relative; cursor: none; }
 .tknob { position: absolute; top: 2px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; transition: transform .3s ease; color: #fff; }
 
-/* FIX: was [data-theme="light"] .tknob — Angular scoping breaks global selectors.
-   :host-context() pierces through to the document root correctly. */
 :host-context([data-theme="light"]) .tknob { transform: translateX(20px); }
 
 .mbg { display: flex; flex-direction: column; gap: 6px; background: none; border: none; padding: 4px; cursor: none; }
@@ -129,7 +127,7 @@
 #prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
 .psc{position:absolute;inset:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
-/* ══════════ PREVIEW CARD INNER STYLING ══════════ */
+
 .psc-img-wrap {
   position: absolute;
   inset: 0;
@@ -141,7 +139,6 @@
 .psc-overlay {
   position: absolute;
   inset: 0;
-  /* Adds a smooth dark gradient at the bottom so the text is always readable */
   background: linear-gradient(to top, rgba(9, 9, 15, 0.95) 0%, rgba(9, 9, 15, 0) 60%);
 }
 
@@ -177,8 +174,17 @@
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ══════════ MOBILE STACKING ══════════ */
+/* ══════════════════════════════════════════════════════════
+   MOBILE STACKING — everything scrolls normally, no slider
+══════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
+
+  /* ── Unlock the body so the whole page can scroll ── */
+  :host-context(body) {
+    overflow: auto !important;
+    height: auto !important;
+  }
+
   .main-content {
     position: relative;
     left: 0;
@@ -199,9 +205,12 @@
   .mobnav { display: flex; }
 
   .app-root {
-    overflow: auto;
+    /* ⚠️ KEY FIX: remove fixed viewport lock on mobile */
+    overflow: visible;
     height: auto;
+    min-height: 100vh;
     display: block;
+    width: 100%;
   }
 
   .page-slider {
@@ -211,18 +220,28 @@
     flex-direction: column;
   }
 
-  .page-section {
+  /* ⚠️ KEY FIX: override ALL transform/positioning so sections stack vertically */
+  .page-section,
+  .page-section.active,
+  .page-section.prev,
+  .page-section.next {
     position: relative !important;
+    inset: auto !important;
     height: auto !important;
+    min-height: 100vh !important;
+    width: 100% !important;
     transform: none !important;
     transition: none !important;
     opacity: 1 !important;
-    min-height: 100vh !important;
     overflow: visible !important;
     display: block !important;
+    will-change: auto !important;
   }
 
   #cdot, #cring, #prvw { display: none !important; }
+
+  /* Disable custom cursor on touch devices */
+  .thm, .mbg { cursor: pointer; }
 }
 
 --- DIRECTORY: app.component.html ---
@@ -346,8 +365,9 @@
 
 --- DIRECTORY: app.component.ts ---
 import {
-  Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy
+  Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, effect
 } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 import { NavigationService } from './data/navigation.service';
 import { PortfolioDataService } from './data/portfolio.data';
 import { Project, BlogPost } from './models/portfolio.models';
@@ -364,6 +384,46 @@ import { ProjectOverlayComponent } from './components/project-overlay/project-ov
 import { BlogOverlayComponent } from './components/blog-overlay/blog-overlay.component';
 import { TerminalComponent } from './components/terminal/terminal.component';
 
+// ─── Per-page metadata ────────────────────────────────────────────────────────
+const PAGE_META: { title: string; description: string }[] = [
+  {
+    title: 'Jaren Kendrick — Full Stack Developer & VR Engineer',
+    description:
+      'Portfolio of Jaren Kendrick Yambao — a 20-year-old Full Stack Developer from Pampanga, PH. Builds web apps in Angular & Node.js, and ships VR experiences to the Meta Quest Store.',
+  },
+  {
+    title: 'About — Jaren Kendrick',
+    description:
+      'Learn about Jaren Kendrick: BS IT student at Holy Angel University, part-time Game/App Developer at VirtuIntelligence, and aspiring Full Stack intern with skills in Angular, Node.js, and Unreal Engine.',
+  },
+  {
+    title: 'Projects — Jaren Kendrick',
+    description:
+      'Explore Jaren\'s projects: PathFinder (Meta Quest VR app), Symposium (AI chat platform), Travel Atelier, Dropify e-commerce, and more — built with Angular, Vue.js, Node.js, and PostgreSQL.',
+  },
+  {
+    title: 'Experience — Jaren Kendrick',
+    description:
+      'Jaren\'s professional experience as a Game/App Developer at VirtuIntelligence — shipping VR apps in Unreal Engine 5.5 and building full-stack platforms with Angular and Node.js.',
+  },
+  {
+    title: 'Blog — Jaren Kendrick',
+    description:
+      'Developer blog by Jaren Kendrick — writing about shipping VR apps, choosing frameworks, and lessons learned building real software as a student developer.',
+  },
+  {
+    title: 'Testimonials — Jaren Kendrick',
+    description:
+      'What colleagues, classmates, and collaborators say about working with Jaren Kendrick as a developer and teammate.',
+  },
+  {
+    title: 'Contact — Jaren Kendrick',
+    description:
+      'Get in touch with Jaren Kendrick for internship opportunities, freelance web development, or collaboration on full-stack or VR projects.',
+  },
+];
+// ─────────────────────────────────────────────────────────────────────────────
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -376,26 +436,45 @@ import { TerminalComponent } from './components/terminal/terminal.component';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-  nav = inject(NavigationService);
+  nav  = inject(NavigationService);
   data = inject(PortfolioDataService);
+
+  private titleService = inject(Title);
+  private metaService  = inject(Meta);
 
   @ViewChild(TerminalComponent) terminal!: TerminalComponent;
   @ViewChild('cdot') cdot!: ElementRef<HTMLDivElement>;
   @ViewChild('cring') cring!: ElementRef<HTMLDivElement>;
   @ViewChild('prvw') prvw!: ElementRef<HTMLDivElement>;
 
-  readonly activeProject = signal<Project | null>(null);
+  readonly activeProject  = signal<Project | null>(null);
   readonly activeBlogPost = signal<BlogPost | null>(null);
   readonly mobileMenuOpen = signal(false);
-  readonly totalPages = this.data.navItems.length;
+  readonly totalPages     = this.data.navItems.length;
 
-  readonly cursorHover = signal(false);
+  readonly cursorHover  = signal(false);
   readonly previewActive = signal<number | null>(null);
 
   private mx = 0; private my = 0;
   private rx = 0; private ry = 0;
   private prx = 0; private pry = 0;
   private animId = 0;
+
+  constructor() {
+    // Reactively update <title> and <meta> whenever the active page changes
+    effect(() => {
+      const page = this.nav.currentPage();
+      const meta = PAGE_META[page] ?? PAGE_META[0];
+
+      this.titleService.setTitle(meta.title);
+
+      this.metaService.updateTag({ name: 'description',          content: meta.description });
+      this.metaService.updateTag({ property: 'og:title',        content: meta.title });
+      this.metaService.updateTag({ property: 'og:description',  content: meta.description });
+      this.metaService.updateTag({ name: 'twitter:title',       content: meta.title });
+      this.metaService.updateTag({ name: 'twitter:description', content: meta.description });
+    });
+  }
 
   openProject(index: number) {
     if (index === -1) { this.goTo(2); return; }
@@ -412,7 +491,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   goTo(index: number) {
     if (window.innerWidth < 960) {
-      // Mobile: scroll to section using window.scrollTo with 70px nav offset
       const sections = document.querySelectorAll('.page-section');
       const el = sections[index] as HTMLElement;
       if (el) {
@@ -890,6 +968,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 }
 
 --- DIRECTORY: components\about\about.component.html ---
+
 <section class="page-about" [class.active-page]="active">
   <div class="pin">
     
@@ -915,12 +994,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   <!-- Profile Image -->
   <div class="bio-img-wrap al d1">
     <!-- Updated with a reliable placeholder -->
-    <img src="assets/images/profile-about.jpg" 
+    <img src="assets/images/profile-about.jpg" width="180" height="180" loading="lazy" 
          alt="Profile" 
          onerror="this.style.display='none'">
   </div>
 
-  <h2 class="apull al d1">Full Stack Architecture. <br><em>Immersive</em> Interactive Experiences.</h2>
+  <h2 class="apull al d1">20 years old.<br>Already <em>shipping</em> to production.</h2>
         <div class="abio au d2">
           <p>I am a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
           <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
@@ -1138,35 +1217,35 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   ];
 
   /* ── GitHub Heatmap ── */
-  readonly heatmapWeeks = signal<HeatmapDay[][]>([]);
-  readonly heatmapMonths = signal<{ col: number, label: string }[]>([]);
-  readonly heatmapTotal = signal(0);
+  readonly heatmapWeeks   = signal<HeatmapDay[][]>([]);
+  readonly heatmapMonths  = signal<{ col: number; label: string }[]>([]);
+  readonly heatmapTotal   = signal(0);
   readonly heatmapLoading = signal(true);
-  readonly heatmapError = signal(false);
+  readonly heatmapError   = signal(false);
 
   /* ── Recent Commits ── */
-  readonly recentCommits = signal<Commit[]>([]);
+  readonly recentCommits  = signal<Commit[]>([]);
   readonly commitsLoading = signal(true);
 
   readonly skills = [
-    { name: 'JavaScript', time: '2 yrs', pct: 85 },
-    { name: 'TypeScript', time: '1.5 yrs', pct: 80 },
-    { name: 'Angular', time: '1 yr', pct: 75 },
-    { name: 'Node.js & Express', time: '1 yr', pct: 75 },
-    { name: 'Vue.js 3', time: '1 yr', pct: 70 },
-    { name: 'C#', time: '1 yr', pct: 70 },
-    { name: 'MongoDB', time: '1 yr', pct: 65 },
-    { name: 'PostgreSQL', time: '6 mo', pct: 55 },
+    { name: 'JavaScript',        time: '2 yrs',   pct: 85 },
+    { name: 'TypeScript',        time: '1.5 yrs', pct: 80 },
+    { name: 'Angular',           time: '1 yr',    pct: 75 },
+    { name: 'Node.js & Express', time: '1 yr',    pct: 75 },
+    { name: 'Vue.js 3',          time: '1 yr',    pct: 70 },
+    { name: 'C#',                time: '1 yr',    pct: 70 },
+    { name: 'MongoDB',           time: '1 yr',    pct: 65 },
+    { name: 'PostgreSQL',        time: '6 mo',    pct: 55 },
   ];
 
   readonly sphereTags = [
-    { text: 'Angular', color: '#dd0031' }, { text: 'Vue.js 3', color: '#42b883' },
-    { text: 'Node.js', color: '#339933' }, { text: 'MongoDB', color: '#47a248' },
-    { text: 'TypeScript', color: '#3178c6' }, { text: 'C#', color: '#9b59b6' },
-    { text: 'Unity', color: '#a78bfa' }, { text: 'Express.js', color: '#7a7a9c' },
-    { text: 'REST APIs', color: '#60a5fa' }, { text: 'Git', color: '#f05030' },
-    { text: 'PostgreSQL', color: '#336791' }, { text: 'Prisma', color: '#7c8cf8' },
-    { text: 'Ionic', color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
+    { text: 'Angular',    color: '#dd0031' }, { text: 'Vue.js 3',   color: '#42b883' },
+    { text: 'Node.js',    color: '#339933' }, { text: 'MongoDB',    color: '#47a248' },
+    { text: 'TypeScript', color: '#3178c6' }, { text: 'C#',         color: '#9b59b6' },
+    { text: 'Unity',      color: '#a78bfa' }, { text: 'Express.js', color: '#7a7a9c' },
+    { text: 'REST APIs',  color: '#60a5fa' }, { text: 'Git',        color: '#f05030' },
+    { text: 'PostgreSQL', color: '#336791' }, { text: 'Prisma',     color: '#7c8cf8' },
+    { text: 'Ionic',      color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
   ];
 
   get currentCert(): Certificate { return this.data.certificates[this.certIndex()]; }
@@ -1187,7 +1266,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['active'] && this.active) {
-      // RESET AND ANIMATE EVERY TIME
       this.counters.forEach(c => c.current.set(0));
       setTimeout(() => this.animateCounters(), 350);
     }
@@ -1217,51 +1295,48 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-private async fetchHeatmap() {
+  private async fetchHeatmap() {
     try {
-      // FIXED: Uses allorigins, a reliable proxy that works flawlessly on Netlify
-      const target = encodeURIComponent('https://github.com/users/jarenkendrick14/contributions');
-      const url = `https://api.allorigins.win/raw?url=${target}`;
-      
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('Proxy fetch failed');
-      const html = await res.text();
+      // ✅ github-contributions-api.jogruber.de — dedicated public JSON API with
+      //    proper CORS headers. No proxy, no HTML scraping. Always works.
+      const res = await fetch(
+        'https://github-contributions-api.jogruber.de/v4/jarenkendrick14?y=last'
+      );
+      if (!res.ok) throw new Error(`API responded ${res.status}`);
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
+      const json: {
+        total: Record<string, number>;
+        contributions: { date: string; count: number; level: number }[];
+      } = await res.json();
 
-      const h2 = doc.querySelector('h2.f4');
-      if (h2) {
-        const match = h2.textContent?.match(/([\d,]+)\s+contributions/);
-        if (match) this.heatmapTotal.set(parseInt(match[1].replace(/,/g, ''), 10));
+      const lastYearTotal =
+        json.total?.['lastYear'] ??
+        Object.values(json.total ?? {}).reduce((a, b) => a + b, 0);
+      this.heatmapTotal.set(lastYearTotal);
+
+      const dayMap = new Map<string, { count: number; level: number }>();
+      for (const entry of json.contributions ?? []) {
+        dayMap.set(entry.date, { count: entry.count, level: entry.level });
       }
 
-      const dayMap = new Map<string, { count: number, level: number }>();
-      const cells = doc.querySelectorAll('td.ContributionCalendar-day');
-      
-      cells.forEach(cell => {
-        const date = cell.getAttribute('data-date');
-        const level = parseInt(cell.getAttribute('data-level') || '0', 10);
-        if (date) dayMap.set(date, { count: 0, level });
-      });
-
-      if (dayMap.size === 0) throw new Error('No cells found');
+      if (dayMap.size === 0) throw new Error('No contribution data returned');
 
       this.generateGrid(dayMap);
       this.heatmapLoading.set(false);
     } catch (err) {
+      console.warn('[Heatmap] fetch failed:', err);
       this.heatmapError.set(true);
       this.heatmapLoading.set(false);
     }
   }
 
-  private generateGrid(dayMap: Map<string, { count: number, level: number }>) {
-    const WEEKS_TO_SHOW = 20; 
+  private generateGrid(dayMap: Map<string, { count: number; level: number }>) {
+    const WEEKS_TO_SHOW = 20;
     const weeks: HeatmapDay[][] = [];
-    const months: { col: number, label: string }[] = [];
-    
+    const months: { col: number; label: string }[] = [];
+
     const today = new Date();
-    const endOffset = 6 - today.getDay(); 
+    const endOffset = 6 - today.getDay();
     const endDate = new Date(today);
     endDate.setDate(today.getDate() + endOffset);
 
@@ -1272,11 +1347,10 @@ private async fetchHeatmap() {
 
     for (let w = 0; w < WEEKS_TO_SHOW; w++) {
       const week: HeatmapDay[] = [];
-      
       const weekStart = new Date(startDate);
       weekStart.setDate(startDate.getDate() + (w * 7));
       const m = weekStart.getMonth();
-      
+
       if (m !== lastMonth) {
         months.push({ col: w, label: weekStart.toLocaleString('default', { month: 'short' }) });
         lastMonth = m;
@@ -1285,22 +1359,18 @@ private async fetchHeatmap() {
       for (let d = 0; d < 7; d++) {
         const cellDate = new Date(startDate);
         cellDate.setDate(startDate.getDate() + (w * 7) + d);
-        
-        const year = cellDate.getFullYear();
+
+        const year  = cellDate.getFullYear();
         const month = String(cellDate.getMonth() + 1).padStart(2, '0');
-        const day = String(cellDate.getDate()).padStart(2, '0');
+        const day   = String(cellDate.getDate()).padStart(2, '0');
         const dateStr = `${year}-${month}-${day}`;
 
         const data = dayMap.get(dateStr);
-        week.push({
-          date: dateStr,
-          count: data ? data.count : 0,
-          level: data ? data.level : 0 
-        });
+        week.push({ date: dateStr, count: data?.count ?? 0, level: data?.level ?? 0 });
       }
       weeks.push(week);
     }
-    
+
     this.heatmapMonths.set(months);
     this.heatmapWeeks.set(weeks);
   }
@@ -1318,9 +1388,11 @@ private async fetchHeatmap() {
           for (const c of ev.payload.commits) {
             if (commits.length >= 5) break;
             commits.push({
-              sha: c.sha?.substring(0, 7) || '', message: c.message?.split('\n')[0] || '',
-              repo: repoName, date: this.timeAgo(new Date(ev.created_at)),
-              url: `https://github.com/${ev.repo?.name}/commit/${c.sha}`,
+              sha:     c.sha?.substring(0, 7) || '',
+              message: c.message?.split('\n')[0] || '',
+              repo:    repoName,
+              date:    this.timeAgo(new Date(ev.created_at)),
+              url:     `https://github.com/${ev.repo?.name}/commit/${c.sha}`,
             });
           }
           if (commits.length >= 5) break;
@@ -1345,11 +1417,11 @@ private async fetchHeatmap() {
 
   getHeatColor(level: number): string {
     const colors = [
-      'var(--bg)',                  
-      'rgba(139,92,246,0.2)',      
-      'rgba(139,92,246,0.45)',     
-      'rgba(139,92,246,0.7)',      
-      'rgba(139,92,246,1)',        
+      'var(--bg)',
+      'rgba(139,92,246,0.2)',
+      'rgba(139,92,246,0.45)',
+      'rgba(139,92,246,0.7)',
+      'rgba(139,92,246,1)',
     ];
     return colors[Math.min(level, 4)];
   }
@@ -1358,22 +1430,22 @@ private async fetchHeatmap() {
   private initSphere() {
     const RADIUS = 95;
     const items = this.sphereTags.map((tag, i) => {
-      const phi = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
+      const phi   = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const el = document.createElement('span');
-      el.className = 'sphere-tag';
-      el.textContent = tag.text;
-      el.style.color = tag.color;
-      el.style.position = 'absolute';
-      el.style.background = 'var(--surf)';
-      el.style.padding = '4px 8px';
+      const el    = document.createElement('span');
+      el.className          = 'sphere-tag';
+      el.textContent        = tag.text;
+      el.style.color        = tag.color;
+      el.style.position     = 'absolute';
+      el.style.background   = 'var(--surf)';
+      el.style.padding      = '4px 8px';
       el.style.borderRadius = '4px';
-      el.style.border = '1px solid var(--bord)';
-      el.style.cursor = 'grab';
-      el.style.userSelect = 'none';
-      el.style.fontFamily = "'JetBrains Mono', monospace";
-      el.style.fontSize = "12px";
-      el.style.whiteSpace = "nowrap";
+      el.style.border       = '1px solid var(--bord)';
+      el.style.cursor       = 'grab';
+      el.style.userSelect   = 'none';
+      el.style.fontFamily   = "'JetBrains Mono', monospace";
+      el.style.fontSize     = '12px';
+      el.style.whiteSpace   = 'nowrap';
       if (this.sphereContainer?.nativeElement) {
         this.sphereContainer.nativeElement.appendChild(el);
       }
@@ -1383,21 +1455,19 @@ private async fetchHeatmap() {
     const render = () => {
       const cosRX = Math.cos(this.rotX), sinRX = Math.sin(this.rotX);
       const cosRY = Math.cos(this.rotY), sinRY = Math.sin(this.rotY);
-      items.forEach((item) => {
-        let x = Math.sin(item.phi) * Math.cos(item.theta);
-        let y = Math.cos(item.phi);
-        let z = Math.sin(item.phi) * Math.sin(item.theta);
+      items.forEach(item => {
+        const x  = Math.sin(item.phi) * Math.cos(item.theta);
+        const y  = Math.cos(item.phi);
+        const z  = Math.sin(item.phi) * Math.sin(item.theta);
         const x2 = x * cosRY - z * sinRY;
         const z2 = x * sinRY + z * cosRY;
         const y3 = y * cosRX - z2 * sinRX;
         const z3 = y * sinRX + z2 * cosRX;
         const scale = (z3 + 2.2) / 3.2;
-        const px = x2 * RADIUS;
-        const py = y3 * RADIUS;
-        item.el.style.transform = `translate(-50%,-50%) translate(${px}px,${py}px)`;
-        item.el.style.opacity = Math.max(0.1, scale).toString();
-        item.el.style.zIndex = Math.round(scale * 20).toString();
-        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250, 0.6)' : 'var(--bord)';
+        item.el.style.transform   = `translate(-50%,-50%) translate(${x2 * RADIUS}px,${y3 * RADIUS}px)`;
+        item.el.style.opacity     = Math.max(0.1, scale).toString();
+        item.el.style.zIndex      = Math.round(scale * 20).toString();
+        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250,0.6)' : 'var(--bord)';
       });
     };
 
@@ -2203,7 +2273,7 @@ export class ExperienceComponent {
       period: 'Apr 2025 — Present',
       org: 'VirtuIntelligence · Part-time · Remote',
       title: 'Game/App Developer',
-      desc: 'Shipped PathFinder, a VR self-discovery app, to the Meta Quest store using Unreal Engine 5.5 Blueprints and Unity. Currently developing <em>Robots vs Aliens</em>, an action VR title in Unity (C#). Built Symposium, a real-time AI-mediated chat platform using Angular, Ionic, Node.js, and PostgreSQL. Working across diverse tech stacks has strengthened my full-stack architecture and problem-solving skills.',
+      desc: 'Shipped PathFinder, a VR self-discovery app, to the Meta Quest store using Unreal Engine 5.5 Blueprints and Unity. Currently developing <em>Robots vs Aliens</em>, a tower defense mobile game in Unity (C#). Built Symposium, a real-time AI-mediated chat platform using Angular, Ionic, Node.js, and PostgreSQL. Working across diverse tech stacks has strengthened my full-stack architecture and problem-solving skills.',
       tags: ['Unreal 5.5', 'Blueprints', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL'],
     },
     {
@@ -4731,7 +4801,7 @@ export class PortfolioDataService {
       desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches.',
       purpose: 'Architected a complete full-stack application demonstrating secure data flow from database to frontend UI.',
       features: ['JWT-based authentication system', 'Protected routing and navigation', 'Backend-connected dynamic forms', 'Real-time destination filtering'],
-      live: null, // Placeholder as requested
+      live: null,
       github: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
       imgs: [
         'assets/images/travel-atelier-1.png',
@@ -4764,7 +4834,7 @@ export class PortfolioDataService {
       purpose: "Built a fast, scalable frontend structure using Angular best practices and structural directives.",
       features: ['Angular client-side routing', 'Dynamic product rendering', 'Conditional component styling', 'Deployed to Netlify'],
       live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app' }],
-      github: null, // Placeholder as requested
+      github: null,
       imgs: [
         'assets/images/einsteins-art-1.png',
         'assets/images/einsteins-art-2.png',
@@ -4774,19 +4844,71 @@ export class PortfolioDataService {
   ];
 
   readonly certificates: Certificate[] = [
-    { name: 'CompTIA IT Fundamentals (ITF+)', issuer: 'CompTIA', abbr: 'COMP', color: '#c8202f', date: 'Nov 2023', url: 'https://www.comptia.org/' },
-    { name: 'Responsive Web Design', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Sep 2024', url: 'https://www.freecodecamp.org/' },
-    { name: 'JavaScript Essentials 1', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Oct 2024', url: 'https://skillsforall.com/course/javascript-essentials-1' },
-    { name: 'Introduction to Figma', issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Sep 2024', url: 'https://www.simplilearn.com/' },
-    { name: 'Introduction to PHP', issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Feb 2025', url: 'https://www.simplilearn.com/' },
-    { name: 'Back End Development & APIs', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025', url: 'https://www.freecodecamp.org/' },
-    { name: 'Legacy JS Algorithms & Data Structures', issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025', url: 'https://www.freecodecamp.org/' },
-    { name: 'Digital Marketing', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jul 2025', url: 'https://academy.hubspot.com/' },
-    { name: 'Endpoint Security', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Aug 2025', url: 'https://skillsforall.com/' },
-    { name: 'CCNA: Introduction to Networks', issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'May 2025', url: 'https://skillsforall.com/' },
-    { name: 'Content Marketing', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Sep 2025', url: 'https://academy.hubspot.com/' },
-    { name: 'Digital Advertising', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Oct 2025', url: 'https://academy.hubspot.com/' },
-    { name: 'SEO', issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jan 2026', url: 'https://academy.hubspot.com/' },
+    {
+      name: 'CompTIA IT Fundamentals (ITF+)',
+      issuer: 'CompTIA', abbr: 'COMP', color: '#c8202f', date: 'Nov 2023',
+      url: 'https://cp.certmetrics.com/comptia/en/public/verify/credential/0DPJNEYZN2F1QJG0'
+    },
+    {
+      name: 'Responsive Web Design',
+      issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Sep 2024',
+      url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/responsive-web-design'
+    },
+    {
+      name: 'JavaScript Essentials 1',
+      issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Oct 2024',
+      url: 'https://www.credly.com/badges/8c85d65e-a1c1-4b32-9a73-5284f689b4d4/linked_in_profile'
+    },
+    {
+      name: 'Introduction to Figma',
+      issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Sep 2024',
+      url: 'https://www.simplilearn.com/skillup-certificate-landing?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTU3MDI1MTcyOTMzMTE0OC5WbmciLCJ1c2VybmFtZSI6IkphcmVuVEtlbmRyaWNfIlhbWjhbyJ9&utm_source=shared-certificate&utm_medium=lms&utm_campaign=shared-certificate-promotion&referrer=https%3A%2F%2Flms.simplilearn.com%2Fdashboard%2Fcertificate&%24web_only=true'
+    },
+    {
+      name: 'Introduction to PHP',
+      issuer: 'Simplilearn', abbr: 'SL', color: '#5c67f2', date: 'Feb 2025',
+      url: 'https://www.simplilearn.com/skillup-certificate-landing?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzcyIiwiY2VydG1hWnhkGVfdXJSijoiaHR0cHM6XC9cL2NlcnRpZmljYXRlcy5zYW1wbGUubV0Xc9zaGFyZVYwWVdGh1bWJfNzM5OTQ2OV8xNzI3MTQxMzk5LnBuZyIsInVzZXJuYW1lIjoismFyZW4vUUhjPY2sgUy4gWwFtYmFvIn0%3D&utm_source=shared-certificate&utm_medium=lms&utm_campaign=shared-certificate-promotion&referrer=https%3A%2F%2Flms.simplilearn.com%2Fdashboard%2Fcertificate&%24web_only=true'
+    },
+    {
+      name: 'Back End Development & APIs',
+      issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025',
+      url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/back-end-development-and-apis'
+    },
+    {
+      name: 'Legacy JS Algorithms & Data Structures',
+      issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025',
+      url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/javascript-algorithms-and-data-structures'
+    },
+    {
+      name: 'Digital Marketing',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jul 2025',
+      url: 'https://app-na2.hubspot.com/academy/achievements/ipltmkkv/en/1/jaren-kendrick-yambao/digital-marketing'
+    },
+    {
+      name: 'Endpoint Security',
+      issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Aug 2025',
+      url: 'https://www.credly.com/badges/9f3070bc-6a7f-408a-b733-0a0e8da4943d/linked_in_profile'
+    },
+    {
+      name: 'CCNA: Introduction to Networks',
+      issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'May 2025',
+      url: 'https://www.credly.com/badges/0a2a80b2-70eb-4ecc-94a4-1cf5d1e9d5a5/linked_in_profile'
+    },
+    {
+      name: 'Content Marketing',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Sep 2025',
+      url: 'https://app-na2.hubspot.com/academy/achievements/30n1vfh7/en/1/jaren-kendrick-yambao/content-marketing'
+    },
+    {
+      name: 'Digital Advertising',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Oct 2025',
+      url: 'https://app-na2.hubspot.com/academy/achievements/hc10p6t8/en/1/jaren-yambao/digital-advertising'
+    },
+    {
+      name: 'SEO',
+      issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jan 2026',
+      url: 'https://app-na2.hubspot.com/academy/achievements/k55jkfw9/en/1/jaren-kendrick-yambao/seo'
+    },
   ];
 
   readonly blogPosts: BlogPost[] = [
@@ -4794,8 +4916,7 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'From Game Dev to Full Stack: What Shipping a VR App Taught Me',
       excerpt: 'When I shipped PathFinder to the Meta Quest store, I learned more about software development than any tutorial ever taught me. Here\'s what directly translates to web development.',
-      // Hero Image (Video Thumbnail style)
-      img: 'assets/images/blog-vr-gamedev.webp', 
+      img: 'assets/images/blog-vr-gamedev.webp',
       content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p>
 
 <img src="assets/images/blog-vr-shipping.jpg" alt="VR development workflow">
@@ -4824,7 +4945,6 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
       excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
-      // Hero Image (Travel Atelier Home)
       img: 'assets/images/travel-atelier-1.png',
       content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p>
 
@@ -4871,7 +4991,7 @@ export class PortfolioDataService {
     {
       quote: '"Jaren built a solid web application that really exceeded what we expected. Between the clean database structure and the reliable API design, he showed he is a very capable full-stack developer who stays on schedule."',
       name: 'Kenneth Punsalan',
-      role: 'Classmate & Collaboraton · Holy Angel University',
+      role: 'Classmate & Collaborator · Holy Angel University',
       initial: 'P',
       img: 'assets/images/testimonial-prof.jpg'
     },

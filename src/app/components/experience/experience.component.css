@@ -14,11 +14,13 @@
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
+/* ─── REMOVED direct animation: from .slabel — global .active-page .au handles it ─── */
+.slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
 .sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
 
+/* ─── REMOVED direct animation: from .exph — global .active-page .au handles it ─── */
 .exph {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
@@ -26,22 +28,19 @@
   letter-spacing: -.04em;
   color: var(--white);
   margin-bottom: 4rem;
-  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .10s ease both;
 }
 
 .tl { display: flex; flex-direction: column; }
 
+/* ─── REMOVED direct animation: from .tlr — global .active-page .al/.ar handles it ─── */
 .tlr {
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 4rem;
   padding: 3rem 0;
   border-bottom: 1px solid var(--bord);
-  animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) ease both;
 }
 .tlr:last-child { border-bottom: none; padding-bottom: 0; }
-.tlr:first-child { padding-top: 0; animation-delay: .18s; }
-.tlr:nth-child(2) { animation-delay: .26s; }
 
 .tlpd {
   font-family: 'JetBrains Mono', monospace;
@@ -90,8 +89,11 @@
   border: 1px solid var(--bord);
 }
 
-@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
+/* Keyframes are defined in global styles.css; redeclare here so they're 
+   available if component CSS needs to reference them (e.g. for caret animations) */
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(72px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-65px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(65px); }  to { opacity: 1; transform: translateX(0); } }
 
 @media (max-width: 960px) {
   .page-experience { padding: 6.5rem 1.5rem 4rem; }

@@ -76,21 +76,21 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 .decrypting { color: var(--acc) !important; }
 
-/* ══════════ GLOBAL ANIMATIONS — more prominent distances ══════════ */
+/* ══════════ GLOBAL ANIMATIONS — increased distances for prominence ══════════ */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(40px); }
+  from { opacity: 0; transform: translateY(72px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeLeft {
-  from { opacity: 0; transform: translateX(-44px); }
+  from { opacity: 0; transform: translateX(-65px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes fadeRight {
-  from { opacity: 0; transform: translateX(44px); }
+  from { opacity: 0; transform: translateX(65px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(.88); }
+  from { opacity: 0; transform: scale(.82); }
   to   { opacity: 1; transform: scale(1); }
 }
 
@@ -101,18 +101,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 }
 
 /* ══════════ ACTIVE STATE ══════════ */
-.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp  .55s cubic-bezier(.22,1,.36,1) both; }
-.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) both; }
-.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .55s cubic-bezier(.22,1,.36,1) both; }
-.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .5s cubic-bezier(.22,1,.36,1) both; }
+.active .au, .active-page .au { opacity: 1; transition: none; animation: fadeUp  .6s cubic-bezier(.22,1,.36,1) both; }
+.active .al, .active-page .al { opacity: 1; transition: none; animation: fadeLeft .6s cubic-bezier(.22,1,.36,1) both; }
+.active .ar, .active-page .ar { opacity: 1; transition: none; animation: fadeRight .6s cubic-bezier(.22,1,.36,1) both; }
+.active .as, .active-page .as { opacity: 1; transition: none; animation: scaleIn .55s cubic-bezier(.22,1,.36,1) both; }
 
 /* Stagger Delays */
 .active .d0, .active-page .d0 { animation-delay: .04s !important; }
-.active .d1, .active-page .d1 { animation-delay: .10s !important; }
-.active .d2, .active-page .d2 { animation-delay: .18s !important; }
-.active .d3, .active-page .d3 { animation-delay: .26s !important; }
-.active .d4, .active-page .d4 { animation-delay: .34s !important; }
-.active .d5, .active-page .d5 { animation-delay: .44s !important; }
+.active .d1, .active-page .d1 { animation-delay: .12s !important; }
+.active .d2, .active-page .d2 { animation-delay: .22s !important; }
+.active .d3, .active-page .d3 { animation-delay: .32s !important; }
+.active .d4, .active-page .d4 { animation-delay: .42s !important; }
+.active .d5, .active-page .d5 { animation-delay: .52s !important; }
 
 /* ══════════ SEAMLESS SLIDE-OUT (both directions) ══════════
    When a page slides OUT — either up (.prev) or down (.next) —

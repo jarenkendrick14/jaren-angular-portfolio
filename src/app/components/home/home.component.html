@@ -24,20 +24,25 @@
         </div>
       </div>
       
-      <!-- PROFILE PHOTO -->
+      <!-- PROFILE PHOTO — LCP element: fetchpriority=high, no lazy load -->
       <div class="h-photo au d3">
         <div class="h-photo-placeholder">
-          <!-- UPDATED: Now uses profile.png -->
-          <img src="assets/images/profile.png" alt="Jaren Kendrick"
-               style="width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0;"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" />
+          <!-- fetchpriority="high" tells browser to load this before other images -->
+          <picture>
+            <source srcset="assets/images/profile.webp" type="image/webp">
+            <img src="assets/images/profile.png" alt="Jaren Kendrick"
+                 fetchpriority="high"
+                 width="610" height="610"
+                 style="width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" />
+          </picture>
           <!-- Fallback Icon -->
           <svg style="display:none;" width="60" height="60" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </div>
       </div>
     </div>
 
-    <!-- FEATURED PROJECTS -->
+    <!-- FEATURED PROJECTS — lazy-load thumbnails, they're below the fold -->
     <div class="feat-section au d5">
       <p class="feat-label">Featured Projects</p>
       <div class="feat-grid">
@@ -48,9 +53,14 @@
                role="button" tabindex="0">
             
             <div class="feat-thumb">
-              <img [src]="item.project.imgs[1]" [alt]="item.project.name"
-                   style="width:100%;height:100%;object-fit:cover;"
-                   onerror="this.style.display='none'" />
+              <picture>
+                <source [attr.srcset]="item.project.imgs[1].replace(/\.(png|jpg)$/, '.webp')" type="image/webp">
+                <img [src]="item.project.imgs[1]" [alt]="item.project.name"
+                     loading="lazy"
+                     width="630" height="370"
+                     style="width:100%;height:100%;object-fit:cover;"
+                     onerror="this.style.display='none'" />
+              </picture>
             </div>
 
             <div class="feat-body">
