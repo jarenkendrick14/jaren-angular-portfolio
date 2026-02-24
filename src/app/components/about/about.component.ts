@@ -33,7 +33,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   /* ── GitHub Heatmap ── */
   readonly heatmapWeeks   = signal<HeatmapDay[][]>([]);
-  readonly heatmapMonths  = signal<{ col: number, label: string }[]>([]);
+  readonly heatmapMonths  = signal<{ col: number; label: string }[]>([]);
   readonly heatmapTotal   = signal(0);
   readonly heatmapLoading = signal(true);
   readonly heatmapError   = signal(false);
@@ -43,24 +43,24 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   readonly commitsLoading = signal(true);
 
   readonly skills = [
-    { name: 'JavaScript',      time: '2 yrs',   pct: 85 },
-    { name: 'TypeScript',      time: '1.5 yrs', pct: 80 },
-    { name: 'Angular',         time: '1 yr',    pct: 75 },
-    { name: 'Node.js & Express', time: '1 yr',  pct: 75 },
-    { name: 'Vue.js 3',        time: '1 yr',    pct: 70 },
-    { name: 'C#',              time: '1 yr',    pct: 70 },
-    { name: 'MongoDB',         time: '1 yr',    pct: 65 },
-    { name: 'PostgreSQL',      time: '6 mo',    pct: 55 },
+    { name: 'JavaScript',        time: '2 yrs',   pct: 85 },
+    { name: 'TypeScript',        time: '1.5 yrs', pct: 80 },
+    { name: 'Angular',           time: '1 yr',    pct: 75 },
+    { name: 'Node.js & Express', time: '1 yr',    pct: 75 },
+    { name: 'Vue.js 3',          time: '1 yr',    pct: 70 },
+    { name: 'C#',                time: '1 yr',    pct: 70 },
+    { name: 'MongoDB',           time: '1 yr',    pct: 65 },
+    { name: 'PostgreSQL',        time: '6 mo',    pct: 55 },
   ];
 
   readonly sphereTags = [
-    { text: 'Angular',     color: '#dd0031' }, { text: 'Vue.js 3',   color: '#42b883' },
-    { text: 'Node.js',     color: '#339933' }, { text: 'MongoDB',    color: '#47a248' },
-    { text: 'TypeScript',  color: '#3178c6' }, { text: 'C#',         color: '#9b59b6' },
-    { text: 'Unity',       color: '#a78bfa' }, { text: 'Express.js', color: '#7a7a9c' },
-    { text: 'REST APIs',   color: '#60a5fa' }, { text: 'Git',        color: '#f05030' },
-    { text: 'PostgreSQL',  color: '#336791' }, { text: 'Prisma',     color: '#7c8cf8' },
-    { text: 'Ionic',       color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
+    { text: 'Angular',    color: '#dd0031' }, { text: 'Vue.js 3',   color: '#42b883' },
+    { text: 'Node.js',    color: '#339933' }, { text: 'MongoDB',    color: '#47a248' },
+    { text: 'TypeScript', color: '#3178c6' }, { text: 'C#',         color: '#9b59b6' },
+    { text: 'Unity',      color: '#a78bfa' }, { text: 'Express.js', color: '#7a7a9c' },
+    { text: 'REST APIs',  color: '#60a5fa' }, { text: 'Git',        color: '#f05030' },
+    { text: 'PostgreSQL', color: '#336791' }, { text: 'Prisma',     color: '#7c8cf8' },
+    { text: 'Ionic',      color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
   ];
 
   get currentCert(): Certificate { return this.data.certificates[this.certIndex()]; }
@@ -112,35 +112,29 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   private async fetchHeatmap() {
     try {
-      // ✅ Uses Netlify's own proxy rewrite defined in netlify.toml.
-      // The browser requests /github-contributions (same origin = no CORS).
-      // Netlify's edge forwards it server-side to GitHub.
-      const res = await fetch('/github-contributions', {
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-      });
-      if (!res.ok) throw new Error(`Proxy responded ${res.status}`);
-      const html = await res.text();
+      // ✅ github-contributions-api.jogruber.de — dedicated public JSON API with
+      //    proper CORS headers. No proxy, no HTML scraping. Always works.
+      const res = await fetch(
+        'https://github-contributions-api.jogruber.de/v4/jarenkendrick14?y=last'
+      );
+      if (!res.ok) throw new Error(`API responded ${res.status}`);
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
+      const json: {
+        total: Record<string, number>;
+        contributions: { date: string; count: number; level: number }[];
+      } = await res.json();
 
-      // Parse total contributions count
-      const h2 = doc.querySelector('h2.f4');
-      if (h2) {
-        const match = h2.textContent?.match(/([\d,]+)\s+contributions/);
-        if (match) this.heatmapTotal.set(parseInt(match[1].replace(/,/g, ''), 10));
+      const lastYearTotal =
+        json.total?.['lastYear'] ??
+        Object.values(json.total ?? {}).reduce((a, b) => a + b, 0);
+      this.heatmapTotal.set(lastYearTotal);
+
+      const dayMap = new Map<string, { count: number; level: number }>();
+      for (const entry of json.contributions ?? []) {
+        dayMap.set(entry.date, { count: entry.count, level: entry.level });
       }
 
-      // Parse contribution cells
-      const dayMap = new Map<string, { count: number; level: number }>();
-      const cells = doc.querySelectorAll('td.ContributionCalendar-day');
-      cells.forEach(cell => {
-        const date  = cell.getAttribute('data-date');
-        const level = parseInt(cell.getAttribute('data-level') || '0', 10);
-        if (date) dayMap.set(date, { count: 0, level });
-      });
-
-      if (dayMap.size === 0) throw new Error('No cells parsed — GitHub may have changed their markup');
+      if (dayMap.size === 0) throw new Error('No contribution data returned');
 
       this.generateGrid(dayMap);
       this.heatmapLoading.set(false);
@@ -285,12 +279,10 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
         const y3 = y * cosRX - z2 * sinRX;
         const z3 = y * sinRX + z2 * cosRX;
         const scale = (z3 + 2.2) / 3.2;
-        const px = x2 * RADIUS;
-        const py = y3 * RADIUS;
-        item.el.style.transform   = `translate(-50%,-50%) translate(${px}px,${py}px)`;
+        item.el.style.transform   = `translate(-50%,-50%) translate(${x2 * RADIUS}px,${y3 * RADIUS}px)`;
         item.el.style.opacity     = Math.max(0.1, scale).toString();
         item.el.style.zIndex      = Math.round(scale * 20).toString();
-        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250, 0.6)' : 'var(--bord)';
+        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250,0.6)' : 'var(--bord)';
       });
     };
 

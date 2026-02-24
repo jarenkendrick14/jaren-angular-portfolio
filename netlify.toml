@@ -1,6 +1,6 @@
 # ── Build settings ────────────────────────────────────────────────────────────
 [build]
-  publish = "dist/portfolio/browser"
+  publish = "dist/jaren-portfolio/browser"
   command = "npm run build"
 
 # ── Proxy: GitHub contributions heatmap (avoids CORS entirely) ────────────────
