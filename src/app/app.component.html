@@ -22,7 +22,13 @@
   <app-sidebar />
 
   <header class="mobnav" role="banner">
-    <a href="#" class="mlogo" (click)="goTo(0); $event.preventDefault()">jk<span>.</span></a>
+<a href="#" class="mlogo" (click)="goTo(0); $event.preventDefault()">
+      @if (nav.isDark()) {
+        <img src="assets/logo-dark.png" alt="Jaren Kendrick" />
+      } @else {
+        <img src="assets/logo-light.png" alt="Jaren Kendrick" />
+      }
+    </a>
     <div class="mnr">
       <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle theme">
         <div class="tknob">

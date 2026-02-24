@@ -28,7 +28,7 @@ export class ContactComponent {
   // 3. Check your inbox for the access key
   // 4. Replace the string below with your real key
   // ──────────────────────────────────────────────────────
-  private readonly WEB3FORMS_KEY = 'YOUR_ACCESS_KEY_HERE';
+  private readonly WEB3FORMS_KEY = '52d81049-31e9-455b-be6c-c17496e80dd7';
 
   updateField(field: string, value: string) {
     this.formData.update(d => ({ ...d, [field]: value }));

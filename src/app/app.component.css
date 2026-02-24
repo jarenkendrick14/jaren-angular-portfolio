@@ -76,14 +76,19 @@
   background: var(--sb); border-bottom: 1px solid var(--sbbrd);
   z-index: 500; align-items: center; justify-content: space-between; padding: 0 1.5rem;
 }
-.mlogo { 
-  font-family: 'Cormorant Garamond', serif; 
-  font-weight: 600; 
-  font-style: italic; 
-  font-size: 2.2rem; /* Increased from 1.8rem */
-  color: var(--white); 
-  text-decoration: none; 
+.mlogo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  text-decoration: none;
 }
+
+.mlogo img {
+  height: 42px; /* Fits perfectly inside the 70px nav bar */
+  width: auto;
+  object-fit: contain;
+}
+
 .mlogo span { color: var(--acc); font-style: normal; }
 .mnr { display: flex; align-items: center; gap: 1.5rem; }
 .thm { width: 46px; height: 24px; border-radius: 100px; background: var(--surf); border: 1px solid var(--bord); position: relative; cursor: none; }

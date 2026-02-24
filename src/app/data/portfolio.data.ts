@@ -122,7 +122,7 @@ export class PortfolioDataService {
       title: 'From Game Dev to Full Stack: What Shipping a VR App Taught Me',
       excerpt: 'When I shipped PathFinder to the Meta Quest store, I learned more about software development than any tutorial ever taught me. Here\'s what directly translates to web development.',
       // Hero Image (Video Thumbnail style)
-      img: 'assets/images/maxresdefault.jpg', 
+      img: 'assets/images/blog-vr-gamedev.webp', 
       content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p>
 
 <img src="assets/images/blog-vr-shipping.jpg" alt="VR development workflow">
@@ -136,7 +136,7 @@ export class PortfolioDataService {
 <p>Unity's component system is event-driven and reactive. A player picks up an item — the inventory updates, the HUD reflects it, the game state records it. Sound familiar? When I picked up Vue.js and its Composition API, the mental model was <strong>already there</strong>. Data changes, view updates. The syntax was different. The thinking wasn't.</p>
 <p>C# gave me a very clear sense of data flow and component responsibility before I ever wrote a composable. I think that's a genuine advantage — understanding architecture before you're handed a framework that handles it for you.</p>
 
-<img src="assets/images/pathfinder-2.png" alt="Unity and Angular side by side">
+<img src="assets/images/blog-vr-code.webp" alt="Unity and Angular side by side">
 <div class="blog-img-caption">From Unity's event systems to Angular's reactive signals — the pattern is the same.</div>
 
 <h3>Performance is non-negotiable</h3>
@@ -170,7 +170,7 @@ export class PortfolioDataService {
 <p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p>
 <p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p>
 
-<img src="assets/images/travel-atelier-2.png" alt="Vue.js Composition API code">
+<img src="assets/images/blog-view-code.jpeg" alt="Vue.js Composition API code">
 <div class="blog-img-caption">Composables in Vue feel natural coming from Unity's component model.</div>
 
 <h3>What I'd do differently</h3>
@@ -190,15 +190,15 @@ export class PortfolioDataService {
     },
     {
       quote: '"Working with Jaren is refreshing. He takes ownership, communicates effectively, and the code he submits is clean and functional on the first pull request."',
-      name: 'Samantha T.',
-      role: 'Classmate & Collaborator · HAU',
+      name: 'Samantha Tomoling',
+      role: 'Classmate & Collaborator · Holy Angel University',
       initial: 'S',
       img: 'assets/images/testimonial-samantha.png'
     },
     {
-      quote: '"The web application Jaren built exceeded expectations. Clean database structure, solid API design, and delivered on time. A strong full-stack candidate."',
-      name: 'Prof. [Name]',
-      role: 'IT Instructor · Holy Angel University',
+      quote: '"Jaren built a solid web application that really exceeded what we expected. Between the clean database structure and the reliable API design, he showed he is a very capable full-stack developer who stays on schedule."',
+      name: 'Kenneth Punsalan',
+      role: 'Classmate & Collaboraton · Holy Angel University',
       initial: 'P',
       img: 'assets/images/testimonial-prof.jpg'
     },
