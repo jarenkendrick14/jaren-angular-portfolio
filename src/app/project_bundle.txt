@@ -610,28 +610,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .page-about {
   width: 100%;
   min-height: 100vh;
-  padding: 5rem 5rem 3rem;
+  padding: 5rem 5rem 6rem; /* Changed bottom padding from 3rem to 6rem */
   overflow-x: hidden;
 }
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
-
-/* ══════════ ANIMATIONS ══════════ */
-@keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-44px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeRight { from { opacity: 0; transform: translateX(44px); }  to { opacity: 1; transform: translateX(0); } }
-
-/* Base state for animations */
-.au, .al, .ar { opacity: 0; }
-
-/* Active states */
-.active-page .slabel     { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .04s ease both; }
-.active-page .stats-strip{ animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .08s ease both; }
-.active-page .apull      { animation: fadeLeft .55s cubic-bezier(.22,1,.36,1) .10s ease both; }
-.active-page .abio       { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both; }
-.active-page .blk.ar.d2  { animation: fadeRight .55s cubic-bezier(.22,1,.36,1) .18s ease both; }
-.active-page .blk.ar.d3  { animation: fadeRight .55s cubic-bezier(.22,1,.36,1) .26s ease both; }
-.active-page .blk.ar.d4  { animation: fadeRight .55s cubic-bezier(.22,1,.36,1) .34s ease both; }
 
 /* ══════════ SECTION LABEL ══════════ */
 .slabel {
@@ -682,16 +665,32 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   font-weight: 500;
 }
 
-/* ══════════ MAIN GRID LAYOUT ══════════ */
-.ag { display: grid; grid-template-columns: 1.1fr .9fr; gap: 5rem; }
+/* 1. MAKE GRIDS IDENTICAL (PANTAY NA GUTTER) */
+.intro-grid {
+  display: grid;
+  /* Left column takes 1 part, Right takes 1.5 parts. 
+     This aligns perfectly with the dash-grid below. */
+  grid-template-columns: 1fr 1.5fr; 
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 5rem;
+}
+
+.intro-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers photo horizontally in the 1fr column */
+  text-align: center;
+}
+
 
 .bio-img-wrap {
-  width: 180px;   /* Increased from 120px */
-  height: 180px;  /* Increased from 120px */
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--bord);
-  margin: 0 auto 1.5rem;
+  margin-bottom: 1.5rem;
 }
 .bio-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -702,14 +701,43 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   line-height: 1.2;
   letter-spacing: -.025em;
   color: var(--white);
-  margin-bottom: 2rem;
-  text-align: center;
+  margin-bottom: 0; /* Overridden, handled by grid layout */
 }
 .apull em { color: var(--acc); font-style: normal; }
 
-.abio { font-size: 1.1rem; color: var(--text); line-height: 1.8; font-weight: 300; }
+.abio {
+  font-size: 1.1rem; 
+  color: var(--text); 
+  line-height: 1.8; 
+  font-weight: 300; 
+  text-align: justify; /* <-- This forces the flush right edge */
+}
 .abio p + p { margin-top: 1.25rem; }
 .abio strong { color: var(--white); font-weight: 600; }
+
+.dash-grid {
+  display: grid;
+  /* Exact same ratio as intro-grid */
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  /* This ensures both columns stretch to the same height */
+  align-items: stretch; 
+}
+
+/* The Container for the Sphere */
+.dash-skills {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+.full-width {
+  grid-column: 1 / -1;
+}
+.dash-github-wrap {
+  width: 100%;
+}
 
 .btn {
   display: inline-flex; align-items: center; gap: .6rem; justify-content: center;
@@ -721,8 +749,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .btn-fill { background: var(--acc); color: #fff; }
 .btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 
-/* ══════════ RIGHT COLUMN BLOCKS ══════════ */
+/* ══════════ RIGHT COLUMN BLOCKS (Reused in Grid) ══════════ */
 .blk { margin-bottom: 2.5rem; }
+.blk:last-child { margin-bottom: 0; }
+
 .blkh {
   font-family: 'JetBrains Mono', monospace; font-size: .8rem; letter-spacing: .12em;
   color: var(--muted); margin-bottom: 1.5rem; text-transform: uppercase;
@@ -733,21 +763,32 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .skill-toggle-btn {
   font-family: 'JetBrains Mono', monospace; font-size: .65rem; letter-spacing: .08em;
   color: var(--acc); border: 1px solid rgba(139,92,246,.3); padding: .3rem .65rem;
-  border-radius: 4px; cursor: none; background: none; transition: background .2s, border-color .2s;
+  border-radius: 4px; cursor: pointer; background: none; transition: background .2s, border-color .2s;
 }
 .skill-toggle-btn:hover { background: rgba(139,92,246,.1); }
 
 .skill-sphere-wrap {
-  position: relative; min-height: 268px; display: flex;
-  align-items: center; justify-content: center;
-  border: 1px solid var(--bord); border-radius: 8px; background: var(--bg);
-  padding: 1.5rem; overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  background: var(--bg);
+  padding: 0;
+  overflow: hidden;
+  /* FORCE HEIGHT: This makes it fill the space next to Soft Skills */
+  flex: 1;
+  min-height: 320px;
+  width: 100%;
 }
+
 .sphere-hint {
   position: absolute; bottom: .6rem; left: 50%; transform: translateX(-50%);
   font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--muted);
   letter-spacing: .08em; opacity: .5; pointer-events: none; width: max-content;
 }
+
 
 /* SPHERE TAGS */
 .sphere-tag {
@@ -758,6 +799,51 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   will-change: transform, opacity;
 }
 
+/* ══════════ SOFT SKILLS ══════════ */
+.soft-sk-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Little more breathing room */
+  padding: 0;
+  /* Align list with header? No, usually slightly indented looks better 
+     but let's reduce indentation to make it tighter to the margin */
+  margin-top: 0.5rem;
+}
+
+.soft-sk-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-left: 0; /* Remove left padding to align flush with header */
+  position: relative;
+}
+
+/* Adds the little purple triangle bullet point */
+.soft-sk-name::before {
+  content: '▸';
+  color: var(--acc);
+  font-size: 0.8rem;
+}
+
+.soft-sk-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.soft-sk-desc {
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 300;
+  line-height: 1.6;
+  text-align: left; /* Reset to left for cleaner reading on short bullets */
+  padding-left: 1.1rem; /* Indent description to align with text start */
+}
 /* Proficiency List */
 .skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; }
 .sk-item { display: flex; flex-direction: column; gap: .4rem; opacity: 0; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards; }
@@ -965,12 +1051,25 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
 /* ══════════ RESPONSIVE ══════════ */
 @media (max-width: 960px) {
-  .page-about { padding: 6.5rem 1.5rem 4rem; }
-  .ag { grid-template-columns: 1fr; gap: 3rem; }
+  .page-about { padding: 6.5rem 1.5rem 5rem; }
+  .intro-grid, .dash-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .tagline-line { white-space: normal; }
+  
+  /* Center the Download Resume button container */
+  .intro-right div[style*="margin-top"] {
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Ensure the button itself doesn't stretch weirdly */
+  .btn { width: auto; }
+  
+
   .stats-strip { grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.5rem 0; }
   .stat-num { font-size: clamp(2.5rem, 10vw, 3.5rem); }
   .btn, .cert-nav, .cert-card, .cert-dot, .skill-toggle-btn { cursor: pointer !important; }
   .sphere-hint { display: none; }
+  .dash-grid { grid-template-columns: 1fr; gap: 3rem; }
 }
 
 :host ::ng-deep .sphere-tag {
@@ -979,17 +1078,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   font-size: 0.8rem;
   transition: color 0.2s, z-index 0.2s, opacity 0.2s;
   will-change: transform, opacity;
-  /* Ensure it has a color or it will be invisible */
   color: var(--text); 
+  /* Force position to work with the JS math */
+  position: absolute !important;
+  transform-style: preserve-3d;
+  /* Ensure it sits on top of the black background */
+  z-index: 10;
 }
 
-/* ══════════ TAGLINE STAGGER ANIMATION ══════════
-   Each phrase fades up one at a time when About page activates.
-   The .au base class keeps them opacity:0 until active-page fires.
-══════════════════════════════════════════════════ */
-
+/* ══════════ TAGLINE STAGGER ANIMATION ══════════ */
 .tagline-wrap {
-  /* Override the old single-element layout so spans stack vertically */
   display: flex;
   flex-direction: column;
   gap: 0.1em;
@@ -997,14 +1095,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
 .tagline-line {
   display: block;
-  /* Inherit all apull styles (font, size, etc.) */
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
-  font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+  font-size: clamp(2rem, 3vw, 2.8rem); /* Slightly scaled down so it fits gracefully */
   line-height: 1.2;
   letter-spacing: -0.025em;
   color: var(--white);
   text-align: center;
+  white-space: nowrap; /* Forces text to stay on one line */
 }
 
 .tagline-line em {
@@ -1036,116 +1134,95 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
     </div>
 
-    <div class="ag">
-      
-      <!-- LEFT COLUMN: Bio -->
-      <div>
+    <!-- 1. INTRO GRID: Profile & Bio -->
+    <div class="intro-grid">
+      <div class="intro-left">
         <!-- Profile Image -->
-        <div class="bio-img-wrap al d1">
-          <img src="assets/images/profile-about.jpg" width="180" height="180" loading="lazy" 
+        <div class="bio-img-wrap as d2">
+          <img src="assets/images/profile-about.jpg" width="200" height="200" loading="lazy" 
                alt="Profile" 
                onerror="this.style.display='none'">
         </div>
 
-        <!-- ✦ TAGLINE: each phrase fades in one by one on page activation ✦ -->
+        <!-- ✦ TAGLINE ✦ -->
         <h2 class="apull tagline-wrap">
           <span class="tagline-line au tl-p1">Student by day.</span>
           <span class="tagline-line au tl-p2">Developer by night.</span>
           <span class="tagline-line tagline-accent au tl-p3"><em>Always learning.</em></span>
         </h2>
-
-        <div class="abio au d2">
-          <!-- ✦ UPDATED OPENING LINE ✦ -->
-          <p>Hello! My name is Jaren. I'm a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
-          <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
-          <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
-          
-          <div style="margin-top:2rem;">
-            <a href="assets/Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
-              <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Download Resume
-            </a>
-          </div>
-        </div>
       </div>
 
-      <!-- RIGHT COLUMN: Blocks -->
-      <div>
+      <!-- Bio Text -->
+      <div class="intro-right abio au d3">
+        <p>Hello! My name is Jaren. I'm a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
+        <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
+        <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
         
-        <!-- SKILLS -->
-        <div class="blk ar d2">
-          <div class="blkh">
-            Technical Skills
-            <button class="skill-toggle-btn" (click)="toggleSkills()">
-              @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
-            </button>
-          </div>
+        <div style="margin-top:2rem;">
+          <a href="assets/Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
+            <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download Resume
+          </a>
+        </div>
+      </div>
+    </div>
 
-          <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
-            <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
-            <div class="sphere-hint">drag to spin</div>
-          </div>
-
-          @if (skillsExpanded()) {
-            <ul class="skl" role="list">
-              @for (sk of skills; track sk.name; let i = $index) {
-                <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
-                  <div class="sk-info">
-                    <span>{{ sk.name }}</span>
-                    <span class="sk-time">{{ sk.time }}</span>
-                  </div>
-                  <div class="sk-bar">
-                    <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
-                  </div>
-                </li>
-              }
-            </ul>
-          }
+    <!-- 2. DASHBOARD GRID: Tech & Certs -->
+<!-- 2. DASHBOARD GRID: 2x2 Layout -->
+    <div class="dash-grid">
+      
+      <!-- [ROW 1, LEFT] TECHNICAL SKILLS -->
+      <div class="blk dash-skills au d4">
+        <div class="blkh">
+          Technical Skills
+          <button class="skill-toggle-btn" (click)="toggleSkills()">
+            @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
+          </button>
         </div>
 
-        <!-- CERTIFICATIONS -->
-        <div class="blk ar d3">
-          <div class="cert-header">
-            <div class="blkh" style="margin-bottom:0;">Certifications</div>
-            <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
-          </div>
-          
-          <div class="cert-carousel">
-            <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
-            <div class="cert-card-wrap" [ngClass]="certAnimClass()">
-              <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
-                <div class="cert-top" [style.background]="currentCert.color + '22'">
-                  <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
-                  <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
+        <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
+          <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
+          <div class="sphere-hint">drag to spin</div>
+        </div>
+
+        @if (skillsExpanded()) {
+          <ul class="skl" role="list">
+            @for (sk of skills; track sk.name; let i = $index) {
+              <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
+                <div class="sk-info">
+                  <span>{{ sk.name }}</span>
+                  <span class="sk-time">{{ sk.time }}</span>
                 </div>
-                <div class="cert-body">
-                  <div class="cert-name">{{ currentCert.name }}</div>
-                  <div class="cert-meta">
-                    <div class="cert-date">{{ currentCert.date }}</div>
-                    <div class="cert-view">View Certificate ↗</div>
-                  </div>
+                <div class="sk-bar">
+                  <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
                 </div>
-              </a>
-            </div>
-            <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
-          </div>
-          
-          <div class="cert-dots">
-            @for (cert of data.certificates; track $index) {
-              <button class="cert-dot" [class.on]="$index === certIndex()"
-                (click)="certNav($index > certIndex() ? 1 : -1)"
-                [attr.aria-label]="'Cert ' + ($index + 1)">
-              </button>
+              </li>
             }
-          </div>
-        </div>
+          </ul>
+        }
+      </div>
 
-        <!-- HEATMAP -->
-        <div class="blk ar d4">
+      <!-- [ROW 1, RIGHT] SOFT SKILLS (NEW) -->
+      <div class="blk dash-soft-skills au d4">
+        <div class="blkh">Soft Skills</div>
+        <ul class="soft-sk-list" role="list">
+          @for (sk of softSkills; track sk.name; let i = $index) {
+            <li class="soft-sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
+              <span class="soft-sk-name">{{ sk.name }}</span>
+              <span class="soft-sk-desc">{{ sk.desc }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- [ROW 2, LEFT] GITHUB ACTIVITY -->
+      <!-- Removed "full-width" class so it sits in half the grid -->
+      <div class="blk dash-github au d5">
+        <div class="dash-github-wrap">
           <div class="blkh">
             GitHub Activity
             @if (!heatmapLoading() && !heatmapError()) {
@@ -1174,13 +1251,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
                 <div class="heatmap-body">
                   <div class="heatmap-days">
-                    <span></span>
-                    <span>Mon</span>
-                    <span></span>
-                    <span>Wed</span>
-                    <span></span>
-                    <span>Fri</span>
-                    <span></span>
+                    <span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span>
                   </div>
 
                   <div class="heatmap-grid">
@@ -1231,8 +1302,45 @@ export class AppComponent implements AfterViewInit, OnDestroy {
             </div>
           }
         </div>
-
       </div>
+
+      <!-- [ROW 2, RIGHT] CERTIFICATIONS -->
+      <div class="blk dash-certs au d5">
+        <div class="cert-header">
+          <div class="blkh" style="margin-bottom:0;">Certifications</div>
+          <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
+        </div>
+        
+        <div class="cert-carousel">
+          <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
+          <div class="cert-card-wrap" [ngClass]="certAnimClass()">
+            <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
+              <div class="cert-top" [style.background]="currentCert.color + '22'">
+                <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
+                <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
+              </div>
+              <div class="cert-body">
+                <div class="cert-name">{{ currentCert.name }}</div>
+                <div class="cert-meta">
+                  <div class="cert-date">{{ currentCert.date }}</div>
+                  <div class="cert-view">View Certificate ↗</div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
+        </div>
+        
+        <div class="cert-dots">
+          @for (cert of data.certificates; track $index) {
+            <button class="cert-dot" [class.on]="$index === certIndex()"
+              (click)="certNav($index > certIndex() ? 1 : -1)"
+              [attr.aria-label]="'Cert ' + ($index + 1)">
+            </button>
+          }
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1303,6 +1411,14 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     { text: 'Ionic',      color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
   ];
 
+  readonly softSkills = [
+    { name: 'Self-Directed Learning', desc: 'Continuously picking up new frameworks and game engines outside of university coursework.' },
+    { name: 'Adaptability', desc: 'Comfortable context-switching between VR game development (C#) and full-stack web architectures (TypeScript).' },
+    { name: 'Time Management', desc: 'Successfully balancing a full-time IT degree with part-time professional shipping deadlines.' },
+    { name: 'Communication', desc: 'Providing clear asynchronous updates and proactive blocking-issue reports in a remote team.' },
+    { name: 'Problem Solving', desc: 'Breaking down complex features (like real-time AI streaming) into actionable, scalable code.' }
+  ];
+
   get currentCert(): Certificate { return this.data.certificates[this.certIndex()]; }
   get certTotal(): number { return this.data.certificates.length; }
 
@@ -1330,6 +1446,12 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.initSphere();
     this.fetchHeatmap();
     this.fetchCommits();
+
+    // If on mobile, run counters immediately because 
+    // the 'active' input might not trigger correctly during scrolling.
+    if (window.innerWidth < 960) {
+      setTimeout(() => this.animateCounters(), 500);
+    }
   }
 
   ngOnDestroy() { cancelAnimationFrame(this.animId); }
@@ -1483,7 +1605,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   /* ── Custom Vanilla JS Sphere ── */
   private initSphere() {
-    const RADIUS = 95;
+    const RADIUS = 150;
     const items = this.sphereTags.map((tag, i) => {
       const phi   = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
@@ -2558,13 +2680,44 @@ export class ExperienceComponent {
 
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 2rem; }
-  .h-top-grid { flex-direction: column-reverse; align-items: flex-start; gap: 2.5rem; margin-bottom: 3rem; }
   
-  .h-photo { width: 220px; height: 220px; } /* Increased from 160px */
+  /* ✦ FIX 1: Center the Photo and Text Blocks ✦ */
+  .h-top-grid { 
+    flex-direction: column-reverse; 
+    align-items: center; /* Centers the Photo horizontally */
+    gap: 2.5rem; 
+    margin-bottom: 3rem; 
+  }
+  
+  /* ✦ FIX 2: Center the Text Content ✦ */
+  .h-text {
+    text-align: center;      /* Centers the paragraphs and headings */
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Centers flex children (like the location badge) */
+    width: 100%;
+  }
+
+  /* Ensure headings fill width so text-align works */
+  .hname { width: 100%; }
+
+  .h-photo { 
+    width: 220px; 
+    height: 220px; 
+    /* Extra safety to ensure photo doesn't float left */
+    margin: 0 auto; 
+  }
   
   .feat-grid { grid-template-columns: 1fr; }
   .btn { cursor: pointer !important; }
+
+  /* ✦ FIX 3: Center Buttons ✦ */
+  .hbtns {
+    justify-content: center;
+    margin-top: 1rem;
+  }
 }
+
 
 --- DIRECTORY: components\home\home.component.html ---
 <section class="page-home" [class.active-page]="active">
@@ -3951,6 +4104,7 @@ export class ResumeComponent implements OnChanges {
 }
 
 --- DIRECTORY: components\sidebar\sidebar.component.css ---
+/* ══════════ SIDEBAR LAYOUT ══════════ */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
@@ -3964,6 +4118,7 @@ export class ResumeComponent implements OnChanges {
   padding: 2rem 0;
 }
 
+/* ✦ LOGO: Increased size from 140px to 180px ✦ */
 .sb-logo {
   display: flex;
   align-items: center;
@@ -3971,19 +4126,15 @@ export class ResumeComponent implements OnChanges {
   text-decoration: none;
   font-size: 0;
   line-height: 0;
-  /* ✦ FIX: reserve the exact space the image will occupy so no reflow/stretch */
-  width: 140px;
-  height: 50px;
+  width: 180px;  /* Bigger width */
+  height: 80px;  /* Bigger height */
 }
 
 .sb-logo-img {
-  /* ✦ FIX: explicit dimensions + object-fit prevents the momentary stretch
-     that happens when the browser doesn't know the aspect ratio yet */
-  width: 140px;
-  height: 50px;
+  width: 180px;  /* Match container */
+  height: 80px;  /* Match container */
   object-fit: contain;
   display: block;
-  /* Smooth fade-in instead of popping in stretched */
   opacity: 0;
   animation: logoFadeIn .3s ease .1s forwards;
 }
@@ -3995,58 +4146,88 @@ export class ResumeComponent implements OnChanges {
 
 .sb-logo:hover .sb-logo-img { opacity: .8; }
 
+/* ══════════ NAVIGATION TRACK (UPDATED) ══════════ */
 .sb-nav {
   margin: auto 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
+  gap: 2rem; /* Spacing between dots */
   width: 100%;
+  padding-left: 3.5rem; /* Indent the whole group */
 }
 
-.sb-line {
+/* THE VERTICAL TRACK LINE */
+.sb-nav::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  /* Aligns line with center of dots: Padding (3.5rem) + Half Dot Width (~5px) */
+  left: calc(3.5rem + 4.5px);
   width: 1px;
-  height: 1.8rem;
   background: var(--bord);
-  display: block;
+  z-index: 0;
 }
 
 .sdw {
   display: flex;
   align-items: center;
-  gap: .7rem;
+  gap: 1.25rem;
   cursor: pointer;
-  padding: .2rem 0;
-  justify-content: center;
-  width: 100px;
   background: none;
   border: none;
   font-family: inherit;
+  position: relative;
+  z-index: 1; /* Sits on top of the line */
+  padding: 0;
 }
 
+/* THE DOT (Circle Thingy) */
 .sdot {
-  width: 9px; height: 9px;
+  width: 10px; 
+  height: 10px;
   border-radius: 50%;
+  /* Default: Hollow Ring */
   border: 1.5px solid var(--muted);
-  background: transparent;
+  background: var(--sb); /* Match sidebar bg to hide the line behind it */
   flex-shrink: 0;
-  transition: border-color .2s, background .2s;
-}
-.sdw.on .sdot, .sdw:hover .sdot {
-  background: var(--acc);
-  border-color: var(--acc);
+  transition: all 0.3s ease;
 }
 
 .slbl {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .65rem;
-  letter-spacing: .1em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   color: var(--muted);
   text-transform: uppercase;
-  transition: color .2s;
-  width: 52px;
+  transition: color 0.3s ease;
+  font-weight: 500;
 }
-.sdw.on .slbl, .sdw:hover .slbl { color: var(--white); }
 
+/* ══════════ ACTIVE STATES ══════════ */
+
+/* Active Dot: Filled, Colored, Glowing */
+.sdw.on .sdot {
+  background: var(--acc);
+  border-color: var(--acc);
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+/* Active Text: Colored & Bold */
+.sdw.on .slbl {
+  color: var(--acc);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+}
+
+/* Hover State */
+.sdw:hover .sdot { border-color: var(--text); }
+.sdw:hover .slbl { color: var(--white); }
+
+/* ══════════ BOTTOM SECTION ══════════ */
 .sb-bot {
   display: flex;
   flex-direction: column;
@@ -4171,8 +4352,7 @@ export class ResumeComponent implements OnChanges {
 --- DIRECTORY: components\sidebar\sidebar.component.html ---
 <aside class="sidebar" role="navigation" aria-label="Main Navigation">
 
-  <!-- Added width/height attributes to fix console warning -->
-<a href="#" (click)="goTo(0); $event.preventDefault()" class="sb-logo" aria-label="Home">
+  <a href="#" (click)="goTo(0); $event.preventDefault()" class="sb-logo" aria-label="Home">
     @if (nav.isDark()) {
       <img src="assets/logo-dark.png" alt="Jaren Kendrick" class="sb-logo-img" width="180" height="64" />
     } @else {
@@ -4181,21 +4361,22 @@ export class ResumeComponent implements OnChanges {
   </a>
 
   <nav class="sb-nav">
+    <!-- The line is now drawn via CSS on .sb-nav::before -->
     @for (item of navItems; track item.index) {
-      <div class="sb-line"></div>
       <button
         class="sdw"
         [class.on]="nav.currentPage() === item.index"
         (click)="goTo(item.index)"
         [attr.aria-label]="item.label"
         [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
+        <span class="sdot"></span>
         <span class="slbl">{{ item.short }}</span>
       </button>
     }
-    <div class="sb-line"></div>
   </nav>
 
   <div class="sb-bot">
+    <!-- Social icons remain the same -->
     <div class="sb-socs">
       <a href="https://linkedin.com/in/jarenkendrick" target="_blank" rel="noopener" class="sbsoc" aria-label="LinkedIn">
         <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
@@ -4204,30 +4385,18 @@ export class ResumeComponent implements OnChanges {
         <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
       </a>
       <a href="mailto:jarenkendrickyambao@gmail.com" class="sbsoc" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <path d="M22 4L12 13L2 4"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13L2 4"/></svg>
       </a>
     </div>
 
-    <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle dark/light mode">
+    <button class="thm" (click)="nav.toggleTheme()" aria-label="Toggle theme">
       <div class="tknob">
-        @if (nav.isDark()) {
-          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        } @else {
-          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/>
-            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-          </svg>
-        }
+        @if (nav.isDark()) { <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> } 
+        @else { <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg> }
       </div>
     </button>
 
-    <button class="term-trigger" (click)="nav.toggleTerminal()" aria-label="Open developer terminal" title="Developer Mode">
+    <button class="term-trigger" (click)="nav.toggleTerminal()" aria-label="Open developer terminal">
       <span class="term-trigger-dot"></span>[ ]_ dev
     </button>
   </div>
@@ -4511,7 +4680,7 @@ export class TerminalComponent {
       `  <span class="tl-acc">Uni</span>       <span class="tl-val">Holy Angel University (2027)</span>`,
       `  <span class="tl-acc">Status</span>    <span class="tl-ok">● Open to internship</span>`,
       ``,
-      `  <span class="tl-quote">"I don't just write code — I ship things."</span>`,
+      `  <span class="tl-quote">""Student by day. Developer by night. Always learning."</span>`,
     ],
     contact: () => [
       ``,

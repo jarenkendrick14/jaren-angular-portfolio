@@ -1,30 +1,170 @@
 <section class="page-experience" [class.active-page]="active">
   <div class="pin">
+
+    <!-- ── Header ─────────────────────────────────────────────────── -->
     <div class="slabel au d0">
-      <span class="sn">04</span><span class="st">/ experience &amp; education</span>
+      <span class="sn">04</span>
+      <span class="st">/ experience &amp; education</span>
       <div class="shr"></div>
     </div>
-    <h2 class="exph au d1">Where I've been.</h2>
-    <div class="tl">
-      @for (entry of entries; track entry.title; let i = $index) {
-        <div class="tlr" [ngClass]="i === 0 ? 'al d2' : 'ar d3'">
-          <div>
-            <p class="tlpd">{{ entry.period }}</p>
-            <p class="tlorg">{{ entry.org }}</p>
-          </div>
-          <div>
-            <h3 class="tltl">{{ entry.title }}</h3>
-            <p class="tldc" [innerHTML]="entry.desc"></p>
-            @if (entry.tags.length > 0) {
-              <div class="tlch">
-                @for (tag of entry.tags; track tag) {
-                  <span class="ptag">{{ tag }}</span>
-                }
-              </div>
-            }
-          </div>
+    <h2 class="exph au d1">Where I've Been.</h2>
+
+    <!-- ── Stats strip ───────────────────────────────────────────── -->
+    <div class="xstats au d2">
+      @for (c of counters; track c.label) {
+        <div class="xstat">
+          <span class="xstat-val">{{ c.current() }}{{ c.suffix }}</span>
+          <span class="xstat-lbl">{{ c.label }}</span>
         </div>
       }
     </div>
-  </div>
+
+    <!-- ── Timeline + cards ─────────────────────────────────────── -->
+    <div class="tl-wrap">
+
+      <!-- Animated vertical line -->
+      <div class="tl-track">
+        <div class="tl-line" [class.drawn]="lineReady()"></div>
+      </div>
+
+      <!-- ── Work entries ── -->
+      @for (job of jobs; track job.company; let i = $index) {
+        <div class="tl-row al" [style.animation-delay]="(0.3 + i * 0.15) + 's'">
+
+          <!-- Node on the track -->
+          <div class="tl-node" [class.live]="job.isLive">
+            @if (job.isLive) { <span class="live-ring"></span> }
+          </div>
+
+          <!-- Card -->
+          <div class="tl-card">
+            <div class="tl-card-head">
+              <div class="tl-meta">
+                <span class="tl-period">{{ job.period }}</span>
+                @if (job.isLive) {
+                  <span class="live-badge">
+                    <span class="live-dot"></span>CURRENTLY HERE
+                  </span>
+                }
+              </div>
+              <p class="tl-org">{{ job.type }}</p>
+            </div>
+
+            <h3 class="tl-title">{{ job.headline }}</h3>
+            <span class="tl-company">@ {{ job.company }}</span>
+
+            <ul class="tl-bullets">
+              @for (b of job.bullets; track $index) {
+                <li [innerHTML]="b"></li>
+              }
+            </ul>
+
+            <div class="tl-tags">
+              @for (tag of job.tags; track tag) {
+                <span class="ptag">{{ tag }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ── Education entry ── -->
+      @for (edu of education; track edu.school; let i = $index) {
+        <div class="tl-row ar" [style.animation-delay]="(0.45 + i * 0.15) + 's'">
+
+          <div class="tl-node edu-node"></div>
+
+          <div class="tl-card edu-card">
+            <div class="tl-card-head">
+              <span class="tl-period">{{ edu.period }}</span>
+            </div>
+            <h3 class="tl-title">{{ edu.school }}</h3>
+            <span class="tl-company">{{ edu.type }}</span>
+            <p class="edu-detail">{{ edu.detail }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- End cap -->
+      <div class="tl-end">
+        <div class="tl-end-dot"></div>
+        <span class="tl-end-lbl">Still going ↗</span>
+      </div>
+
+    </div><!-- /tl-wrap -->
+
+    <!-- ── Skills ────────────────────────────────────────────────── -->
+    <div class="skills-section au" [style.animation-delay]="'0.6s'">
+      <div class="skills-header">
+        <span class="skills-title">Technical Proficiency</span>
+        <span class="skills-sub">Self-assessed · relative to production use</span>
+      </div>
+
+      <div class="skills-grid">
+
+        <!-- Web Dev column -->
+        <div class="skill-col">
+          <div class="skill-col-label">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Web Development
+          </div>
+          <ul class="skl">
+            @for (sk of webSkills; track sk.name; let i = $index) {
+              <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
+                <div class="sk-info">
+                  <span>{{ sk.name }}</span>
+                  <span class="sk-time">{{ sk.time }}</span>
+                </div>
+                <div class="sk-bar">
+                  <div class="sk-fill"
+                    [style.--target-width]="sk.pct + '%'"
+                    [style.animation-play-state]="barsReady() ? 'running' : 'paused'"
+                    [style.animation-delay]="(i * 0.09) + 's'">
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Game Dev column -->
+        <div class="skill-col">
+          <div class="skill-col-label">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h2M15 13h2"/></svg>
+            Game Development
+          </div>
+          <ul class="skl">
+            @for (sk of gameSkills; track sk.name; let i = $index) {
+              <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
+                <div class="sk-info">
+                  <span>{{ sk.name }}</span>
+                  <span class="sk-time">{{ sk.time }}</span>
+                </div>
+                <div class="sk-bar">
+                  <div class="sk-fill game-fill"
+                    [style.--target-width]="sk.pct + '%'"
+                    [style.animation-play-state]="barsReady() ? 'running' : 'paused'"
+                    [style.animation-delay]="(i * 0.09) + 's'">
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+      </div><!-- /skills-grid -->
+
+      <!-- Tools chip list -->
+      <div class="tools-wrap">
+        <span class="tools-label">Tools &amp; Workflow</span>
+        <div class="tools-chips">
+          @for (tool of tools; track tool) {
+            <span class="ptag">{{ tool }}</span>
+          }
+        </div>
+      </div>
+
+    </div><!-- /skills-section -->
+
+  </div><!-- /pin -->
 </section>

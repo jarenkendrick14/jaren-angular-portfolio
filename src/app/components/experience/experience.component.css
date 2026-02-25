@@ -1,4 +1,5 @@
 /* ════ experience.component.css ════ */
+
 :host {
   display: block;
   min-height: 100vh;
@@ -9,93 +10,480 @@
 .page-experience {
   width: 100%;
   min-height: 100vh;
-  padding: 5rem 5rem 3rem;
+  padding: 5rem 5rem 6rem;
 }
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-/* ─── REMOVED direct animation: from .slabel — global .active-page .au handles it ─── */
+/* ── Section label ──────────────────────────────────────────────── */
 .slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
 .sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
 
-/* ─── REMOVED direct animation: from .exph — global .active-page .au handles it ─── */
 .exph {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
   font-size: clamp(3rem, 5vw, 4.5rem);
   letter-spacing: -.04em;
   color: var(--white);
+  margin-bottom: 2.5rem;
+}
+
+/* ── Stats strip ────────────────────────────────────────────────── */
+.xstats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 4rem;
+  background: var(--bg);
+}
+
+.xstat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: 1.75rem 1rem;
+  text-align: center;
+  border-right: 1px solid var(--bord);
+  transition: background .2s;
+}
+.xstat:last-child { border-right: none; }
+.xstat:hover { background: var(--surf); }
+
+.xstat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(2.2rem, 3.5vw, 3rem);
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--acc);
+}
+
+.xstat-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .09em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 140px;
+}
+
+/* ── Timeline wrapper ───────────────────────────────────────────── */
+.tl-wrap {
+  position: relative;
+  padding-left: 52px;
   margin-bottom: 4rem;
 }
 
-.tl { display: flex; flex-direction: column; }
-
-/* ─── REMOVED direct animation: from .tlr — global .active-page .al/.ar handles it ─── */
-.tlr {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 4rem;
-  padding: 3rem 0;
-  border-bottom: 1px solid var(--bord);
+/* ── Vertical track line ────────────────────────────────────────── */
+/* Track center = left: 17px (left: 16px + half of 2px width) */
+.tl-track {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--bord);
+  border-radius: 2px;
+  overflow: hidden;
 }
-.tlr:last-child { border-bottom: none; padding-bottom: 0; }
 
-.tlpd {
+.tl-line {
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to bottom, var(--acc), rgba(139,92,246,.3));
+  border-radius: 2px;
+  transition: height 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tl-line.drawn { height: 100%; }
+
+/* ── Timeline row ───────────────────────────────────────────────── */
+.tl-row {
+  position: relative;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+/* ── Node dot ───────────────────────────────────────────────────── */
+/*
+  Track center from .tl-wrap left edge = 16 + 1 = 17px
+  Node width = 14px, so node left = 17 - 7 = 10px from .tl-wrap
+  Card starts at padding-left: 52px
+  So node left relative to card = 10 - 52 = -42px
+*/
+.tl-node {
+  position: absolute;
+  left: -42px;
+  top: 22px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bord);
+  background: var(--surf);
+  z-index: 2;
+  transition: border-color .3s, background .3s;
+  flex-shrink: 0;
+}
+
+.tl-node.live {
+  border-color: var(--acc);
+  background: var(--acc);
+  box-shadow: 0 0 0 4px rgba(139,92,246,.18);
+}
+
+/*
+  Edu node is 12px wide: center at 6px
+  Left from .tl-wrap = 17 - 6 = 11px → from card = 11 - 52 = -41px
+*/
+.tl-node.edu-node {
+  border-color: rgba(139,92,246,.5);
+  background: var(--bg);
+  width: 12px;
+  height: 12px;
+  left: -41px;
+  top: 23px;
+}
+
+/* Live pulse ring */
+.live-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--acc);
+  animation: livePulse 2s ease infinite;
+}
+
+@keyframes livePulse {
+  0%   { opacity: .7; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.8); }
+  100% { opacity: 0;  transform: scale(1.8); }
+}
+
+/* ── Card ───────────────────────────────────────────────────────── */
+.tl-card {
+  width: 100%;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 2rem 2.25rem;
+  background: var(--bg);
+  transition: border-color .25s, box-shadow .25s;
+}
+.tl-card:hover {
+  border-color: rgba(139,92,246,.35);
+  box-shadow: 0 6px 32px rgba(0,0,0,.18);
+}
+
+.tl-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+
+.tl-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tl-period {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .9rem;
+  font-size: .8rem;
   color: var(--acc);
-  letter-spacing: .05em;
-  margin-bottom: .5rem;
-  line-height: 1.4;
-  font-weight: 500;
-}
-
-.tlorg {
-  font-size: 1rem;
-  color: var(--text);
-  font-weight: 300;
-  line-height: 1.5;
-}
-
-.tltl {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .06em;
   font-weight: 600;
-  font-size: 1.6rem;
-  letter-spacing: -.01em;
-  color: var(--white);
-  margin-bottom: 1rem;
 }
 
-.tldc {
-  font-size: 1.1rem;
-  color: var(--text);
-  line-height: 1.8;
-  font-weight: 300;
-  margin-bottom: 1.5rem;
-}
-
-.tlch { display: flex; flex-wrap: wrap; gap: .5rem; }
-
-.ptag {
+.tl-org {
   font-family: 'JetBrains Mono', monospace;
   font-size: .75rem;
+  color: var(--muted);
   letter-spacing: .04em;
-  padding: .3rem .6rem;
+}
+
+/* Live badge */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .1em;
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,.3);
+  padding: .22rem .65rem;
+  border-radius: 100px;
+  background: rgba(34,197,94,.07);
+  font-weight: 600;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: liveDot 1.4s ease infinite;
+  flex-shrink: 0;
+}
+
+@keyframes liveDot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .3; }
+}
+
+.tl-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.55rem;
+  letter-spacing: -.02em;
+  color: var(--white);
+  margin-bottom: .25rem;
+  line-height: 1.2;
+}
+
+.tl-company {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem;
+  color: var(--muted);
+  letter-spacing: .05em;
+}
+
+.tl-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 1.4rem 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+}
+
+.tl-bullets li {
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.7;
+  font-weight: 300;
+  padding-left: 1.1rem;
+  position: relative;
+}
+
+.tl-bullets li::before {
+  content: '▸';
+  color: var(--acc);
+  font-size: .75rem;
+  position: absolute;
+  left: 0;
+  top: .22em;
+}
+
+.tl-bullets li strong { color: var(--white); font-weight: 600; }
+
+.tl-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
+
+/* Education card variation */
+.edu-card {
+  background: var(--surf);
+}
+.edu-detail {
+  font-size: .95rem;
+  color: var(--text);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-top: 1rem;
+}
+
+/* Tags */
+.ptag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  letter-spacing: .04em;
+  padding: .3rem .65rem;
   border-radius: 4px;
   background: var(--surf);
   color: var(--text);
   border: 1px solid var(--bord);
 }
 
-/* Keyframes are defined in global styles.css; redeclare here so they're 
-   available if component CSS needs to reference them (e.g. for caret animations) */
-@keyframes fadeUp    { from { opacity: 0; transform: translateY(72px); }  to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-65px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeRight { from { opacity: 0; transform: translateX(65px); }  to { opacity: 1; transform: translateX(0); } }
+/* End cap */
+.tl-end {
+  position: relative;
+  margin-top: .5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-left: 0;
+}
 
+/* End cap: 10px wide → center at 5px → left from .tl-wrap = 17 - 5 = 12px → from card = 12 - 52 = -40px */
+.tl-end-dot {
+  position: absolute;
+  left: -40px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bord);
+  z-index: 2;
+}
+
+.tl-end-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+
+/* ── Skills section ─────────────────────────────────────────────── */
+.skills-section {
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 2.5rem;
+  background: var(--bg);
+}
+
+.skills-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.skills-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  letter-spacing: .12em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.skills-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  opacity: .6;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+}
+
+.skill-col-label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  letter-spacing: .1em;
+  color: var(--acc);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+.skill-col-label svg { opacity: .7; }
+
+/* ── Skill bars (reusing About page pattern) ────────────────────── */
+.skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; margin: 0; }
+
+.sk-item {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  opacity: 0;
+  animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+.active-page .sk-item { animation-play-state: running; }
+
+.sk-info { display: flex; justify-content: space-between; align-items: center; font-size: .88rem; font-weight: 500; color: var(--text); }
+.sk-time { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--muted); }
+
+.sk-bar {
+  width: 100%;
+  height: 5px;
+  background: var(--surf);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--bord);
+}
+
+@keyframes fillUp { from { width: 0; } to { width: var(--target-width); } }
+
+.sk-fill {
+  height: 100%;
+  background: var(--acc);
+  border-radius: 4px;
+  width: 0;
+  animation: fillUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-play-state: paused;
+}
+
+/* Game skills get a teal-shifted color */
+.sk-fill.game-fill {
+  background: linear-gradient(90deg, var(--acc), #06b6d4);
+}
+
+/* ── Tools ──────────────────────────────────────────────────────── */
+.tools-wrap {
+  border-top: 1px solid var(--bord);
+  padding-top: 2rem;
+}
+
+.tools-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.tools-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* ── Animation helpers (mirror global keyframes so they're available) ── */
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(50px); }  to { opacity: 1; transform: translateX(0); } }
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .page-experience { padding: 6.5rem 1.5rem 4rem; }
-  .tlr { grid-template-columns: 1fr; gap: 1rem; }
+  .page-experience { padding: 6.5rem 1.5rem 5rem; }
+
+  .xstats { grid-template-columns: repeat(2, 1fr); }
+  .xstat:nth-child(2) { border-right: none; }
+  .xstat:nth-child(1),
+  .xstat:nth-child(2) { border-bottom: 1px solid var(--bord); }
+
+  .tl-wrap { padding-left: 36px; }
+  .tl-track { left: 12px; }
+  /* Mobile track center: left 12 + 1 = 13px from .tl-wrap
+     .tl-node 14px: left = 13 - 7 = 6px → from card = 6 - 36 = -30px */
+  .tl-node { left: -30px; }
+  /* edu-node 12px: left = 13 - 6 = 7px → from card = 7 - 36 = -29px */
+  .tl-node.edu-node { left: -29px; }
+  /* end dot 10px: left = 13 - 5 = 8px → from card = 8 - 36 = -28px */
+  .tl-end-dot { left: -28px; }
+
+  .tl-card { padding: 1.5rem; }
+
+  .skills-section { padding: 1.75rem 1.25rem; }
+  .skills-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
