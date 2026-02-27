@@ -15,7 +15,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   readonly lineReady   = signal(false);
   private barsAnimated = false;
 
-  // ─── Stats with count-up (mirrors About component pattern exactly) ────────
+  // ─── Stats with count-up ───
   readonly counters = [
     { target: 2,  suffix: '+', label: 'Years Coding',               current: signal(0) },
     { target: 5,  suffix: '+', label: 'Projects Completed',          current: signal(0) },
@@ -24,19 +24,30 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   ];
 
   ngOnChanges(changes: SimpleChanges) {
+    // Standard desktop trigger: Run when the slide becomes active
     if (changes['active'] && this.active && !this.barsAnimated) {
-      this.barsAnimated = true;
-      this.counters.forEach(c => c.current.set(0));
-      setTimeout(() => this.animateCounters(), 350);
-      setTimeout(() => this.lineReady.set(true),  300);
-      setTimeout(() => this.barsReady.set(true),  700);
+      this.triggerAnimations();
     }
   }
 
   ngAfterViewInit() {
+    // Mobile FIX: On mobile, the "active" input doesn't trigger via scrolling.
+    // We force the animations to ready-state so they are visible as the user scrolls.
     if (window.innerWidth < 960) {
-      setTimeout(() => this.animateCounters(), 500);
+      setTimeout(() => {
+        this.triggerAnimations();
+      }, 500);
     }
+  }
+
+  private triggerAnimations() {
+    if (this.barsAnimated) return;
+    this.barsAnimated = true;
+    
+    this.counters.forEach(c => c.current.set(0));
+    setTimeout(() => this.animateCounters(), 350);
+    setTimeout(() => this.lineReady.set(true),  300);
+    setTimeout(() => this.barsReady.set(true),  700);
   }
 
   private animateCounters() {
@@ -50,12 +61,15 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
         const t     = step / steps;
         const eased = 1 - Math.pow(1 - t, 3);
         c.current.set(Math.round(eased * c.target));
-        if (step >= steps) { c.current.set(c.target); clearInterval(iv); }
+        if (step >= steps) { 
+          c.current.set(c.target); 
+          clearInterval(iv); 
+        }
       }, stepTime);
     });
   }
 
-  // ─── Work experience ──────────────────────────────────────────────────────
+  // ─── Work experience ───
   readonly jobs = [
     {
       period:    'Apr 2025 — Present',
@@ -73,7 +87,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
     },
   ];
 
-  // ─── Education ────────────────────────────────────────────────────────────
+  // ─── Education ───
   readonly education = [
     {
       period:  'Jun 2023 — 2027',
@@ -83,7 +97,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
     },
   ];
 
-  // ─── Skills split by domain ───────────────────────────────────────────────
+  // ─── Skills split by domain ───
   readonly webSkills = [
     { name: 'JavaScript',      time: '2 yrs',   pct: 85 },
     { name: 'TypeScript',      time: '1.5 yrs', pct: 80 },
@@ -102,7 +116,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
     { name: '3D Scene Design',   time: '6 mo',  pct: 55 },
   ];
 
-  // ─── Tools ────────────────────────────────────────────────────────────────
+  // ─── Tools ───
   readonly tools = [
     'Git & GitHub', 'Prisma ORM', 'Ionic + Capacitor', 'WebSockets',
     'REST APIs', 'JWT Auth', 'Figma', 'VS Code', 'Vercel', 'Netlify',

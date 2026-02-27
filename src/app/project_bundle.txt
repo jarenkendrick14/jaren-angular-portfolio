@@ -1,7 +1,15 @@
 
 --- DIRECTORY: app.component.css ---
+/* FIX: Always declare the host as a block-level element.
+   Without this, <app-root> can default to display:inline in some browsers,
+   causing height/overflow on child elements to behave incorrectly on mobile. */
+:host {
+  display: block;
+  width: 100%;
+}
+
 .app-root {
-  width: 100vw;
+  width: 100%;          /* FIX: was 100vw — avoids any horizontal bleed */
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -93,7 +101,6 @@
   height: 42px;
   width: auto;
   object-fit: contain;
-  /* Prevent logo stretch flash on load */
   display: block;
   max-width: 160px;
 }
@@ -128,65 +135,46 @@
 #cring{position:fixed;width:32px;height:32px;border:1.5px solid var(--acc);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s,opacity .25s !important;}
 #cring.big{width:55px;height:55px;opacity:.22;}
 
-/* inset:0 → expanded for iOS < 14.1 */
 .cl{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.12em;color:var(--acc);opacity:0;transition:opacity .2s !important;user-select:none;}
 #cring.big .cl{opacity:1;}
 
 #prvw{position:fixed;width:290px;height:185px;border-radius:8px;overflow:hidden;pointer-events:none;z-index:9990;opacity:0;transform:translate(-50%,-65%) scale(.88);transition:opacity .28s ease,transform .28s ease !important;border:1px solid var(--bord);box-shadow:0 18px 55px rgba(0,0,0,.55);}
 #prvw.on{opacity:1;transform:translate(-50%,-65%) scale(1);}
 
-/* inset:0 → expanded for iOS < 14.1 */
 .psc{position:absolute;top:0;right:0;bottom:0;left:0;opacity:0;transition:opacity .2s !important;}
 .psc.act{opacity:1;}
 
 .psc-img-wrap {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 0;
 }
 
 .psc-overlay {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  top: 0; right: 0; bottom: 0; left: 0;
   background: linear-gradient(to top, rgba(9, 9, 15, 0.95) 0%, rgba(9, 9, 15, 0) 60%);
 }
 
 .psc-meta {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  display: flex; flex-direction: column; gap: 0.35rem;
   z-index: 1;
 }
 
 .psc-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  font-size: 1.1rem; font-weight: 600; color: #fff;
+  line-height: 1.1; letter-spacing: -0.01em;
 }
 
 .psc-tag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--acc);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 500;
+  font-size: 0.65rem; color: var(--acc);
+  letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
 }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
@@ -196,9 +184,15 @@
 ══════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
 
-  :host-context(body) {
-    overflow: auto !important;
-    height: auto !important;
+  /* FIX: Removed deprecated :host-context(body) rule.
+     Body scroll is now handled correctly in the global styles.css.
+     This rule was a no-op anyway — :host-context(body) targets <app-root>,
+     not the <body> element, so body was never actually un-clipped by it. */
+
+  :host {
+    /* Ensure the host element itself doesn't clip content on mobile */
+    height: auto;
+    overflow: visible;
   }
 
   .main-content {
@@ -239,7 +233,6 @@
   .page-section.prev,
   .page-section.next {
     position: relative !important;
-    /* inset: auto → expanded for iOS */
     top: auto !important;
     right: auto !important;
     bottom: auto !important;
@@ -610,7 +603,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .page-about {
   width: 100%;
   min-height: 100vh;
-  padding: 5rem 5rem 6rem; /* Changed bottom padding from 3rem to 6rem */
+  padding: 5rem 5rem 6rem;
   overflow-x: hidden;
 }
 
@@ -665,12 +658,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   font-weight: 500;
 }
 
-/* 1. MAKE GRIDS IDENTICAL (PANTAY NA GUTTER) */
 .intro-grid {
   display: grid;
-  /* Left column takes 1 part, Right takes 1.5 parts. 
-     This aligns perfectly with the dash-grid below. */
-  grid-template-columns: 1fr 1.5fr; 
+  grid-template-columns: 1fr 1.5fr;
   gap: 4rem;
   align-items: center;
   margin-bottom: 5rem;
@@ -679,14 +669,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .intro-left {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centers photo horizontally in the 1fr column */
+  align-items: center;
   text-align: center;
 }
 
-
 .bio-img-wrap {
-  width: 200px;
-  height: 200px;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--bord);
@@ -701,36 +690,33 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   line-height: 1.2;
   letter-spacing: -.025em;
   color: var(--white);
-  margin-bottom: 0; /* Overridden, handled by grid layout */
+  margin-bottom: 0;
 }
 .apull em { color: var(--acc); font-style: normal; }
 
 .abio {
-  font-size: 1.1rem; 
-  color: var(--text); 
-  line-height: 1.8; 
-  font-weight: 300; 
-  text-align: justify; /* <-- This forces the flush right edge */
+  /* FONT FIX: bumped from 1.1rem → 1.25rem — weight 300 needs more size to read well */
+  font-size: 1.25rem;
+  color: var(--text);
+  line-height: 1.8;
+  font-weight: 300;
+  text-align: justify;
 }
 .abio p + p { margin-top: 1.25rem; }
 .abio strong { color: var(--white); font-weight: 600; }
 
 .dash-grid {
   display: grid;
-  /* Exact same ratio as intro-grid */
   grid-template-columns: 1fr 1.5fr;
   gap: 4rem;
-  /* This ensures both columns stretch to the same height */
-  align-items: stretch; 
+  align-items: stretch;
 }
 
-/* The Container for the Sphere */
 .dash-skills {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 
 .full-width {
   grid-column: 1 / -1;
@@ -749,7 +735,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .btn-fill { background: var(--acc); color: #fff; }
 .btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 
-/* ══════════ RIGHT COLUMN BLOCKS (Reused in Grid) ══════════ */
+/* ══════════ RIGHT COLUMN BLOCKS ══════════ */
 .blk { margin-bottom: 2.5rem; }
 .blk:last-child { margin-bottom: 0; }
 
@@ -777,7 +763,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   background: var(--bg);
   padding: 0;
   overflow: hidden;
-  /* FORCE HEIGHT: This makes it fill the space next to Soft Skills */
   flex: 1;
   min-height: 320px;
   width: 100%;
@@ -789,8 +774,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   letter-spacing: .08em; opacity: .5; pointer-events: none; width: max-content;
 }
 
-
-/* SPHERE TAGS */
 .sphere-tag {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
@@ -804,10 +787,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Little more breathing room */
+  gap: 1.5rem;
   padding: 0;
-  /* Align list with header? No, usually slightly indented looks better 
-     but let's reduce indentation to make it tighter to the margin */
   margin-top: 0.5rem;
 }
 
@@ -815,11 +796,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding-left: 0; /* Remove left padding to align flush with header */
+  padding-left: 0;
   position: relative;
 }
 
-/* Adds the little purple triangle bullet point */
 .soft-sk-name::before {
   content: '▸';
   color: var(--acc);
@@ -837,14 +817,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 }
 
 .soft-sk-desc {
-  font-size: 0.9rem;
+  /* FONT FIX: bumped from 0.9rem → 1rem */
+  font-size: 1rem;
   color: var(--text);
   font-weight: 300;
   line-height: 1.6;
-  text-align: left; /* Reset to left for cleaner reading on short bullets */
-  padding-left: 1.1rem; /* Indent description to align with text start */
+  text-align: left;
+  padding-left: 1.1rem;
 }
-/* Proficiency List */
+
 .skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; }
 .sk-item { display: flex; flex-direction: column; gap: .4rem; opacity: 0; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards; }
 .sk-info { display: flex; justify-content: space-between; align-items: center; font-size: .92rem; font-weight: 500; color: var(--text); }
@@ -869,11 +850,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   border: 1px solid var(--bord);
   border-radius: 8px;
   background: var(--bg);
-  padding: 1.5rem 0; /* Vertical padding only, content manages horiz */
+  padding: 1.5rem 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center children vertically */
+  align-items: center;
 }
 
 .heatmap-loading {
@@ -894,12 +875,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 }
 .heatmap-link:hover { text-decoration: underline; }
 
-/* ── Heatmap Container & Centering ── */
 .heatmap-container {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 0 auto 1rem auto; /* CENTER THIS CONTAINER */
+  margin: 0 auto 1rem auto;
   width: max-content;
   max-width: 100%;
   overflow-x: auto;
@@ -916,7 +896,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .hm-months-grid {
   display: grid;
   grid-template-columns: repeat(20, 14px);
-  gap: 0; 
+  gap: 0;
   flex: 1;
 }
 
@@ -952,7 +932,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   padding-right: 4px;
 }
 
-/* Actual Grid */
 .heatmap-grid {
   display: flex;
   gap: 3px;
@@ -970,12 +949,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   border: 1px solid rgba(139,92,246,.08);
 }
 
-/* Legend */
 .heatmap-legend {
   display: flex; align-items: center; gap: 4px;
   width: 100%;
-  justify-content: flex-end; /* Align right relative to container, or center if desired */
-  max-width: 320px; /* Limit width to match approximate grid width for visual center */
+  justify-content: flex-end;
+  max-width: 320px;
   margin-top: .25rem;
 }
 .heatmap-legend-label {
@@ -985,9 +963,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .heatmap-legend .heatmap-cell { width: 10px; height: 10px; }
 
 /* ══════════ RECENT COMMITS ══════════ */
-.commits-list { 
-  border-top: 1px solid var(--bord); 
-  padding: .75rem 1.5rem 0; 
+.commits-list {
+  border-top: 1px solid var(--bord);
+  padding: .75rem 1.5rem 0;
   width: 100%;
 }
 .commits-label {
@@ -1054,16 +1032,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   .page-about { padding: 6.5rem 1.5rem 5rem; }
   .intro-grid, .dash-grid { grid-template-columns: 1fr; gap: 3rem; }
   .tagline-line { white-space: normal; }
-  
-  /* Center the Download Resume button container */
+
   .intro-right div[style*="margin-top"] {
     display: flex;
     justify-content: center;
   }
-  
-  /* Ensure the button itself doesn't stretch weirdly */
+
   .btn { width: auto; }
-  
 
   .stats-strip { grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.5rem 0; }
   .stat-num { font-size: clamp(2.5rem, 10vw, 3.5rem); }
@@ -1078,11 +1053,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   font-size: 0.8rem;
   transition: color 0.2s, z-index 0.2s, opacity 0.2s;
   will-change: transform, opacity;
-  color: var(--text); 
-  /* Force position to work with the JS math */
+  color: var(--text);
   position: absolute !important;
   transform-style: preserve-3d;
-  /* Ensure it sits on top of the black background */
   z-index: 10;
 }
 
@@ -1097,12 +1070,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   display: block;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
-  font-size: clamp(2rem, 3vw, 2.8rem); /* Slightly scaled down so it fits gracefully */
+  font-size: clamp(2rem, 3vw, 2.8rem);
   line-height: 1.2;
   letter-spacing: -0.025em;
   color: var(--white);
   text-align: center;
-  white-space: nowrap; /* Forces text to stay on one line */
+  white-space: nowrap;
 }
 
 .tagline-line em {
@@ -1110,7 +1083,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   font-style: normal;
 }
 
-/* Stagger delays — each phrase waits a beat longer than the last */
 .active-page .tl-p1 { animation-delay: 0.10s !important; }
 .active-page .tl-p2 { animation-delay: 0.28s !important; }
 .active-page .tl-p3 { animation-delay: 0.46s !important; }
@@ -1681,7 +1653,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-/* ─── REMOVED direct animation: from .pheader — global .active-page .au handles it ─── */
 .pheader { display: flex; align-items: baseline; gap: 2rem; margin-bottom: 3rem; }
 .ph2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(3rem, 5vw, 4.5rem); letter-spacing: -.04em; color: var(--white); line-height: 1; }
 .pcnt { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .1em; }
@@ -1689,7 +1660,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
 .blog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
 
-/* ─── REMOVED direct animation: from .bc — global .active-page .as handles it ─── */
 .bc {
   display: flex;
   flex-direction: column;
@@ -1714,7 +1684,8 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
 .bc-date    { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--acc); letter-spacing: .08em; margin-bottom: 1rem; }
 .bc-title   { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.5rem; letter-spacing: -.01em; color: var(--white); line-height: 1.3; margin-bottom: 1rem; }
-.bc-excerpt { font-size: 1.05rem; color: var(--text); line-height: 1.75; font-weight: 300; margin-bottom: 1.5rem; flex: 1; }
+/* FONT FIX: bumped from 1.05rem → 1.2rem */
+.bc-excerpt { font-size: 1.2rem; color: var(--text); line-height: 1.75; font-weight: 300; margin-bottom: 1.5rem; flex: 1; }
 .bc-read    { font-size: .95rem; font-weight: 600; color: var(--acc); display: inline-flex; align-items: center; gap: .4rem; transition: gap .2s; }
 .bc:hover .bc-read { gap: .75rem; }
 
@@ -2010,7 +1981,8 @@ export class BlogOverlayComponent {
 .cgg { display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem; width: 100%; }
 
 .cp {
-  font-size: 1.15rem;
+  /* FONT FIX: bumped from 1.15rem → 1.3rem */
+  font-size: 1.3rem;
   color: var(--text);
   line-height: 1.8;
   font-weight: 300;
@@ -2045,10 +2017,8 @@ export class BlogOverlayComponent {
 }
 .solink:hover .soico { border-color: var(--acc); }
 
-/* Filled icons (LinkedIn, GitHub) */
 .soico svg { width: 22px; height: 22px; fill: currentColor; }
 
-/* Stroke-based envelope icon override */
 .soico-mail svg {
   fill: none;
   stroke: currentColor;
@@ -2086,7 +2056,8 @@ input, textarea {
   border-radius: 6px;
   padding: 1.1rem 1.25rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.05rem;
+  /* FONT FIX: bumped from 1.05rem → 1.15rem */
+  font-size: 1.15rem;
   font-weight: 300;
   color: var(--white);
   outline: none;
@@ -2127,7 +2098,6 @@ textarea { min-height: 150px; }
   .cform { padding: 1.5rem; }
   .cho { font-size: clamp(3.5rem, 12vw, 5.5rem); }
 }
-
 
 .fserr {
   font-family: 'JetBrains Mono', monospace;
@@ -2300,6 +2270,7 @@ export class ContactComponent {
 
 --- DIRECTORY: components\experience\experience.component.css ---
 /* ════ experience.component.css ════ */
+
 :host {
   display: block;
   min-height: 100vh;
@@ -2310,131 +2281,646 @@ export class ContactComponent {
 .page-experience {
   width: 100%;
   min-height: 100vh;
-  padding: 5rem 5rem 3rem;
+  padding: 5rem 5rem 6rem;
 }
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-/* ─── REMOVED direct animation: from .slabel — global .active-page .au handles it ─── */
+/* ── Section label ──────────────────────────────────────────────── */
 .slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
 .sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
 
-/* ─── REMOVED direct animation: from .exph — global .active-page .au handles it ─── */
 .exph {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
   font-size: clamp(3rem, 5vw, 4.5rem);
   letter-spacing: -.04em;
   color: var(--white);
+  margin-bottom: 2.5rem;
+}
+
+/* ── Stats strip ────────────────────────────────────────────────── */
+.xstats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 4rem;
+  background: var(--bg);
+}
+
+.xstat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: 1.75rem 1rem;
+  text-align: center;
+  border-right: 1px solid var(--bord);
+  transition: background .2s;
+}
+.xstat:last-child { border-right: none; }
+.xstat:hover { background: var(--surf); }
+
+.xstat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(2.2rem, 3.5vw, 3rem);
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--acc);
+}
+
+.xstat-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .09em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 140px;
+}
+
+/* ── Timeline wrapper ───────────────────────────────────────────── */
+.tl-wrap {
+  position: relative;
+  padding-left: 52px;
   margin-bottom: 4rem;
 }
 
-.tl { display: flex; flex-direction: column; }
-
-/* ─── REMOVED direct animation: from .tlr — global .active-page .al/.ar handles it ─── */
-.tlr {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 4rem;
-  padding: 3rem 0;
-  border-bottom: 1px solid var(--bord);
+/* ── Vertical track line ────────────────────────────────────────── */
+.tl-track {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--bord);
+  border-radius: 2px;
+  overflow: hidden;
 }
-.tlr:last-child { border-bottom: none; padding-bottom: 0; }
 
-.tlpd {
+.tl-line {
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to bottom, var(--acc), rgba(139,92,246,.3));
+  border-radius: 2px;
+  transition: height 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tl-line.drawn { height: 100%; }
+
+/* ── Timeline row ───────────────────────────────────────────────── */
+.tl-row {
+  position: relative;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+/* ── Node dot ───────────────────────────────────────────────────── */
+.tl-node {
+  position: absolute;
+  left: -42px;
+  top: 22px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bord);
+  background: var(--surf);
+  z-index: 2;
+  transition: border-color .3s, background .3s;
+  flex-shrink: 0;
+}
+
+.tl-node.live {
+  border-color: var(--acc);
+  background: var(--acc);
+  box-shadow: 0 0 0 4px rgba(139,92,246,.18);
+}
+
+.tl-node.edu-node {
+  border-color: rgba(139,92,246,.5);
+  background: var(--bg);
+  width: 12px;
+  height: 12px;
+  left: -41px;
+  top: 23px;
+}
+
+/* Live pulse ring */
+.live-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--acc);
+  animation: livePulse 2s ease infinite;
+}
+
+@keyframes livePulse {
+  0%   { opacity: .7; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.8); }
+  100% { opacity: 0;  transform: scale(1.8); }
+}
+
+/* ── Card ───────────────────────────────────────────────────────── */
+.tl-card {
+  width: 100%;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 2rem 2.25rem;
+  background: var(--bg);
+  transition: border-color .25s, box-shadow .25s;
+}
+.tl-card:hover {
+  border-color: rgba(139,92,246,.35);
+  box-shadow: 0 6px 32px rgba(0,0,0,.18);
+}
+
+.tl-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+
+.tl-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tl-period {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .9rem;
+  font-size: .8rem;
   color: var(--acc);
-  letter-spacing: .05em;
-  margin-bottom: .5rem;
-  line-height: 1.4;
-  font-weight: 500;
-}
-
-.tlorg {
-  font-size: 1rem;
-  color: var(--text);
-  font-weight: 300;
-  line-height: 1.5;
-}
-
-.tltl {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .06em;
   font-weight: 600;
-  font-size: 1.6rem;
-  letter-spacing: -.01em;
-  color: var(--white);
-  margin-bottom: 1rem;
 }
 
-.tldc {
-  font-size: 1.1rem;
-  color: var(--text);
-  line-height: 1.8;
-  font-weight: 300;
-  margin-bottom: 1.5rem;
-}
-
-.tlch { display: flex; flex-wrap: wrap; gap: .5rem; }
-
-.ptag {
+.tl-org {
   font-family: 'JetBrains Mono', monospace;
   font-size: .75rem;
+  color: var(--muted);
   letter-spacing: .04em;
-  padding: .3rem .6rem;
+}
+
+/* Live badge */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .1em;
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,.3);
+  padding: .22rem .65rem;
+  border-radius: 100px;
+  background: rgba(34,197,94,.07);
+  font-weight: 600;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: liveDot 1.4s ease infinite;
+  flex-shrink: 0;
+}
+
+@keyframes liveDot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .3; }
+}
+
+.tl-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.55rem;
+  letter-spacing: -.02em;
+  color: var(--white);
+  margin-bottom: .25rem;
+  line-height: 1.2;
+}
+
+.tl-company {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem;
+  color: var(--muted);
+  letter-spacing: .05em;
+}
+
+.tl-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 1.4rem 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+}
+
+.tl-bullets li {
+  /* FONT FIX: bumped from 1rem → 1.1rem */
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.7;
+  font-weight: 300;
+  padding-left: 1.1rem;
+  position: relative;
+}
+
+.tl-bullets li::before {
+  content: '▸';
+  color: var(--acc);
+  font-size: .75rem;
+  position: absolute;
+  left: 0;
+  top: .22em;
+}
+
+.tl-bullets li strong { color: var(--white); font-weight: 600; }
+
+.tl-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
+
+/* Education card variation */
+.edu-card {
+  background: var(--surf);
+}
+.edu-detail {
+  /* FONT FIX: bumped from 0.95rem → 1.1rem */
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-top: 1rem;
+}
+
+/* Tags */
+.ptag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  letter-spacing: .04em;
+  padding: .3rem .65rem;
   border-radius: 4px;
   background: var(--surf);
   color: var(--text);
   border: 1px solid var(--bord);
 }
 
-/* Keyframes are defined in global styles.css; redeclare here so they're 
-   available if component CSS needs to reference them (e.g. for caret animations) */
-@keyframes fadeUp    { from { opacity: 0; transform: translateY(72px); }  to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-65px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeRight { from { opacity: 0; transform: translateX(65px); }  to { opacity: 1; transform: translateX(0); } }
+/* End cap */
+.tl-end {
+  position: relative;
+  margin-top: .5rem;
+  display: flex;
+  align-items: center;
+}
 
+.tl-end-dot {
+  position: absolute;
+  left: -28px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bord);
+  border: none;
+  flex-shrink: 0;
+}
+
+.tl-end-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* ── Skills section ─────────────────────────────────────────────── */
+.skills-section {
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 2rem 2.25rem;
+  background: var(--bg);
+}
+
+.skills-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.skills-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  letter-spacing: .12em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.skills-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  opacity: .6;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+}
+
+.skill-col-label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  letter-spacing: .1em;
+  color: var(--acc);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+.skill-col-label svg { opacity: .7; }
+
+/* ── Skill bars ─────────────────────────────────────────────────── */
+.skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; margin: 0; }
+
+.sk-item {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  opacity: 0;
+  animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+.active-page .sk-item { animation-play-state: running; }
+
+.sk-info { display: flex; justify-content: space-between; align-items: center; font-size: .88rem; font-weight: 500; color: var(--text); }
+.sk-time { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--muted); }
+
+.sk-bar {
+  width: 100%;
+  height: 5px;
+  background: var(--surf);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--bord);
+}
+
+@keyframes fillUp { from { width: 0; } to { width: var(--target-width); } }
+
+.sk-fill {
+  height: 100%;
+  background: var(--acc);
+  border-radius: 4px;
+  width: 0;
+  animation: fillUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-play-state: paused;
+}
+
+.sk-fill.game-fill {
+  background: linear-gradient(90deg, var(--acc), #06b6d4);
+}
+
+/* ── Tools ──────────────────────────────────────────────────────── */
+.tools-wrap {
+  border-top: 1px solid var(--bord);
+  padding-top: 2rem;
+}
+
+.tools-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.tools-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* ── Animation helpers ──────────────────────────────────────────── */
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft  { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { from { opacity: 0; transform: translateX(50px); }  to { opacity: 1; transform: translateX(0); } }
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .page-experience { padding: 6.5rem 1.5rem 4rem; }
-  .tlr { grid-template-columns: 1fr; gap: 1rem; }
+  .page-experience { padding: 6.5rem 1.5rem 5rem; }
+
+  .xstats { grid-template-columns: repeat(2, 1fr); }
+  .xstat:nth-child(2) { border-right: none; }
+  .xstat:nth-child(1),
+  .xstat:nth-child(2) { border-bottom: 1px solid var(--bord); }
+
+  .tl-wrap { padding-left: 36px; }
+  .tl-track { left: 12px; }
+  .tl-node { left: -30px; }
+  .tl-node.edu-node { left: -29px; }
+  .tl-end-dot { left: -28px; }
+
+  .tl-card { padding: 1.5rem; }
+
+  .skills-section { padding: 1.75rem 1.25rem; }
+  .skills-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 
 --- DIRECTORY: components\experience\experience.component.html ---
 <section class="page-experience" [class.active-page]="active">
   <div class="pin">
+
+    <!-- ── Header ─────────────────────────────────────────────────── -->
     <div class="slabel au d0">
-      <span class="sn">04</span><span class="st">/ experience &amp; education</span>
+      <span class="sn">04</span>
+      <span class="st">/ experience &amp; education</span>
       <div class="shr"></div>
     </div>
-    <h2 class="exph au d1">Where I've been.</h2>
-    <div class="tl">
-      @for (entry of entries; track entry.title; let i = $index) {
-        <div class="tlr" [ngClass]="i === 0 ? 'al d2' : 'ar d3'">
-          <div>
-            <p class="tlpd">{{ entry.period }}</p>
-            <p class="tlorg">{{ entry.org }}</p>
-          </div>
-          <div>
-            <h3 class="tltl">{{ entry.title }}</h3>
-            <p class="tldc" [innerHTML]="entry.desc"></p>
-            @if (entry.tags.length > 0) {
-              <div class="tlch">
-                @for (tag of entry.tags; track tag) {
-                  <span class="ptag">{{ tag }}</span>
-                }
-              </div>
-            }
-          </div>
+    <h2 class="exph au d1">Where I've Been.</h2>
+
+    <!-- ── Stats strip ───────────────────────────────────────────── -->
+    <div class="xstats au d2">
+      @for (c of counters; track c.label) {
+        <div class="xstat">
+          <span class="xstat-val">{{ c.current() }}{{ c.suffix }}</span>
+          <span class="xstat-lbl">{{ c.label }}</span>
         </div>
       }
     </div>
-  </div>
+
+    <!-- ── Timeline + cards ─────────────────────────────────────── -->
+    <div class="tl-wrap">
+
+      <!-- Animated vertical line -->
+      <div class="tl-track">
+        <div class="tl-line" [class.drawn]="lineReady()"></div>
+      </div>
+
+      <!-- ── Work entries ── -->
+      @for (job of jobs; track job.company; let i = $index) {
+        <div class="tl-row al" [style.animation-delay]="(0.3 + i * 0.15) + 's'">
+
+          <!-- Node on the track -->
+          <div class="tl-node" [class.live]="job.isLive">
+            @if (job.isLive) { <span class="live-ring"></span> }
+          </div>
+
+          <!-- Card -->
+          <div class="tl-card">
+            <div class="tl-card-head">
+              <div class="tl-meta">
+                <span class="tl-period">{{ job.period }}</span>
+                @if (job.isLive) {
+                  <span class="live-badge">
+                    <span class="live-dot"></span>CURRENTLY HERE
+                  </span>
+                }
+              </div>
+              <p class="tl-org">{{ job.type }}</p>
+            </div>
+
+            <h3 class="tl-title">{{ job.headline }}</h3>
+            <span class="tl-company">@ {{ job.company }}</span>
+
+            <ul class="tl-bullets">
+              @for (b of job.bullets; track $index) {
+                <li [innerHTML]="b"></li>
+              }
+            </ul>
+
+            <div class="tl-tags">
+              @for (tag of job.tags; track tag) {
+                <span class="ptag">{{ tag }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ── Education entry ── -->
+      @for (edu of education; track edu.school; let i = $index) {
+        <div class="tl-row ar" [style.animation-delay]="(0.45 + i * 0.15) + 's'">
+
+          <div class="tl-node edu-node"></div>
+
+          <div class="tl-card edu-card">
+            <div class="tl-card-head">
+              <span class="tl-period">{{ edu.period }}</span>
+            </div>
+            <h3 class="tl-title">{{ edu.school }}</h3>
+            <span class="tl-company">{{ edu.type }}</span>
+            <p class="edu-detail">{{ edu.detail }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- End cap -->
+      <div class="tl-end">
+        <div class="tl-end-dot"></div>
+        <span class="tl-end-lbl">Still going ↗</span>
+      </div>
+
+    </div><!-- /tl-wrap -->
+
+    <!-- ── Skills ────────────────────────────────────────────────── -->
+    <div class="skills-section au" [style.animation-delay]="'0.6s'">
+      <div class="skills-header">
+        <span class="skills-title">Technical Proficiency</span>
+        <span class="skills-sub">Self-assessed · relative to production use</span>
+      </div>
+
+      <div class="skills-grid">
+
+        <!-- Web Dev column -->
+        <div class="skill-col">
+          <div class="skill-col-label">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Web Development
+          </div>
+          <ul class="skl">
+            @for (sk of webSkills; track sk.name; let i = $index) {
+              <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
+                <div class="sk-info">
+                  <span>{{ sk.name }}</span>
+                  <span class="sk-time">{{ sk.time }}</span>
+                </div>
+                <div class="sk-bar">
+                  <div class="sk-fill"
+                    [style.--target-width]="sk.pct + '%'"
+                    [style.animation-play-state]="barsReady() ? 'running' : 'paused'"
+                    [style.animation-delay]="(i * 0.09) + 's'">
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Game Dev column -->
+        <div class="skill-col">
+          <div class="skill-col-label">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h2M15 13h2"/></svg>
+            Game Development
+          </div>
+          <ul class="skl">
+            @for (sk of gameSkills; track sk.name; let i = $index) {
+              <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
+                <div class="sk-info">
+                  <span>{{ sk.name }}</span>
+                  <span class="sk-time">{{ sk.time }}</span>
+                </div>
+                <div class="sk-bar">
+                  <div class="sk-fill game-fill"
+                    [style.--target-width]="sk.pct + '%'"
+                    [style.animation-play-state]="barsReady() ? 'running' : 'paused'"
+                    [style.animation-delay]="(i * 0.09) + 's'">
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+      </div><!-- /skills-grid -->
+
+      <!-- Tools chip list -->
+      <div class="tools-wrap">
+        <span class="tools-label">Tools &amp; Workflow</span>
+        <div class="tools-chips">
+          @for (tool of tools; track tool) {
+            <span class="ptag">{{ tool }}</span>
+          }
+        </div>
+      </div>
+
+    </div><!-- /skills-section -->
+
+  </div><!-- /pin -->
 </section>
 
 --- DIRECTORY: components\experience\experience.component.ts ---
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, signal, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -2444,23 +2930,105 @@ import { CommonModule } from '@angular/common';
   templateUrl: './experience.component.html',
   styleUrl: './experience.component.css',
 })
-export class ExperienceComponent {
+export class ExperienceComponent implements OnChanges, AfterViewInit {
   @Input() active = false;
-  readonly entries = [
+
+  readonly barsReady   = signal(false);
+  readonly lineReady   = signal(false);
+  private barsAnimated = false;
+
+  // ─── Stats with count-up (mirrors About component pattern exactly) ────────
+  readonly counters = [
+    { target: 2,  suffix: '+', label: 'Years Coding',               current: signal(0) },
+    { target: 5,  suffix: '+', label: 'Projects Completed',          current: signal(0) },
+    { target: 8,  suffix: '+', label: 'Technologies in Production',  current: signal(0) },
+    { target: 12, suffix: '+', label: 'Certifications Earned',       current: signal(0) },
+  ];
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['active'] && this.active && !this.barsAnimated) {
+      this.barsAnimated = true;
+      this.counters.forEach(c => c.current.set(0));
+      setTimeout(() => this.animateCounters(), 350);
+      setTimeout(() => this.lineReady.set(true),  300);
+      setTimeout(() => this.barsReady.set(true),  700);
+    }
+  }
+
+  ngAfterViewInit() {
+    if (window.innerWidth < 960) {
+      setTimeout(() => this.animateCounters(), 500);
+    }
+  }
+
+  private animateCounters() {
+    this.counters.forEach(c => {
+      const duration = 1400;
+      const steps    = 30;
+      const stepTime = duration / steps;
+      let step = 0;
+      const iv = setInterval(() => {
+        step++;
+        const t     = step / steps;
+        const eased = 1 - Math.pow(1 - t, 3);
+        c.current.set(Math.round(eased * c.target));
+        if (step >= steps) { c.current.set(c.target); clearInterval(iv); }
+      }, stepTime);
+    });
+  }
+
+  // ─── Work experience ──────────────────────────────────────────────────────
+  readonly jobs = [
     {
-      period: 'Apr 2025 — Present',
-      org: 'VirtuIntelligence · Part-time · Remote',
-      title: 'Game/App Developer',
-      desc: 'Shipped PathFinder, a VR self-discovery app, to the Meta Quest store using Unreal Engine 5.5 Blueprints and Unity. Currently developing <em>Robots vs Aliens</em>, a tower defense mobile game in Unity (C#). Built Symposium, a real-time AI-mediated chat platform using Angular, Ionic, Node.js, and PostgreSQL. Working across diverse tech stacks has strengthened my full-stack architecture and problem-solving skills.',
-      tags: ['Unreal 5.5', 'Blueprints', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL'],
+      period:    'Apr 2025 — Present',
+      isLive:    true,
+      company:   'VirtuIntelligence',
+      type:      'Game/App Developer · Part-time · Remote',
+      headline:  'Game/App Developer',
+      bullets: [
+        'Shipped <strong>PathFinder</strong> — a VR self-discovery app — to the Meta Quest Store using Unreal Engine 5.5 Blueprints; built its Android companion in Unity.',
+        'Architected <strong>Symposium</strong>, a real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket streaming & xAI Grok integration.',
+        'Actively developing <strong>Robots vs Aliens</strong>, a mobile tower-defense game in Unity (C#) with procedural level generation.',
+        'Managing own sprint tasks and participating in async code reviews across multiple time zones.',
+      ],
+      tags: ['Unreal Engine 5.5', 'Blueprints', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets'],
     },
+  ];
+
+  // ─── Education ────────────────────────────────────────────────────────────
+  readonly education = [
     {
-      period: 'Jun 2023 — 2027',
-      org: 'Holy Angel University · Pampanga, PH',
-      title: 'BS Information Technology',
-      desc: 'Specialization in Web Development. Coursework spanning full-stack architecture, database systems, software engineering principles, and deployment workflows.',
-      tags: [],
+      period:  'Jun 2023 — 2027',
+      school:  'Holy Angel University',
+      type:    'BS Information Technology · Pampanga, PH',
+      detail:  'Specialization in Web Development. Coursework in full-stack architecture, database systems, software engineering, networking, and deployment. Maintaining strong academic standing while working part-time.',
     },
+  ];
+
+  // ─── Skills split by domain ───────────────────────────────────────────────
+  readonly webSkills = [
+    { name: 'JavaScript',      time: '2 yrs',   pct: 85 },
+    { name: 'TypeScript',      time: '1.5 yrs', pct: 80 },
+    { name: 'Angular',         time: '1 yr',    pct: 75 },
+    { name: 'Node.js/Express', time: '1 yr',    pct: 75 },
+    { name: 'Vue.js 3',        time: '1 yr',    pct: 70 },
+    { name: 'PostgreSQL',      time: '6 mo',    pct: 55 },
+  ];
+
+  readonly gameSkills = [
+    { name: 'Unreal Engine 5.5', time: '1 yr',  pct: 72 },
+    { name: 'Blueprints',        time: '1 yr',  pct: 75 },
+    { name: 'Unity',             time: '1 yr',  pct: 68 },
+    { name: 'C#',                time: '1 yr',  pct: 70 },
+    { name: 'Game Architecture', time: '1 yr',  pct: 65 },
+    { name: '3D Scene Design',   time: '6 mo',  pct: 55 },
+  ];
+
+  // ─── Tools ────────────────────────────────────────────────────────────────
+  readonly tools = [
+    'Git & GitHub', 'Prisma ORM', 'Ionic + Capacitor', 'WebSockets',
+    'REST APIs', 'JWT Auth', 'Figma', 'VS Code', 'Vercel', 'Netlify',
+    'Wit.ai', 'Pinia',
   ];
 }
 
@@ -2470,7 +3038,6 @@ export class ExperienceComponent {
 .page-home {
   position: relative;
   width: 100%;
-  /* Use 100% instead of min-height:100vh — the page-section wrapper enforces height */
   min-height: 100%;
   padding: 5rem 5rem 3rem;
   overflow-y: auto;
@@ -2503,23 +3070,29 @@ export class ExperienceComponent {
   line-height: 1;
   letter-spacing: -.03em;
   color: var(--white);
-  font-size: clamp(4rem, 8vw, 5.5rem);
+  /* FIX (desktop font size): bumped from clamp(4rem, 8vw, 5.5rem)
+     The 4rem minimum was 64px — fine on desktop but enormous on mobile.
+     New minimum is 2.4rem so it scales down gracefully on small screens. */
+  font-size: clamp(2.4rem, 8vw, 6rem);
   margin-bottom: .8rem;
 }
 .accent-name { margin-bottom: 1.2rem; }
 
 .hrole {
   font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  /* FIX (desktop): bumped from clamp(1rem, 2vw, 1.2rem) → 1.35rem max */
+  font-size: clamp(.95rem, 2vw, 1.35rem);
   color: var(--acc);
   margin-bottom: 1.5rem;
   display: block;
 }
 
 .hdesc {
-  font-size: 1.15rem;
+  /* FIX (desktop thin font): bumped from 1.15rem → 1.3rem, still weight 300
+     Larger size compensates for the light weight so it reads more comfortably. */
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
   color: var(--text);
-  line-height: 1.75;
+  line-height: 1.8;
   margin-bottom: 2rem;
   font-weight: 300;
 }
@@ -2553,8 +3126,8 @@ export class ExperienceComponent {
 }
 
 .h-photo {
-  width: 300px;   /* Increased from 220px */
-  height: 300px;  /* Increased from 220px */
+  width: 300px;
+  height: 300px;
   flex-shrink: 0;
 }
 
@@ -2573,7 +3146,6 @@ export class ExperienceComponent {
   position: relative;
 }
 .h-photo-placeholder:hover { border-color: var(--acc); border-style: solid; }
-/* Hide fallback icon once real image loads */
 .h-photo-placeholder img + .h-photo-icon { display: none; }
 .h-photo-placeholder img:not([style*="display: none"]) + .h-photo-icon { display: none; }
 
@@ -2625,7 +3197,8 @@ export class ExperienceComponent {
 .feat-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 600;
-  font-size: 1.2rem;
+  /* FIX (desktop thin font): bumped from 1.2rem → 1.3rem */
+  font-size: 1.3rem;
   letter-spacing: -.01em;
   color: var(--white);
   line-height: 1;
@@ -2633,9 +3206,10 @@ export class ExperienceComponent {
 }
 
 .feat-desc {
-  font-size: .85rem;
+  /* FIX (desktop thin font): bumped from .85rem → 1rem, still weight 300 */
+  font-size: 1rem;
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.6;
   margin-bottom: 1rem;
   font-weight: 300;
 }
@@ -2680,44 +3254,38 @@ export class ExperienceComponent {
 
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 2rem; }
-  
-  /* ✦ FIX 1: Center the Photo and Text Blocks ✦ */
-  .h-top-grid { 
-    flex-direction: column-reverse; 
-    align-items: center; /* Centers the Photo horizontally */
-    gap: 2.5rem; 
-    margin-bottom: 3rem; 
+
+  .h-top-grid {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
   }
-  
-  /* ✦ FIX 2: Center the Text Content ✦ */
+
   .h-text {
-    text-align: center;      /* Centers the paragraphs and headings */
+    text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center;     /* Centers flex children (like the location badge) */
+    align-items: center;
     width: 100%;
   }
 
-  /* Ensure headings fill width so text-align works */
   .hname { width: 100%; }
 
-  .h-photo { 
-    width: 220px; 
-    height: 220px; 
-    /* Extra safety to ensure photo doesn't float left */
-    margin: 0 auto; 
+  .h-photo {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
   }
-  
+
   .feat-grid { grid-template-columns: 1fr; }
   .btn { cursor: pointer !important; }
 
-  /* ✦ FIX 3: Center Buttons ✦ */
   .hbtns {
     justify-content: center;
     margin-top: 1rem;
   }
 }
-
 
 --- DIRECTORY: components\home\home.component.html ---
 <section class="page-home" [class.active-page]="active">
@@ -3270,7 +3838,6 @@ export class ProjectOverlayComponent {
 
 .pin { width: 100%; max-width: 1100px; margin: 0 auto; }
 
-/* ─── REMOVED direct animation: — global .active-page .au handles .pheader ─── */
 .pheader {
   display: flex;
   align-items: baseline;
@@ -3298,7 +3865,6 @@ export class ProjectOverlayComponent {
 
 .plist { list-style: none; width: 100%; padding: 0; }
 
-/* ─── REMOVED direct animation: from .pi — global .active-page .al handles it ─── */
 .pi {
   display: grid;
   grid-template-columns: 3rem 1fr auto 2rem;
@@ -3344,7 +3910,8 @@ export class ProjectOverlayComponent {
 }
 
 .psub {
-  font-size: 1.05rem;
+  /* FONT FIX: bumped from 1.05rem → 1.2rem */
+  font-size: 1.2rem;
   color: var(--text);
   font-weight: 300;
   line-height: 1.5;
@@ -3369,7 +3936,6 @@ export class ProjectOverlayComponent {
   transition: color .2s, transform .2s;
 }
 
-/* Stagger delays gated on active-page so they only fire on navigation */
 .active-page .pi:nth-child(1) { animation-delay: .12s !important; }
 .active-page .pi:nth-child(2) { animation-delay: .22s !important; }
 .active-page .pi:nth-child(3) { animation-delay: .32s !important; }
@@ -4376,16 +4942,12 @@ export class ResumeComponent implements OnChanges {
   </nav>
 
   <div class="sb-bot">
-    <!-- Social icons remain the same -->
     <div class="sb-socs">
       <a href="https://linkedin.com/in/jarenkendrick" target="_blank" rel="noopener" class="sbsoc" aria-label="LinkedIn">
         <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
       </a>
       <a href="https://github.com/jarenkendrick14" target="_blank" rel="noopener" class="sbsoc" aria-label="GitHub">
         <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-      </a>
-      <a href="mailto:jarenkendrickyambao@gmail.com" class="sbsoc" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13L2 4"/></svg>
       </a>
     </div>
 
@@ -5023,7 +5585,7 @@ export class PortfolioDataService {
       desc: 'A full-stack real-time chat application with an AI mediator powered by xAI Grok. Features WebSocket-based messaging, streaming AI responses, and a full @mention system.',
       purpose: 'Architected a complete real-time communication platform with AI integration, demonstrating proficiency in WebSocket protocols and full-stack TypeScript.',
       features: ['Real-time WebSocket messaging', 'Streaming AI responses via xAI Grok', 'Turn management system', '@mention filtered dropdown', 'Cross-platform via Ionic'],
-      live: [{ name: 'Live Site ↗', url: 'https://symposium-mauve.vercel.app/' }],
+      live: [{ name: 'Live Site ↗', url: 'https://www.theaisymposium.net//' }],
       github: null,
       imgs: [
         'assets/images/symposium-1.png',

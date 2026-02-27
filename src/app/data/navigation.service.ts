@@ -5,15 +5,18 @@ export class NavigationService {
   readonly currentPage = signal<number>(0);
   readonly isAnimating = signal<boolean>(false);
   readonly theme = signal<'dark' | 'light'>('dark');
-  
-  // Terminal state management
   readonly terminalOpen = signal<boolean>(false);
 
   readonly isDark = computed(() => this.theme() === 'dark');
 
   constructor() {
-    const saved = localStorage.getItem('jk-theme') as 'dark' | 'light' | null;
-    if (saved) this.theme.set(saved);
+    // FIX: Try/Catch prevents iOS Safari crashes if cookies/storage are strictly blocked
+    try {
+      const saved = localStorage.getItem('jk-theme') as 'dark' | 'light' | null;
+      if (saved) this.theme.set(saved);
+    } catch (err) {
+      console.warn('Local storage restricted.');
+    }
   }
 
   goTo(next: number, total: number): void {
@@ -26,7 +29,9 @@ export class NavigationService {
   toggleTheme(): void {
     const next = this.theme() === 'dark' ? 'light' : 'dark';
     this.theme.set(next);
-    localStorage.setItem('jk-theme', next);
+    try {
+      localStorage.setItem('jk-theme', next);
+    } catch (err) {}
   }
 
   toggleTerminal(): void {

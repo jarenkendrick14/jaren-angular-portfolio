@@ -82,13 +82,22 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
   body {
-    overflow-x: hidden;   /* prevent any accidental horizontal bleed  */
-    overflow-y: auto;     /* re-enable vertical scrolling              */
-    height: auto;         /* remove the 100vh constraint               */
+    overflow-x: hidden;   
+    overflow-y: auto;     
+    height: auto;         
     cursor: auto;
   }
 
   button, a { cursor: pointer !important; }
+
+  /* Ensure all animated elements default to visible on mobile. 
+     Without this, sections below the fold remain at opacity: 0 */
+  .au, .al, .ar, .as {
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 .decrypting { color: var(--acc) !important; }
