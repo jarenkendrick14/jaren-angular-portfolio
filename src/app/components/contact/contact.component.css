@@ -22,7 +22,8 @@
 .cgg { display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem; width: 100%; }
 
 .cp {
-  font-size: 1.15rem;
+  /* FONT FIX: bumped from 1.15rem → 1.3rem */
+  font-size: 1.3rem;
   color: var(--text);
   line-height: 1.8;
   font-weight: 300;
@@ -57,10 +58,8 @@
 }
 .solink:hover .soico { border-color: var(--acc); }
 
-/* Filled icons (LinkedIn, GitHub) */
 .soico svg { width: 22px; height: 22px; fill: currentColor; }
 
-/* Stroke-based envelope icon override */
 .soico-mail svg {
   fill: none;
   stroke: currentColor;
@@ -98,7 +97,8 @@ input, textarea {
   border-radius: 6px;
   padding: 1.1rem 1.25rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.05rem;
+  /* FONT FIX: bumped from 1.05rem → 1.15rem */
+  font-size: 1.15rem;
   font-weight: 300;
   color: var(--white);
   outline: none;
@@ -139,7 +139,6 @@ textarea { min-height: 150px; }
   .cform { padding: 1.5rem; }
   .cho { font-size: clamp(3.5rem, 12vw, 5.5rem); }
 }
-
 
 .fserr {
   font-family: 'JetBrains Mono', monospace;

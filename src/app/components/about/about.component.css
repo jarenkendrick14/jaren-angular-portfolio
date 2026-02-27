@@ -11,7 +11,7 @@
 .page-about {
   width: 100%;
   min-height: 100vh;
-  padding: 5rem 5rem 6rem; /* Changed bottom padding from 3rem to 6rem */
+  padding: 5rem 5rem 6rem;
   overflow-x: hidden;
 }
 
@@ -66,12 +66,9 @@
   font-weight: 500;
 }
 
-/* 1. MAKE GRIDS IDENTICAL (PANTAY NA GUTTER) */
 .intro-grid {
   display: grid;
-  /* Left column takes 1 part, Right takes 1.5 parts. 
-     This aligns perfectly with the dash-grid below. */
-  grid-template-columns: 1fr 1.5fr; 
+  grid-template-columns: 1fr 1.5fr;
   gap: 4rem;
   align-items: center;
   margin-bottom: 5rem;
@@ -80,14 +77,13 @@
 .intro-left {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centers photo horizontally in the 1fr column */
+  align-items: center;
   text-align: center;
 }
 
-
 .bio-img-wrap {
-  width: 200px;
-  height: 200px;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--bord);
@@ -102,36 +98,33 @@
   line-height: 1.2;
   letter-spacing: -.025em;
   color: var(--white);
-  margin-bottom: 0; /* Overridden, handled by grid layout */
+  margin-bottom: 0;
 }
 .apull em { color: var(--acc); font-style: normal; }
 
 .abio {
-  font-size: 1.1rem; 
-  color: var(--text); 
-  line-height: 1.8; 
-  font-weight: 300; 
-  text-align: justify; /* <-- This forces the flush right edge */
+  /* FONT FIX: bumped from 1.1rem → 1.25rem — weight 300 needs more size to read well */
+  font-size: 1.25rem;
+  color: var(--text);
+  line-height: 1.8;
+  font-weight: 300;
+  text-align: justify;
 }
 .abio p + p { margin-top: 1.25rem; }
 .abio strong { color: var(--white); font-weight: 600; }
 
 .dash-grid {
   display: grid;
-  /* Exact same ratio as intro-grid */
   grid-template-columns: 1fr 1.5fr;
   gap: 4rem;
-  /* This ensures both columns stretch to the same height */
-  align-items: stretch; 
+  align-items: stretch;
 }
 
-/* The Container for the Sphere */
 .dash-skills {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 
 .full-width {
   grid-column: 1 / -1;
@@ -150,7 +143,7 @@
 .btn-fill { background: var(--acc); color: #fff; }
 .btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 
-/* ══════════ RIGHT COLUMN BLOCKS (Reused in Grid) ══════════ */
+/* ══════════ RIGHT COLUMN BLOCKS ══════════ */
 .blk { margin-bottom: 2.5rem; }
 .blk:last-child { margin-bottom: 0; }
 
@@ -178,7 +171,6 @@
   background: var(--bg);
   padding: 0;
   overflow: hidden;
-  /* FORCE HEIGHT: This makes it fill the space next to Soft Skills */
   flex: 1;
   min-height: 320px;
   width: 100%;
@@ -190,8 +182,6 @@
   letter-spacing: .08em; opacity: .5; pointer-events: none; width: max-content;
 }
 
-
-/* SPHERE TAGS */
 .sphere-tag {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
@@ -205,10 +195,8 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Little more breathing room */
+  gap: 1.5rem;
   padding: 0;
-  /* Align list with header? No, usually slightly indented looks better 
-     but let's reduce indentation to make it tighter to the margin */
   margin-top: 0.5rem;
 }
 
@@ -216,11 +204,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding-left: 0; /* Remove left padding to align flush with header */
+  padding-left: 0;
   position: relative;
 }
 
-/* Adds the little purple triangle bullet point */
 .soft-sk-name::before {
   content: '▸';
   color: var(--acc);
@@ -238,14 +225,15 @@
 }
 
 .soft-sk-desc {
-  font-size: 0.9rem;
+  /* FONT FIX: bumped from 0.9rem → 1rem */
+  font-size: 1rem;
   color: var(--text);
   font-weight: 300;
   line-height: 1.6;
-  text-align: left; /* Reset to left for cleaner reading on short bullets */
-  padding-left: 1.1rem; /* Indent description to align with text start */
+  text-align: left;
+  padding-left: 1.1rem;
 }
-/* Proficiency List */
+
 .skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; }
 .sk-item { display: flex; flex-direction: column; gap: .4rem; opacity: 0; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards; }
 .sk-info { display: flex; justify-content: space-between; align-items: center; font-size: .92rem; font-weight: 500; color: var(--text); }
@@ -270,11 +258,11 @@
   border: 1px solid var(--bord);
   border-radius: 8px;
   background: var(--bg);
-  padding: 1.5rem 0; /* Vertical padding only, content manages horiz */
+  padding: 1.5rem 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center children vertically */
+  align-items: center;
 }
 
 .heatmap-loading {
@@ -295,12 +283,11 @@
 }
 .heatmap-link:hover { text-decoration: underline; }
 
-/* ── Heatmap Container & Centering ── */
 .heatmap-container {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 0 auto 1rem auto; /* CENTER THIS CONTAINER */
+  margin: 0 auto 1rem auto;
   width: max-content;
   max-width: 100%;
   overflow-x: auto;
@@ -317,7 +304,7 @@
 .hm-months-grid {
   display: grid;
   grid-template-columns: repeat(20, 14px);
-  gap: 0; 
+  gap: 0;
   flex: 1;
 }
 
@@ -353,7 +340,6 @@
   padding-right: 4px;
 }
 
-/* Actual Grid */
 .heatmap-grid {
   display: flex;
   gap: 3px;
@@ -371,12 +357,11 @@
   border: 1px solid rgba(139,92,246,.08);
 }
 
-/* Legend */
 .heatmap-legend {
   display: flex; align-items: center; gap: 4px;
   width: 100%;
-  justify-content: flex-end; /* Align right relative to container, or center if desired */
-  max-width: 320px; /* Limit width to match approximate grid width for visual center */
+  justify-content: flex-end;
+  max-width: 320px;
   margin-top: .25rem;
 }
 .heatmap-legend-label {
@@ -386,9 +371,9 @@
 .heatmap-legend .heatmap-cell { width: 10px; height: 10px; }
 
 /* ══════════ RECENT COMMITS ══════════ */
-.commits-list { 
-  border-top: 1px solid var(--bord); 
-  padding: .75rem 1.5rem 0; 
+.commits-list {
+  border-top: 1px solid var(--bord);
+  padding: .75rem 1.5rem 0;
   width: 100%;
 }
 .commits-label {
@@ -455,16 +440,13 @@
   .page-about { padding: 6.5rem 1.5rem 5rem; }
   .intro-grid, .dash-grid { grid-template-columns: 1fr; gap: 3rem; }
   .tagline-line { white-space: normal; }
-  
-  /* Center the Download Resume button container */
+
   .intro-right div[style*="margin-top"] {
     display: flex;
     justify-content: center;
   }
-  
-  /* Ensure the button itself doesn't stretch weirdly */
+
   .btn { width: auto; }
-  
 
   .stats-strip { grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.5rem 0; }
   .stat-num { font-size: clamp(2.5rem, 10vw, 3.5rem); }
@@ -479,11 +461,9 @@
   font-size: 0.8rem;
   transition: color 0.2s, z-index 0.2s, opacity 0.2s;
   will-change: transform, opacity;
-  color: var(--text); 
-  /* Force position to work with the JS math */
+  color: var(--text);
   position: absolute !important;
   transform-style: preserve-3d;
-  /* Ensure it sits on top of the black background */
   z-index: 10;
 }
 
@@ -498,12 +478,12 @@
   display: block;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
-  font-size: clamp(2rem, 3vw, 2.8rem); /* Slightly scaled down so it fits gracefully */
+  font-size: clamp(2rem, 3vw, 2.8rem);
   line-height: 1.2;
   letter-spacing: -0.025em;
   color: var(--white);
   text-align: center;
-  white-space: nowrap; /* Forces text to stay on one line */
+  white-space: nowrap;
 }
 
 .tagline-line em {
@@ -511,7 +491,6 @@
   font-style: normal;
 }
 
-/* Stagger delays — each phrase waits a beat longer than the last */
 .active-page .tl-p1 { animation-delay: 0.10s !important; }
 .active-page .tl-p2 { animation-delay: 0.28s !important; }
 .active-page .tl-p3 { animation-delay: 0.46s !important; }
