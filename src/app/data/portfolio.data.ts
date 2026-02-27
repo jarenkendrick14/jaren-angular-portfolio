@@ -42,7 +42,7 @@ export class PortfolioDataService {
       desc: 'A full-stack real-time chat application with an AI mediator powered by xAI Grok. Features WebSocket-based messaging, streaming AI responses, and a full @mention system.',
       purpose: 'Architected a complete real-time communication platform with AI integration, demonstrating proficiency in WebSocket protocols and full-stack TypeScript.',
       features: ['Real-time WebSocket messaging', 'Streaming AI responses via xAI Grok', 'Turn management system', '@mention filtered dropdown', 'Cross-platform via Ionic'],
-      live: [{ name: 'Live Site ↗', url: 'https://symposium-mauve.vercel.app/' }],
+      live: [{ name: 'Live Site ↗', url: 'https://www.theaisymposium.net//' }],
       github: null,
       imgs: [
         'assets/images/symposium-1.png',
