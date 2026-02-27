@@ -7,7 +7,6 @@
   --sb: #0d0d16;
   --surf: #111120;
   --bord: #2a2a40;
-  /* Toned-down from #a78bfa → less pastel, more solid violet */
   --acc: #8b5cf6;
   --acc2: #6d28d9;
   --white: #ffffff;
@@ -49,9 +48,17 @@ body {
   color: var(--text);
   overflow: hidden;
   height: 100vh;
-  width: 100vw;
+  width: 100%;           /* FIX: was 100vw — avoids horizontal-scroll jitter on some browsers */
   transition: background-color .35s ease, color .35s ease;
   cursor: none;
+}
+
+/* FIX: Ensure Angular's custom element is a proper block-level container.
+   Without this, <app-root> defaults to display:inline in some browsers,
+   which causes height/overflow constraints to behave unexpectedly on mobile. */
+app-root {
+  display: block;
+  width: 100%;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -69,14 +76,24 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
+/* ══════════ MOBILE — restore normal document flow ══════════
+   On ≤960 px the full-page slider is replaced by a normal
+   scrolling document. body must be un-clipped for this to work.
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
-  body { overflow: auto; height: auto; cursor: auto; }
+  body {
+    overflow-x: hidden;   /* prevent any accidental horizontal bleed  */
+    overflow-y: auto;     /* re-enable vertical scrolling              */
+    height: auto;         /* remove the 100vh constraint               */
+    cursor: auto;
+  }
+
   button, a { cursor: pointer !important; }
 }
 
 .decrypting { color: var(--acc) !important; }
 
-/* ══════════ GLOBAL ANIMATIONS — increased distances for prominence ══════════ */
+/* ══════════ GLOBAL ANIMATIONS ══════════ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(72px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -114,17 +131,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .active .d4, .active-page .d4 { animation-delay: .42s !important; }
 .active .d5, .active-page .d5 { animation-delay: .52s !important; }
 
-/* ══════════ SEAMLESS SLIDE-OUT (both directions) ══════════
-   When a page slides OUT — either up (.prev) or down (.next) —
-   its content must stay fully visible for the whole 0.6s slide.
-   
-   .prev  = page that slid up and off (scroll DOWN)
-   .next  = page that slid down and off (scroll UP)
-   
-   Both are off-screen via translateY(±100%), so opacity:1 here
-   causes zero visual bleed. The !important beats Angular's
-   higher-specificity attribute-scoped component styles.
-══════════════════════════════════════════════════════════════ */
+/* ══════════ SEAMLESS SLIDE-OUT ══════════ */
 .page-section.prev .au,
 .page-section.prev .al,
 .page-section.prev .ar,

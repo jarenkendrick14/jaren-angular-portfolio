@@ -3,7 +3,6 @@
 .page-home {
   position: relative;
   width: 100%;
-  /* Use 100% instead of min-height:100vh — the page-section wrapper enforces height */
   min-height: 100%;
   padding: 5rem 5rem 3rem;
   overflow-y: auto;
@@ -36,23 +35,29 @@
   line-height: 1;
   letter-spacing: -.03em;
   color: var(--white);
-  font-size: clamp(4rem, 8vw, 5.5rem);
+  /* FIX (desktop font size): bumped from clamp(4rem, 8vw, 5.5rem)
+     The 4rem minimum was 64px — fine on desktop but enormous on mobile.
+     New minimum is 2.4rem so it scales down gracefully on small screens. */
+  font-size: clamp(2.4rem, 8vw, 6rem);
   margin-bottom: .8rem;
 }
 .accent-name { margin-bottom: 1.2rem; }
 
 .hrole {
   font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  /* FIX (desktop): bumped from clamp(1rem, 2vw, 1.2rem) → 1.35rem max */
+  font-size: clamp(.95rem, 2vw, 1.35rem);
   color: var(--acc);
   margin-bottom: 1.5rem;
   display: block;
 }
 
 .hdesc {
-  font-size: 1.15rem;
+  /* FIX (desktop thin font): bumped from 1.15rem → 1.3rem, still weight 300
+     Larger size compensates for the light weight so it reads more comfortably. */
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
   color: var(--text);
-  line-height: 1.75;
+  line-height: 1.8;
   margin-bottom: 2rem;
   font-weight: 300;
 }
@@ -86,8 +91,8 @@
 }
 
 .h-photo {
-  width: 300px;   /* Increased from 220px */
-  height: 300px;  /* Increased from 220px */
+  width: 300px;
+  height: 300px;
   flex-shrink: 0;
 }
 
@@ -106,7 +111,6 @@
   position: relative;
 }
 .h-photo-placeholder:hover { border-color: var(--acc); border-style: solid; }
-/* Hide fallback icon once real image loads */
 .h-photo-placeholder img + .h-photo-icon { display: none; }
 .h-photo-placeholder img:not([style*="display: none"]) + .h-photo-icon { display: none; }
 
@@ -158,7 +162,8 @@
 .feat-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 600;
-  font-size: 1.2rem;
+  /* FIX (desktop thin font): bumped from 1.2rem → 1.3rem */
+  font-size: 1.3rem;
   letter-spacing: -.01em;
   color: var(--white);
   line-height: 1;
@@ -166,9 +171,10 @@
 }
 
 .feat-desc {
-  font-size: .85rem;
+  /* FIX (desktop thin font): bumped from .85rem → 1rem, still weight 300 */
+  font-size: 1rem;
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.6;
   margin-bottom: 1rem;
   font-weight: 300;
 }
@@ -213,38 +219,33 @@
 
 @media (max-width: 960px) {
   .page-home { padding: 7rem 1.5rem 2rem; }
-  
-  /* ✦ FIX 1: Center the Photo and Text Blocks ✦ */
-  .h-top-grid { 
-    flex-direction: column-reverse; 
-    align-items: center; /* Centers the Photo horizontally */
-    gap: 2.5rem; 
-    margin-bottom: 3rem; 
+
+  .h-top-grid {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
   }
-  
-  /* ✦ FIX 2: Center the Text Content ✦ */
+
   .h-text {
-    text-align: center;      /* Centers the paragraphs and headings */
+    text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center;     /* Centers flex children (like the location badge) */
+    align-items: center;
     width: 100%;
   }
 
-  /* Ensure headings fill width so text-align works */
   .hname { width: 100%; }
 
-  .h-photo { 
-    width: 220px; 
-    height: 220px; 
-    /* Extra safety to ensure photo doesn't float left */
-    margin: 0 auto; 
+  .h-photo {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
   }
-  
+
   .feat-grid { grid-template-columns: 1fr; }
   .btn { cursor: pointer !important; }
 
-  /* ✦ FIX 3: Center Buttons ✦ */
   .hbtns {
     justify-content: center;
     margin-top: 1rem;
