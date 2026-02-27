@@ -1,12 +1,17 @@
-# Browserslist config for Jaren's Angular Portfolio
-# Targeting modern browsers + iPhone 11 (iOS 14+)
-# Run "npx browserslist" to verify coverage
+# .browserslistrc
+#
+# Tells Angular's esbuild compiler which browsers to target.
+# Without this, Angular 17+ defaults to ES2022 output — which
+# crashes on iOS 16.0–16.3 (Safari 16.0–16.3) because those
+# versions are missing ES2022 class static initialization blocks.
+#
+# Adding iOS >= 14 forces the output down to ~ES2019/ES2020,
+# which all modern iOS devices support.
 
-> 0.5%
 last 2 Chrome versions
 last 2 Firefox versions
 last 2 Edge versions
-last 4 Safari versions
+last 2 Safari versions
+Safari >= 14
 iOS >= 14
 not dead
-not IE 11
