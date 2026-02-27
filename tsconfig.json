@@ -17,10 +17,12 @@
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
-    "target": "ES2022",
-    "module": "ES2022",
+    "target": "ES2020",   // ← CHANGED from ES2022. Fixes iOS 16.0–16.3 black screen.
+    "module": "ES2022",   //   module stays ES2022 — this controls import/export syntax,
+                          //   NOT class field syntax. esbuild handles module format
+                          //   separately and tree-shakes ESM fine on all targets.
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2020", "dom", "dom.iterable"]  // ← CHANGED: matches target, added dom.iterable
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
