@@ -99,8 +99,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.fetchHeatmap();
     this.fetchCommits();
 
-    // If on mobile, run counters immediately because 
-    // the 'active' input might not trigger correctly during scrolling.
     if (window.innerWidth < 960) {
       setTimeout(() => this.animateCounters(), 500);
     }
@@ -126,8 +124,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   private async fetchHeatmap() {
     try {
-      // ✅ github-contributions-api.jogruber.de — dedicated public JSON API with
-      //    proper CORS headers. No proxy, no HTML scraping. Always works.
       const res = await fetch(
         'https://github-contributions-api.jogruber.de/v4/jarenkendrick14?y=last'
       );
@@ -204,7 +200,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.heatmapWeeks.set(weeks);
   }
 
-  /* ── Recent Commits ── */
   private async fetchCommits() {
     try {
       const res = await fetch('https://api.github.com/users/jarenkendrick14/events/public?per_page=30');
@@ -255,7 +250,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     return colors[Math.min(level, 4)];
   }
 
-  /* ── Custom Vanilla JS Sphere ── */
   private initSphere() {
     const RADIUS = 150;
     const items = this.sphereTags.map((tag, i) => {
@@ -264,7 +258,9 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       const el    = document.createElement('span');
       el.className          = 'sphere-tag';
       el.textContent        = tag.text;
-      el.style.color        = tag.color;
+      el.style.color        = '#ffffff';
+      (el.style as any).webkitTextFillColor = tag.color;
+      
       el.style.position     = 'absolute';
       el.style.background   = 'var(--surf)';
       el.style.padding      = '4px 8px';

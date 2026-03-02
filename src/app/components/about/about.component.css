@@ -35,6 +35,7 @@
   -webkit-text-fill-color: var(--acc) !important;
 }
 
+
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
 

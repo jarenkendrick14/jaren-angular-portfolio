@@ -8,21 +8,22 @@
     }
   </a>
 
-  <div class="sb-nav" role="list">
-    <!-- The line is drawn via CSS on .sb-nav::before -->
+<ul class="sb-nav" style="list-style: none;">
+    <!-- The line is now drawn via CSS on .sb-nav::before -->
     @for (item of navItems; track item.index) {
-      <button
-        class="sdw"
-        role="listitem"
-        [class.on]="nav.currentPage() === item.index"
-        (click)="goTo(item.index)"
-        [attr.aria-label]="item.label"
-        [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
-        <span class="sdot"></span>
-        <span class="slbl">{{ item.short }}</span>
-      </button>
+      <li style="margin: 0; padding: 0;">
+        <button
+          class="sdw"
+          [class.on]="nav.currentPage() === item.index"
+          (click)="goTo(item.index)"
+          [attr.aria-label]="item.label"
+          [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
+          <span class="sdot"></span>
+          <span class="slbl">{{ item.short }}</span>
+        </button>
+      </li>
     }
-  </div>
+  </ul>
 
   <div class="sb-bot">
     <div class="sb-socs">
