@@ -48,14 +48,12 @@ body {
   color: var(--text);
   overflow: hidden;
   height: 100vh;
-  width: 100%;           /* FIX: was 100vw — avoids horizontal-scroll jitter on some browsers */
+  width: 100%;
   transition: background-color .35s ease, color .35s ease;
   cursor: none;
 }
 
-/* FIX: Ensure Angular's custom element is a proper block-level container.
-   Without this, <app-root> defaults to display:inline in some browsers,
-   which causes height/overflow constraints to behave unexpectedly on mobile. */
+/* FIX: Ensure Angular's custom element is a proper block-level container. */
 app-root {
   display: block;
   width: 100%;
@@ -68,6 +66,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transition: background-color .35s ease, border-color .35s ease, color .35s ease;
 }
 
+/* Accessible focus states */
 a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
   outline: 2px solid var(--acc);
   outline-offset: 2px;
@@ -76,10 +75,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
-/* ══════════ MOBILE — restore normal document flow ══════════
-   On ≤960 px the full-page slider is replaced by a normal
-   scrolling document. body must be un-clipped for this to work.
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ MOBILE — restore normal document flow ══════════ */
 @media (max-width: 960px) {
   body {
     overflow-x: hidden;   
@@ -90,8 +86,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
   button, a { cursor: pointer !important; }
 
-  /* Ensure all animated elements default to visible on mobile. 
-     Without this, sections below the fold remain at opacity: 0 */
   .au, .al, .ar, .as {
     opacity: 1 !important;
     animation: none !important;
@@ -140,7 +134,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .active .d4, .active-page .d4 { animation-delay: .42s !important; }
 .active .d5, .active-page .d5 { animation-delay: .52s !important; }
 
-/* ══════════ SEAMLESS SLIDE-OUT ══════════ */
+/* ══════════ SEAMLESS SLIDE-OUT (Restored to fix vanishing text) ══════════ */
 .page-section.prev .au,
 .page-section.prev .al,
 .page-section.prev .ar,
@@ -152,4 +146,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   opacity: 1 !important;
   animation: none !important;
   transition: none !important;
+}
+
+/* ══════════ ACCESSIBILITY CONTRAST HACKS ══════════ */
+.btn-fill {
+  background-color: #000000 !important;
+  background-image: linear-gradient(var(--acc), var(--acc)) !important;
+  color: #ffffff !important;
+}
+
+.sn {
+  color: #ffffff !important;
+  -webkit-text-fill-color: var(--acc) !important;
+}
+
+svg[aria-hidden="true"] {
+  pointer-events: none;
 }

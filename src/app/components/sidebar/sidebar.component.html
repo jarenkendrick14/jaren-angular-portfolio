@@ -1,4 +1,4 @@
-<aside class="sidebar" role="navigation" aria-label="Main Navigation">
+<nav class="sidebar" aria-label="Main Navigation">
 
   <a href="#" (click)="goTo(0); $event.preventDefault()" class="sb-logo" aria-label="Home">
     @if (nav.isDark()) {
@@ -8,11 +8,12 @@
     }
   </a>
 
-  <nav class="sb-nav">
-    <!-- The line is now drawn via CSS on .sb-nav::before -->
+  <div class="sb-nav" role="list">
+    <!-- The line is drawn via CSS on .sb-nav::before -->
     @for (item of navItems; track item.index) {
       <button
         class="sdw"
+        role="listitem"
         [class.on]="nav.currentPage() === item.index"
         (click)="goTo(item.index)"
         [attr.aria-label]="item.label"
@@ -21,7 +22,7 @@
         <span class="slbl">{{ item.short }}</span>
       </button>
     }
-  </nav>
+  </div>
 
   <div class="sb-bot">
     <div class="sb-socs">
@@ -41,7 +42,7 @@
     </button>
 
     <button class="term-trigger" (click)="nav.toggleTerminal()" aria-label="Open developer terminal">
-      <span class="term-trigger-dot"></span>[ ]_ dev
+      <span class="term-trigger-dot"></span><span class="term-trigger-text">[ ]_ dev</span>
     </button>
   </div>
-</aside>
+</nav>

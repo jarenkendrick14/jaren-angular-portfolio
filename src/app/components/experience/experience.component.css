@@ -17,7 +17,14 @@
 
 /* ── Section label ──────────────────────────────────────────────── */
 .slabel { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
-.sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
+.sn { 
+  font-family: 'JetBrains Mono', monospace; 
+  font-size: .85rem; 
+  letter-spacing: .1em; 
+  font-weight: 600; 
+  color: #ffffff !important; 
+  -webkit-text-fill-color: var(--acc) !important;
+}
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
 

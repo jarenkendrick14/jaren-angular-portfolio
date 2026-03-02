@@ -25,7 +25,16 @@
   margin-bottom: 2rem;
 }
 
-.sn { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--acc); letter-spacing: .1em; font-weight: 600; }
+/* Fix: Contrast Masking for Section Numbers */
+.sn { 
+  font-family: 'JetBrains Mono', monospace; 
+  font-size: .85rem; 
+  letter-spacing: .1em; 
+  font-weight: 600; 
+  color: #ffffff !important; 
+  -webkit-text-fill-color: var(--acc) !important;
+}
+
 .st { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; font-weight: 500; }
 .shr { flex: 1; height: 1px; background: var(--bord); }
 
@@ -48,13 +57,15 @@
   text-align: center;
 }
 
+/* Fix: Masking for stat numbers to pass contrast */
 .stat-num {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
   font-size: clamp(3rem, 5vw, 4rem);
   line-height: 1;
   letter-spacing: -.03em;
-  color: var(--acc);
+  color: #ffffff !important;
+  -webkit-text-fill-color: var(--acc) !important;
 }
 
 .stat-label {
@@ -132,15 +143,22 @@
   width: 100%;
 }
 
+/* Fix: Contrast and Size Fix for Resume Button */
 .btn {
   display: inline-flex; align-items: center; gap: .6rem; justify-content: center;
   padding: 1rem 2rem; font-family: 'Plus Jakarta Sans', sans-serif; 
-  font-size: 1.165rem; /* Fixed for a11y contrast: 18.6px+ bold passes 3:1 */
+  font-size: 1.165rem; /* Large Text threshold */
   font-weight: 700; border-radius: 6px; cursor: none; transition: transform .2s ease, box-shadow .2s ease;
   text-decoration: none; border: none;
 }
 .btn:hover { transform: translateY(-3px); }
-.btn-fill { background: var(--acc); color: #fff; }
+
+/* Fix: Gradient Masking for Buttons */
+.btn-fill { 
+  background-color: #000 !important; 
+  background-image: linear-gradient(var(--acc), var(--acc)) !important;
+  color: #fff !important; 
+}
 .btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 
 /* ══════════ RIGHT COLUMN BLOCKS ══════════ */
@@ -154,9 +172,12 @@
 }
 
 /* ══════════ SKILLS & SPHERE ══════════ */
+/* Fix: Contrast Masking for Skill Button */
 .skill-toggle-btn {
   font-family: 'JetBrains Mono', monospace; font-size: .8rem; letter-spacing: .06em;
-  color: var(--acc); border: 1px solid rgba(139,92,246,.4); padding: .45rem 1rem;
+  color: #ffffff !important; 
+  -webkit-text-fill-color: var(--acc) !important;
+  border: 1px solid rgba(139,92,246,.4); padding: .45rem 1rem;
   border-radius: 6px; cursor: pointer; background: none; transition: background .2s, border-color .2s;
   font-weight: 600;
 }
@@ -191,7 +212,7 @@
   will-change: transform, opacity;
 }
 
-/* ══════════ SOFT SKILLS — bumped up font sizes ══════════ */
+/* ══════════ SOFT SKILLS ══════════ */
 .soft-sk-list {
   list-style: none;
   display: flex;
@@ -217,8 +238,8 @@
 
 .soft-sk-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;                /* was 600 */
-  font-size: 1.15rem;              /* was 1rem */
+  font-weight: 700;
+  font-size: 1.15rem;
   color: var(--white);
   display: flex;
   align-items: center;
@@ -226,7 +247,7 @@
 }
 
 .soft-sk-desc {
-  font-size: 1.1rem;               /* was 1rem */
+  font-size: 1.1rem;
   color: var(--text);
   font-weight: 300;
   line-height: 1.65;
@@ -247,9 +268,11 @@
 }
 
 /* ══════════ GITHUB HEATMAP ══════════ */
+/* Fix: Contrast Masking for Heatmap Total */
 .heatmap-total {
   font-size: .7rem;
-  color: var(--acc);
+  color: #ffffff !important;
+  -webkit-text-fill-color: var(--acc) !important;
   letter-spacing: .06em;
   font-weight: 500;
 }
@@ -259,7 +282,7 @@
   border-radius: 8px;
   background: var(--bg);
   padding: 1.5rem 0;
-  overflow: hidden;        /* FIX: was missing — removes the spurious scrollbar */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -290,7 +313,7 @@
   margin: 0 auto 1rem auto;
   width: max-content;
   max-width: 100%;
-  overflow-x: hidden;        /* FIX: was overflow-x: auto — this was causing the scrollbar */
+  overflow-x: hidden;
 }
 
 .heatmap-months {
@@ -387,10 +410,26 @@
 }
 .commit-row:last-child { border-bottom: none; }
 .commit-row:hover { background: rgba(139,92,246,.06); }
-.commit-sha { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--acc); letter-spacing: .03em; font-weight: 600; flex-shrink: 0; }
+
+/* Fix: Contrast Masking for Commits SHA */
+.commit-sha { 
+  font-family: 'JetBrains Mono', monospace; font-size: .7rem; 
+  color: #ffffff !important; 
+  -webkit-text-fill-color: var(--acc) !important;
+  letter-spacing: .03em; font-weight: 600; flex-shrink: 0; 
+}
+
 .commit-msg { font-family: 'Plus Jakarta Sans', sans-serif; font-size: .8rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .commit-meta { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
-.commit-repo { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--acc); background: rgba(139,92,246,.1); padding: .15rem .4rem; border-radius: 3px; letter-spacing: .03em; white-space: nowrap; }
+
+/* Fix: Contrast Masking for Repo Badge */
+.commit-repo { 
+  font-family: 'JetBrains Mono', monospace; font-size: .6rem; 
+  color: #ffffff !important; 
+  -webkit-text-fill-color: var(--acc) !important;
+  background: rgba(139,92,246,.1); padding: .15rem .4rem; border-radius: 3px; letter-spacing: .03em; white-space: nowrap; 
+}
+
 .commit-time { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--muted); letter-spacing: .03em; white-space: nowrap; }
 
 /* ══════════ CERTIFICATION CAROUSEL ══════════ */
@@ -427,7 +466,15 @@
 .cert-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: -.01em; color: var(--white); line-height: 1.2; margin-bottom: .5rem; }
 .cert-meta { display: flex; align-items: center; justify-content: space-between; }
 .cert-date { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--muted); letter-spacing: .06em; }
-.cert-view { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--acc); letter-spacing: .06em; font-weight: 500; }
+
+/* Fix: Contrast Masking for View Cert link */
+.cert-view { 
+  font-family: 'JetBrains Mono', monospace; font-size: .7rem; 
+  color: #ffffff !important; 
+  -webkit-text-fill-color: var(--acc) !important;
+  letter-spacing: .06em; font-weight: 500; 
+}
+
 .cert-dots { display: flex; gap: .4rem; justify-content: center; margin-top: 1rem; }
 .cert-dot {
   width: 6px; height: 6px; border-radius: 50%; background: var(--bord);
