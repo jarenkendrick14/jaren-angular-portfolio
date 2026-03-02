@@ -1,3 +1,4 @@
+/* ── Animations ─────────────────────────────────────── */
 .overlay-wrap {
   position: fixed;
   inset: 0;
@@ -5,21 +6,13 @@
   display: flex;
   animation: overlayIn .55s cubic-bezier(.76,0,.24,1) both;
 }
-
 .overlay-wrap.closing {
   animation: overlayOut .5s cubic-bezier(.76,0,.24,1) forwards;
 }
+@keyframes overlayIn  { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes overlayOut { from { transform: translateX(0); }    to { transform: translateX(100%); } }
 
-@keyframes overlayOut {
-  from { transform: translateX(0); }
-  to   { transform: translateX(100%); }
-}
-
-@keyframes overlayIn {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
-}
-
+/* ── Backdrop ───────────────────────────────────────── */
 .ov-backdrop {
   width: 200px;
   flex-shrink: 0;
@@ -27,6 +20,7 @@
   cursor: pointer;
 }
 
+/* ── Panel ──────────────────────────────────────────── */
 .ov-panel {
   flex: 1;
   background: var(--bg);
@@ -38,107 +32,131 @@
 .ov-panel::-webkit-scrollbar { width: 6px; }
 .ov-panel::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
-/* FIX: Remove position:sticky — it was creating a static box-shadow that
-   didn't move with the slide-in animation, making the shadow look "stuck" */
+/* ── Top bar ────────────────────────────────────────── */
 .ov-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem 3rem;
+  padding: 1.5rem 2.5rem;
   border-bottom: 1px solid var(--bord);
-  background: var(--bg);
-  /* Changed from sticky → uses a bottom border instead; looks correct during animation */
+  flex-shrink: 0;
 }
-
+.ov-top-left {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
 .ov-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: .8rem;
   color: var(--acc);
   letter-spacing: .1em;
-  margin-bottom: .75rem;
-}
-
-.ov-section-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: .8rem;
-  color: var(--text);
-  text-transform: uppercase;
   font-weight: 600;
 }
-
+.ov-sep {
+  color: var(--bord);
+  font-family: 'JetBrains Mono', monospace;
+}
+.ov-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
 .ov-close {
-  width: 40px; height: 40px;
+  width: 38px; height: 38px;
   border: 1px solid var(--bord);
   border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  font-size: 1.2rem;
-  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 1rem; cursor: pointer;
   background: transparent;
   transition: border-color .2s, color .2s;
 }
 .ov-close:hover { border-color: var(--acc); color: var(--acc); }
 
-.ov-body {
-  padding: 3rem;
-  flex: 1;
-}
+/* ── Body ───────────────────────────────────────────── */
+.ov-body { padding: 2.5rem; flex: 1; }
 
+/* ── Title block ────────────────────────────────────── */
+.ov-header {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--bord);
+}
 .ov-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-size: clamp(2.2rem, 3.5vw, 3rem);
   font-weight: 600;
   color: var(--white);
   letter-spacing: -.03em;
-  margin-bottom: 2rem;
-  line-height: 1.1;
+  line-height: 1.05;
+  margin-bottom: .6rem;
+}
+.ov-purpose {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 680px;
 }
 
+/* ── Image strip ────────────────────────────────────── */
 .ov-imgs {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: .75rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
   margin-bottom: 2.5rem;
 }
-
 .ov-img {
   aspect-ratio: 16/10;
   border-radius: 6px;
   border: 1px solid var(--bord);
   overflow: hidden;
+  background: var(--surf);
   transition: border-color .2s;
 }
 .ov-img:hover { border-color: var(--acc); }
+.ov-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .35s ease;
+}
+.ov-img:hover img { transform: scale(1.04); }
 
+/* ── Content grid ───────────────────────────────────── */
 .ov-sections {
   display: grid;
-  grid-template-columns: 1.2fr .8fr;
+  grid-template-columns: 1.25fr 1fr;
   gap: 3rem;
+  align-items: start;
 }
 
+/* ── Shared block spacing ───────────────────────────── */
+.ov-block { margin-bottom: 2rem; }
+.ov-block:last-child { margin-bottom: 0; }
+
+/* ── Section label ──────────────────────────────────── */
 .ov-h {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .72rem;
-  letter-spacing: .12em;
+  font-size: .68rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--acc);
   font-weight: 700;
   margin-bottom: .85rem;
 }
 
+/* ── Description ────────────────────────────────────── */
 .ov-desc {
   font-size: 1rem;
   color: var(--text);
-  line-height: 1.75;
-  font-weight: 300;
-  margin-bottom: 1.5rem;
+  line-height: 1.8;
+  font-weight: 400;
 }
-.ov-desc strong { color: var(--white); font-weight: 600; }
 
-.ov-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.5rem; }
-
+/* ── Tags ───────────────────────────────────────────── */
+.ov-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
 .ptag {
   font-family: 'JetBrains Mono', monospace;
   font-size: .7rem;
@@ -150,58 +168,58 @@
   border: 1px solid var(--bord);
 }
 
-.ov-links { display: flex; flex-wrap: wrap; gap: .75rem; }
-.links-coming { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--muted); font-style: italic; }
+/* ── Links ──────────────────────────────────────────── */
+.ov-links { display: flex; flex-wrap: wrap; gap: .65rem; }
 
+/* ── Features ───────────────────────────────────────── */
 .ov-features {
   list-style: none;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: .7rem;
+  gap: 0;
 }
 .ov-features li {
   font-size: .95rem;
   color: var(--text);
   line-height: 1.65;
-  font-weight: 300;
-  padding-left: 1.25rem;
+  font-weight: 400;
+  padding: .85rem 0;
+  padding-left: 1.1rem;
   position: relative;
+  border-bottom: 1px solid var(--bord);
 }
+.ov-features li:first-child { border-top: 1px solid var(--bord); }
 .ov-features li::before {
   content: '▸';
   position: absolute;
   left: 0;
   color: var(--acc);
-  font-size: .8rem;
-  top: .2rem;
+  font-size: .75rem;
+  top: 1.05rem;
 }
 
-/* Buttons used inside overlay */
+/* ── Buttons ────────────────────────────────────────── */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .6rem;
+  display: inline-flex; align-items: center; gap: .5rem;
   padding: .65rem 1.2rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: .88rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  border: none;
+  font-size: .88rem; font-weight: 600;
+  border-radius: 6px; cursor: pointer;
+  text-decoration: none; border: none;
   transition: transform .2s, box-shadow .2s;
 }
 .btn:hover { transform: translateY(-2px); }
-.btn-fill { background: var(--acc); color: #fff; }
-.btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
+.btn-fill  { background: var(--acc); color: #fff; }
+.btn-fill:hover  { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
 
+/* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .ov-backdrop { display: none; }
-  .ov-imgs { grid-template-columns: 1fr 1fr; }
-  .ov-sections { grid-template-columns: 1fr; }
-  .ov-body { padding: 2rem 1.5rem; }
-  .ov-top { padding: 1.5rem; }
+  .ov-backdrop  { display: none; }
+  .ov-top       { padding: 1.25rem 1.5rem; }
+  .ov-body      { padding: 1.75rem 1.5rem; }
+  .ov-imgs      { grid-template-columns: 1fr 1fr; }
+  .ov-sections  { grid-template-columns: 1fr; gap: 2rem; }
 }
