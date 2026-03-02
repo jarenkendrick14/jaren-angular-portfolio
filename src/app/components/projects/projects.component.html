@@ -19,8 +19,11 @@
             <div class="psub">{{ proj.subtitle }}</div>
           </div>
           <div class="ptgs">
-            @for (tag of proj.tags; track tag) {
+            @for (tag of proj.tags.slice(0, 3); track tag) {
               <span class="ptag">{{ tag }}</span>
+            }
+            @if (proj.tags.length > 3) {
+              <span class="ptag ptag-more">+{{ proj.tags.length - 3 }}</span>
             }
           </div>
           <span class="parr" aria-hidden="true">↗</span>

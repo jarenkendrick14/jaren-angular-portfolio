@@ -80,14 +80,13 @@
 }
 
 .psub {
-  /* FONT FIX: bumped from 1.05rem → 1.2rem */
   font-size: 1.2rem;
   color: var(--text);
   font-weight: 300;
   line-height: 1.5;
 }
 
-.ptgs { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
+.ptgs { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
 
 .ptag {
   font-family: 'JetBrains Mono', monospace;
@@ -98,6 +97,12 @@
   background: var(--surf);
   color: var(--text);
   border: 1px solid var(--bord);
+}
+
+/* The "+N more" pill — slightly dimmer to indicate it's supplementary */
+.ptag-more {
+  color: var(--muted);
+  border-style: dashed;
 }
 
 .parr {
