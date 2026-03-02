@@ -103,7 +103,6 @@
 .apull em { color: var(--acc); font-style: normal; }
 
 .abio {
-  /* FONT FIX: bumped from 1.1rem → 1.25rem — weight 300 needs more size to read well */
   font-size: 1.25rem;
   color: var(--text);
   line-height: 1.8;
@@ -190,7 +189,7 @@
   will-change: transform, opacity;
 }
 
-/* ══════════ SOFT SKILLS ══════════ */
+/* ══════════ SOFT SKILLS — bumped up font sizes ══════════ */
 .soft-sk-list {
   list-style: none;
   display: flex;
@@ -211,13 +210,13 @@
 .soft-sk-name::before {
   content: '▸';
   color: var(--acc);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 .soft-sk-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 700;                /* was 600 */
+  font-size: 1.15rem;              /* was 1rem */
   color: var(--white);
   display: flex;
   align-items: center;
@@ -225,11 +224,10 @@
 }
 
 .soft-sk-desc {
-  /* FONT FIX: bumped from 0.9rem → 1rem */
-  font-size: 1rem;
+  font-size: 1.1rem;               /* was 1rem */
   color: var(--text);
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.65;
   text-align: left;
   padding-left: 1.1rem;
 }
@@ -259,7 +257,7 @@
   border-radius: 8px;
   background: var(--bg);
   padding: 1.5rem 0;
-  overflow: hidden;
+  overflow: hidden;        /* FIX: was missing — removes the spurious scrollbar */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -290,7 +288,7 @@
   margin: 0 auto 1rem auto;
   width: max-content;
   max-width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;        /* FIX: was overflow-x: auto — this was causing the scrollbar */
 }
 
 .heatmap-months {

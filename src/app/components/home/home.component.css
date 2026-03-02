@@ -35,9 +35,6 @@
   line-height: 1;
   letter-spacing: -.03em;
   color: var(--white);
-  /* FIX (desktop font size): bumped from clamp(4rem, 8vw, 5.5rem)
-     The 4rem minimum was 64px — fine on desktop but enormous on mobile.
-     New minimum is 2.4rem so it scales down gracefully on small screens. */
   font-size: clamp(2.4rem, 8vw, 6rem);
   margin-bottom: .8rem;
 }
@@ -45,7 +42,6 @@
 
 .hrole {
   font-family: 'JetBrains Mono', monospace;
-  /* FIX (desktop): bumped from clamp(1rem, 2vw, 1.2rem) → 1.35rem max */
   font-size: clamp(.95rem, 2vw, 1.35rem);
   color: var(--acc);
   margin-bottom: 1.5rem;
@@ -53,8 +49,6 @@
 }
 
 .hdesc {
-  /* FIX (desktop thin font): bumped from 1.15rem → 1.3rem, still weight 300
-     Larger size compensates for the light weight so it reads more comfortably. */
   font-size: clamp(1rem, 1.5vw, 1.3rem);
   color: var(--text);
   line-height: 1.8;
@@ -86,7 +80,7 @@
 
 .hbtns {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
 }
 
@@ -162,7 +156,6 @@
 .feat-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 600;
-  /* FIX (desktop thin font): bumped from 1.2rem → 1.3rem */
   font-size: 1.3rem;
   letter-spacing: -.01em;
   color: var(--white);
@@ -171,7 +164,6 @@
 }
 
 .feat-desc {
-  /* FIX (desktop thin font): bumped from .85rem → 1rem, still weight 300 */
   font-size: 1rem;
   color: var(--text);
   line-height: 1.6;
@@ -191,25 +183,27 @@
   border: 1px solid var(--bord);
 }
 
+/* ══ CTA BUTTONS — bigger & bolder ══ */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: .6rem;
+  gap: .75rem;
   justify-content: center;
-  padding: 1rem 2rem;
+  padding: 1.2rem 2.75rem;      /* was 1rem 2rem */
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 6px;
+  font-size: 1.1rem;             /* was 1rem */
+  font-weight: 700;              /* was 600 */
+  border-radius: 8px;            /* was 6px */
   cursor: none;
   transition: transform .2s ease, box-shadow .2s ease;
   text-decoration: none;
   border: none;
+  letter-spacing: .01em;
 }
-.btn:hover { transform: translateY(-3px); }
+.btn:hover { transform: translateY(-4px); }
 .btn-fill { background: var(--acc); color: #fff; }
-.btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
-.btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
+.btn-fill:hover { box-shadow: 0 14px 40px rgba(139,92,246,.45); }
+.btn-ghost { background: var(--surf); color: var(--white); border: 1.5px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
 
 @keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
@@ -244,7 +238,7 @@
   }
 
   .feat-grid { grid-template-columns: 1fr; }
-  .btn { cursor: pointer !important; }
+  .btn { cursor: pointer !important; font-size: 1rem; padding: 1.1rem 2rem; }
 
   .hbtns {
     justify-content: center;
