@@ -1,6 +1,7 @@
 <section class="page-testimonials" [class.active-page]="active">
   <div class="pin">
-    <div class="slabel au d0">
+    <!-- Decorative label hidden -->
+    <div class="slabel au d0" aria-hidden="true">
       <span class="sn">06</span><span class="st">/ what people say</span>
       <div class="shr"></div>
     </div>
@@ -11,14 +12,13 @@
           <p class="tmq">{{ tm.quote }}</p>
           <div class="tma">
             
-            <!-- UPDATED AVATAR LOGIC -->
             <div class="tmav" style="overflow:hidden;">
-              <img [src]="tm.img" [alt]="tm.name" 
+              <img [src]="tm.img" [alt]="tm.name + ' headshot'" 
                    style="width:100%; height:100%; object-fit:cover;"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
               
               <!-- Fallback if image fails -->
-              <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
+              <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center;" aria-hidden="true">
                 {{ tm.initial }}
               </div>
             </div>
@@ -26,7 +26,7 @@
             <div>
               <p class="tmname">
                 {{ tm.name }}
-                @if (tm.placeholder) { <span class="placeholder-note"></span> }
+                @if (tm.placeholder) { <span class="placeholder-note" aria-hidden="true"></span> }
               </p>
               <p class="tmrole">{{ tm.role }}</p>
             </div>

@@ -250,3 +250,7 @@
 
   .thm, .mbg { cursor: pointer; }
 }
+
+.page-section:focus {
+  outline: none;
+}

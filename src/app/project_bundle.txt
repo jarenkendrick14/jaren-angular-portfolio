@@ -695,7 +695,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .apull em { color: var(--acc); font-style: normal; }
 
 .abio {
-  /* FONT FIX: bumped from 1.1rem → 1.25rem — weight 300 needs more size to read well */
   font-size: 1.25rem;
   color: var(--text);
   line-height: 1.8;
@@ -747,9 +746,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
 /* ══════════ SKILLS & SPHERE ══════════ */
 .skill-toggle-btn {
-  font-family: 'JetBrains Mono', monospace; font-size: .65rem; letter-spacing: .08em;
-  color: var(--acc); border: 1px solid rgba(139,92,246,.3); padding: .3rem .65rem;
-  border-radius: 4px; cursor: pointer; background: none; transition: background .2s, border-color .2s;
+  font-family: 'JetBrains Mono', monospace; font-size: .8rem; letter-spacing: .06em;
+  color: var(--acc); border: 1px solid rgba(139,92,246,.4); padding: .45rem 1rem;
+  border-radius: 6px; cursor: pointer; background: none; transition: background .2s, border-color .2s;
+  font-weight: 600;
 }
 .skill-toggle-btn:hover { background: rgba(139,92,246,.1); }
 
@@ -782,7 +782,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   will-change: transform, opacity;
 }
 
-/* ══════════ SOFT SKILLS ══════════ */
+/* ══════════ SOFT SKILLS — bumped up font sizes ══════════ */
 .soft-sk-list {
   list-style: none;
   display: flex;
@@ -803,13 +803,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 .soft-sk-name::before {
   content: '▸';
   color: var(--acc);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 .soft-sk-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 700;                /* was 600 */
+  font-size: 1.15rem;              /* was 1rem */
   color: var(--white);
   display: flex;
   align-items: center;
@@ -817,24 +817,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 }
 
 .soft-sk-desc {
-  /* FONT FIX: bumped from 0.9rem → 1rem */
-  font-size: 1rem;
+  font-size: 1.1rem;               /* was 1rem */
   color: var(--text);
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.65;
   text-align: left;
   padding-left: 1.1rem;
 }
 
-.skl { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; padding: 0; }
-.sk-item { display: flex; flex-direction: column; gap: .4rem; opacity: 0; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards; }
-.sk-info { display: flex; justify-content: space-between; align-items: center; font-size: .92rem; font-weight: 500; color: var(--text); }
-.sk-time { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--muted); }
-.sk-bar { width: 100%; height: 5px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--bord); }
+.skl { list-style: none; display: flex; flex-direction: column; gap: 1.4rem; padding: 0; }
+.sk-item { display: flex; flex-direction: column; gap: .5rem; opacity: 0; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) forwards; }
+.sk-info { display: flex; justify-content: space-between; align-items: center; font-size: 1.05rem; font-weight: 600; color: var(--white); }
+.sk-time { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--muted); }
+.sk-bar { width: 100%; height: 8px; background: var(--bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--bord); }
 
 @keyframes fillUp { from { width: 0; } to { width: var(--target-width); } }
 .sk-fill {
-  height: 100%; background: var(--acc); border-radius: 4px;
+  height: 100%; background: var(--acc); border-radius: 6px;
   width: 0; animation: fillUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
@@ -851,7 +850,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   border-radius: 8px;
   background: var(--bg);
   padding: 1.5rem 0;
-  overflow: hidden;
+  overflow: hidden;        /* FIX: was missing — removes the spurious scrollbar */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -882,7 +881,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   margin: 0 auto 1rem auto;
   width: max-content;
   max-width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;        /* FIX: was overflow-x: auto — this was causing the scrollbar */
 }
 
 .heatmap-months {
@@ -1118,15 +1117,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
         <!-- ✦ TAGLINE ✦ -->
         <h2 class="apull tagline-wrap">
-          <span class="tagline-line au tl-p1">Student by day.</span>
-          <span class="tagline-line au tl-p2">Developer by night.</span>
-          <span class="tagline-line tagline-accent au tl-p3"><em>Always learning.</em></span>
+          <span class="tagline-line au tl-p1">I pick it up.</span>
+          <span class="tagline-line au tl-p2">I figure it out.</span>
+          <span class="tagline-line tagline-accent au tl-p3"><em>I ship it.</em></span>
         </h2>
       </div>
 
       <!-- Bio Text -->
       <div class="intro-right abio au d3">
-        <p>Hello! My name is Jaren. I'm a <strong>20-year-old student</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
+        <p>Hello! My name is Jaren. I'm a <strong>20-year-old developer</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
         <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
         <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
         
@@ -1143,8 +1142,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       </div>
     </div>
 
-    <!-- 2. DASHBOARD GRID: Tech & Certs -->
-<!-- 2. DASHBOARD GRID: 2x2 Layout -->
+    <!-- 2. DASHBOARD GRID: 2x2 Layout -->
     <div class="dash-grid">
       
       <!-- [ROW 1, LEFT] TECHNICAL SKILLS -->
@@ -1178,7 +1176,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         }
       </div>
 
-      <!-- [ROW 1, RIGHT] SOFT SKILLS (NEW) -->
+      <!-- [ROW 1, RIGHT] SOFT SKILLS -->
       <div class="blk dash-soft-skills au d4">
         <div class="blkh">Soft Skills</div>
         <ul class="soft-sk-list" role="list">
@@ -1192,7 +1190,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       </div>
 
       <!-- [ROW 2, LEFT] GITHUB ACTIVITY -->
-      <!-- Removed "full-width" class so it sits in half the grid -->
       <div class="blk dash-github au d5">
         <div class="dash-github-wrap">
           <div class="blkh">
@@ -1385,7 +1382,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   readonly softSkills = [
     { name: 'Self-Directed Learning', desc: 'Continuously picking up new frameworks and game engines outside of university coursework.' },
-    { name: 'Adaptability', desc: 'Comfortable context-switching between VR game development (C#) and full-stack web architectures (TypeScript).' },
+    { name: 'Adaptability', desc: 'Comfortable context-switching between game development (C#) and full-stack web architectures (TypeScript).' },
     { name: 'Time Management', desc: 'Successfully balancing a full-time IT degree with part-time professional shipping deadlines.' },
     { name: 'Communication', desc: 'Providing clear asynchronous updates and proactive blocking-issue reports in a remote team.' },
     { name: 'Problem Solving', desc: 'Breaking down complex features (like real-time AI streaming) into actionable, scalable code.' }
@@ -2937,7 +2934,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   readonly lineReady   = signal(false);
   private barsAnimated = false;
 
-  // ─── Stats with count-up (mirrors About component pattern exactly) ────────
+  // ─── Stats with count-up ───
   readonly counters = [
     { target: 2,  suffix: '+', label: 'Years Coding',               current: signal(0) },
     { target: 5,  suffix: '+', label: 'Projects Completed',          current: signal(0) },
@@ -2946,19 +2943,30 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   ];
 
   ngOnChanges(changes: SimpleChanges) {
+    // Standard desktop trigger: Run when the slide becomes active
     if (changes['active'] && this.active && !this.barsAnimated) {
-      this.barsAnimated = true;
-      this.counters.forEach(c => c.current.set(0));
-      setTimeout(() => this.animateCounters(), 350);
-      setTimeout(() => this.lineReady.set(true),  300);
-      setTimeout(() => this.barsReady.set(true),  700);
+      this.triggerAnimations();
     }
   }
 
   ngAfterViewInit() {
+    // Mobile FIX: On mobile, the "active" input doesn't trigger via scrolling.
+    // We force the animations to ready-state so they are visible as the user scrolls.
     if (window.innerWidth < 960) {
-      setTimeout(() => this.animateCounters(), 500);
+      setTimeout(() => {
+        this.triggerAnimations();
+      }, 500);
     }
+  }
+
+  private triggerAnimations() {
+    if (this.barsAnimated) return;
+    this.barsAnimated = true;
+    
+    this.counters.forEach(c => c.current.set(0));
+    setTimeout(() => this.animateCounters(), 350);
+    setTimeout(() => this.lineReady.set(true),  300);
+    setTimeout(() => this.barsReady.set(true),  700);
   }
 
   private animateCounters() {
@@ -2972,12 +2980,15 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
         const t     = step / steps;
         const eased = 1 - Math.pow(1 - t, 3);
         c.current.set(Math.round(eased * c.target));
-        if (step >= steps) { c.current.set(c.target); clearInterval(iv); }
+        if (step >= steps) { 
+          c.current.set(c.target); 
+          clearInterval(iv); 
+        }
       }, stepTime);
     });
   }
 
-  // ─── Work experience ──────────────────────────────────────────────────────
+  // ─── Work experience ───
   readonly jobs = [
     {
       period:    'Apr 2025 — Present',
@@ -2995,7 +3006,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
     },
   ];
 
-  // ─── Education ────────────────────────────────────────────────────────────
+  // ─── Education ───
   readonly education = [
     {
       period:  'Jun 2023 — 2027',
@@ -3005,7 +3016,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
     },
   ];
 
-  // ─── Skills split by domain ───────────────────────────────────────────────
+  // ─── Skills split by domain ───
   readonly webSkills = [
     { name: 'JavaScript',      time: '2 yrs',   pct: 85 },
     { name: 'TypeScript',      time: '1.5 yrs', pct: 80 },
@@ -3024,7 +3035,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
     { name: '3D Scene Design',   time: '6 mo',  pct: 55 },
   ];
 
-  // ─── Tools ────────────────────────────────────────────────────────────────
+  // ─── Tools ───
   readonly tools = [
     'Git & GitHub', 'Prisma ORM', 'Ionic + Capacitor', 'WebSockets',
     'REST APIs', 'JWT Auth', 'Figma', 'VS Code', 'Vercel', 'Netlify',
@@ -3070,9 +3081,6 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   line-height: 1;
   letter-spacing: -.03em;
   color: var(--white);
-  /* FIX (desktop font size): bumped from clamp(4rem, 8vw, 5.5rem)
-     The 4rem minimum was 64px — fine on desktop but enormous on mobile.
-     New minimum is 2.4rem so it scales down gracefully on small screens. */
   font-size: clamp(2.4rem, 8vw, 6rem);
   margin-bottom: .8rem;
 }
@@ -3080,7 +3088,6 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
 
 .hrole {
   font-family: 'JetBrains Mono', monospace;
-  /* FIX (desktop): bumped from clamp(1rem, 2vw, 1.2rem) → 1.35rem max */
   font-size: clamp(.95rem, 2vw, 1.35rem);
   color: var(--acc);
   margin-bottom: 1.5rem;
@@ -3088,8 +3095,6 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
 }
 
 .hdesc {
-  /* FIX (desktop thin font): bumped from 1.15rem → 1.3rem, still weight 300
-     Larger size compensates for the light weight so it reads more comfortably. */
   font-size: clamp(1rem, 1.5vw, 1.3rem);
   color: var(--text);
   line-height: 1.8;
@@ -3121,7 +3126,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
 
 .hbtns {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
 }
 
@@ -3197,7 +3202,6 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
 .feat-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 600;
-  /* FIX (desktop thin font): bumped from 1.2rem → 1.3rem */
   font-size: 1.3rem;
   letter-spacing: -.01em;
   color: var(--white);
@@ -3206,7 +3210,6 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
 }
 
 .feat-desc {
-  /* FIX (desktop thin font): bumped from .85rem → 1rem, still weight 300 */
   font-size: 1rem;
   color: var(--text);
   line-height: 1.6;
@@ -3226,25 +3229,27 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   border: 1px solid var(--bord);
 }
 
+/* ══ CTA BUTTONS — bigger & bolder ══ */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: .6rem;
+  gap: .75rem;
   justify-content: center;
-  padding: 1rem 2rem;
+  padding: 1.2rem 2.75rem;      /* was 1rem 2rem */
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 6px;
+  font-size: 1.1rem;             /* was 1rem */
+  font-weight: 700;              /* was 600 */
+  border-radius: 8px;            /* was 6px */
   cursor: none;
   transition: transform .2s ease, box-shadow .2s ease;
   text-decoration: none;
   border: none;
+  letter-spacing: .01em;
 }
-.btn:hover { transform: translateY(-3px); }
+.btn:hover { transform: translateY(-4px); }
 .btn-fill { background: var(--acc); color: #fff; }
-.btn-fill:hover { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
-.btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
+.btn-fill:hover { box-shadow: 0 14px 40px rgba(139,92,246,.45); }
+.btn-ghost { background: var(--surf); color: var(--white); border: 1.5px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
 
 @keyframes fadeUp    { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
@@ -3279,7 +3284,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   }
 
   .feat-grid { grid-template-columns: 1fr; }
-  .btn { cursor: pointer !important; }
+  .btn { cursor: pointer !important; font-size: 1rem; padding: 1.1rem 2rem; }
 
   .hbtns {
     justify-content: center;
@@ -3534,6 +3539,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 }
 
 --- DIRECTORY: components\project-overlay\project-overlay.component.css ---
+/* ── Animations ─────────────────────────────────────── */
 .overlay-wrap {
   position: fixed;
   inset: 0;
@@ -3541,21 +3547,13 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   display: flex;
   animation: overlayIn .55s cubic-bezier(.76,0,.24,1) both;
 }
-
 .overlay-wrap.closing {
   animation: overlayOut .5s cubic-bezier(.76,0,.24,1) forwards;
 }
+@keyframes overlayIn  { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes overlayOut { from { transform: translateX(0); }    to { transform: translateX(100%); } }
 
-@keyframes overlayOut {
-  from { transform: translateX(0); }
-  to   { transform: translateX(100%); }
-}
-
-@keyframes overlayIn {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
-}
-
+/* ── Backdrop ───────────────────────────────────────── */
 .ov-backdrop {
   width: 200px;
   flex-shrink: 0;
@@ -3563,6 +3561,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   cursor: pointer;
 }
 
+/* ── Panel ──────────────────────────────────────────── */
 .ov-panel {
   flex: 1;
   background: var(--bg);
@@ -3574,107 +3573,131 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 .ov-panel::-webkit-scrollbar { width: 6px; }
 .ov-panel::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
 
-/* FIX: Remove position:sticky — it was creating a static box-shadow that
-   didn't move with the slide-in animation, making the shadow look "stuck" */
+/* ── Top bar ────────────────────────────────────────── */
 .ov-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem 3rem;
+  padding: 1.5rem 2.5rem;
   border-bottom: 1px solid var(--bord);
-  background: var(--bg);
-  /* Changed from sticky → uses a bottom border instead; looks correct during animation */
+  flex-shrink: 0;
 }
-
+.ov-top-left {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
 .ov-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: .8rem;
   color: var(--acc);
   letter-spacing: .1em;
-  margin-bottom: .75rem;
-}
-
-.ov-section-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: .8rem;
-  color: var(--text);
-  text-transform: uppercase;
   font-weight: 600;
 }
-
+.ov-sep {
+  color: var(--bord);
+  font-family: 'JetBrains Mono', monospace;
+}
+.ov-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
 .ov-close {
-  width: 40px; height: 40px;
+  width: 38px; height: 38px;
   border: 1px solid var(--bord);
   border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  font-size: 1.2rem;
-  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 1rem; cursor: pointer;
   background: transparent;
   transition: border-color .2s, color .2s;
 }
 .ov-close:hover { border-color: var(--acc); color: var(--acc); }
 
-.ov-body {
-  padding: 3rem;
-  flex: 1;
-}
+/* ── Body ───────────────────────────────────────────── */
+.ov-body { padding: 2.5rem; flex: 1; }
 
+/* ── Title block ────────────────────────────────────── */
+.ov-header {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--bord);
+}
 .ov-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-size: clamp(2.2rem, 3.5vw, 3rem);
   font-weight: 600;
   color: var(--white);
   letter-spacing: -.03em;
-  margin-bottom: 2rem;
-  line-height: 1.1;
+  line-height: 1.05;
+  margin-bottom: .6rem;
+}
+.ov-purpose {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 680px;
 }
 
+/* ── Image strip ────────────────────────────────────── */
 .ov-imgs {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: .75rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
   margin-bottom: 2.5rem;
 }
-
 .ov-img {
   aspect-ratio: 16/10;
   border-radius: 6px;
   border: 1px solid var(--bord);
   overflow: hidden;
+  background: var(--surf);
   transition: border-color .2s;
 }
 .ov-img:hover { border-color: var(--acc); }
+.ov-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .35s ease;
+}
+.ov-img:hover img { transform: scale(1.04); }
 
+/* ── Content grid ───────────────────────────────────── */
 .ov-sections {
   display: grid;
-  grid-template-columns: 1.2fr .8fr;
+  grid-template-columns: 1.25fr 1fr;
   gap: 3rem;
+  align-items: start;
 }
 
+/* ── Shared block spacing ───────────────────────────── */
+.ov-block { margin-bottom: 2rem; }
+.ov-block:last-child { margin-bottom: 0; }
+
+/* ── Section label ──────────────────────────────────── */
 .ov-h {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .72rem;
-  letter-spacing: .12em;
+  font-size: .68rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--acc);
   font-weight: 700;
   margin-bottom: .85rem;
 }
 
+/* ── Description ────────────────────────────────────── */
 .ov-desc {
   font-size: 1rem;
   color: var(--text);
-  line-height: 1.75;
-  font-weight: 300;
-  margin-bottom: 1.5rem;
+  line-height: 1.8;
+  font-weight: 400;
 }
-.ov-desc strong { color: var(--white); font-weight: 600; }
 
-.ov-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.5rem; }
-
+/* ── Tags ───────────────────────────────────────────── */
+.ov-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
 .ptag {
   font-family: 'JetBrains Mono', monospace;
   font-size: .7rem;
@@ -3686,60 +3709,60 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   border: 1px solid var(--bord);
 }
 
-.ov-links { display: flex; flex-wrap: wrap; gap: .75rem; }
-.links-coming { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--muted); font-style: italic; }
+/* ── Links ──────────────────────────────────────────── */
+.ov-links { display: flex; flex-wrap: wrap; gap: .65rem; }
 
+/* ── Features ───────────────────────────────────────── */
 .ov-features {
   list-style: none;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: .7rem;
+  gap: 0;
 }
 .ov-features li {
   font-size: .95rem;
   color: var(--text);
   line-height: 1.65;
-  font-weight: 300;
-  padding-left: 1.25rem;
+  font-weight: 400;
+  padding: .85rem 0;
+  padding-left: 1.1rem;
   position: relative;
+  border-bottom: 1px solid var(--bord);
 }
+.ov-features li:first-child { border-top: 1px solid var(--bord); }
 .ov-features li::before {
   content: '▸';
   position: absolute;
   left: 0;
   color: var(--acc);
-  font-size: .8rem;
-  top: .2rem;
+  font-size: .75rem;
+  top: 1.05rem;
 }
 
-/* Buttons used inside overlay */
+/* ── Buttons ────────────────────────────────────────── */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .6rem;
+  display: inline-flex; align-items: center; gap: .5rem;
   padding: .65rem 1.2rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: .88rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  border: none;
+  font-size: .88rem; font-weight: 600;
+  border-radius: 6px; cursor: pointer;
+  text-decoration: none; border: none;
   transition: transform .2s, box-shadow .2s;
 }
 .btn:hover { transform: translateY(-2px); }
-.btn-fill { background: var(--acc); color: #fff; }
-.btn-fill:hover { box-shadow: 0 8px 28px rgba(167,139,250,.35); }
+.btn-fill  { background: var(--acc); color: #fff; }
+.btn-fill:hover  { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
 
+/* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .ov-backdrop { display: none; }
-  .ov-imgs { grid-template-columns: 1fr 1fr; }
-  .ov-sections { grid-template-columns: 1fr; }
-  .ov-body { padding: 2rem 1.5rem; }
-  .ov-top { padding: 1.5rem; }
+  .ov-backdrop  { display: none; }
+  .ov-top       { padding: 1.25rem 1.5rem; }
+  .ov-body      { padding: 1.75rem 1.5rem; }
+  .ov-imgs      { grid-template-columns: 1fr 1fr; }
+  .ov-sections  { grid-template-columns: 1fr; gap: 2rem; }
 }
 
 --- DIRECTORY: components\project-overlay\project-overlay.component.html ---
@@ -3747,56 +3770,77 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   <div class="overlay-wrap" [class.closing]="isClosing()">
     <div class="ov-backdrop" (click)="close()"></div>
     <div class="ov-panel" role="dialog" aria-modal="true" aria-label="Project details">
+
+      <!-- TOP BAR -->
       <div class="ov-top">
-        <div>
-          <div class="ov-num">{{ project()!.num }}</div>
-          <div class="ov-section-label">Project Details</div>
+        <div class="ov-top-left">
+          <span class="ov-num">{{ project()!.num }}</span>
+          <span class="ov-sep">/</span>
+          <span class="ov-section-label">Project Details</span>
         </div>
         <button class="ov-close" (click)="close()" aria-label="Close">✕</button>
       </div>
+
       <div class="ov-body">
-        <h2 class="ov-name">{{ project()!.name }}</h2>
+
+        <!-- PROJECT TITLE + PURPOSE -->
+        <div class="ov-header">
+          <h2 class="ov-name">{{ project()!.name }}</h2>
+          <p class="ov-purpose">{{ project()!.purpose }}</p>
+        </div>
+
+        <!-- IMAGE STRIP -->
         <div class="ov-imgs">
           @for (img of project()!.imgs; track $index) {
-            <div class="ov-img" style="position: relative;">
-              <!-- inset:0 replaced with explicit top/right/bottom/left for iOS 14.0 compat -->
-              <img [src]="img" [alt]="project()!.name"
-                   loading="lazy"
-                   style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div class="ov-img">
+              <img [src]="img" [alt]="project()!.name" loading="lazy">
             </div>
           }
         </div>
+
+        <!-- MAIN CONTENT -->
         <div class="ov-sections">
-          <div>
-            <p class="ov-h">ABOUT THIS PROJECT</p>
-            <p class="ov-desc">
-              <strong>{{ project()!.purpose }}</strong><br/><br/>
-              {{ project()!.desc }}
-            </p>
-            <div class="ov-tags">
-              @for (tag of project()!.tags; track tag) {
-                <span class="ptag">{{ tag }}</span>
-              }
+
+          <!-- LEFT -->
+          <div class="ov-left">
+            <div class="ov-block">
+              <p class="ov-h">About this project</p>
+              <p class="ov-desc">{{ project()!.desc }}</p>
             </div>
-            <div class="ov-links">
-              @if (project()!.live) {
-                @for (link of project()!.live!; track link.url) {
-                  <a [href]="link.url" target="_blank" rel="noopener" class="btn btn-fill btn-sm">{{ link.name }}</a>
+
+            <div class="ov-block">
+              <p class="ov-h">Stack & Tools</p>
+              <div class="ov-tags">
+                @for (tag of project()!.tags; track tag) {
+                  <span class="ptag">{{ tag }}</span>
                 }
-              }
-              @if (project()!.github) {
-                <a [href]="project()!.github" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub ↗</a>
-              }
+              </div>
             </div>
+
+            @if (project()!.live || project()!.github) {
+              <div class="ov-block ov-links">
+                @if (project()!.live) {
+                  @for (link of project()!.live!; track link.url) {
+                    <a [href]="link.url" target="_blank" rel="noopener" class="btn btn-fill">{{ link.name }}</a>
+                  }
+                }
+                @if (project()!.github) {
+                  <a [href]="project()!.github" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
+                }
+              </div>
+            }
           </div>
-          <div>
-            <p class="ov-h">KEY FEATURES</p>
+
+          <!-- RIGHT -->
+          <div class="ov-right">
+            <p class="ov-h">Key Features</p>
             <ul class="ov-features">
               @for (feat of project()!.features; track feat) {
                 <li>{{ feat }}</li>
               }
             </ul>
           </div>
+
         </div>
       </div>
     </div>
@@ -3910,14 +3954,13 @@ export class ProjectOverlayComponent {
 }
 
 .psub {
-  /* FONT FIX: bumped from 1.05rem → 1.2rem */
   font-size: 1.2rem;
   color: var(--text);
   font-weight: 300;
   line-height: 1.5;
 }
 
-.ptgs { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
+.ptgs { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
 
 .ptag {
   font-family: 'JetBrains Mono', monospace;
@@ -3928,6 +3971,12 @@ export class ProjectOverlayComponent {
   background: var(--surf);
   color: var(--text);
   border: 1px solid var(--bord);
+}
+
+/* The "+N more" pill — slightly dimmer to indicate it's supplementary */
+.ptag-more {
+  color: var(--muted);
+  border-style: dashed;
 }
 
 .parr {
@@ -3974,8 +4023,11 @@ export class ProjectOverlayComponent {
             <div class="psub">{{ proj.subtitle }}</div>
           </div>
           <div class="ptgs">
-            @for (tag of proj.tags; track tag) {
+            @for (tag of proj.tags.slice(0, 3); track tag) {
               <span class="ptag">{{ tag }}</span>
+            }
+            @if (proj.tags.length > 3) {
+              <span class="ptag ptag-more">+{{ proj.tags.length - 3 }}</span>
             }
           </div>
           <span class="parr" aria-hidden="true">↗</span>
@@ -5242,7 +5294,7 @@ export class TerminalComponent {
       `  <span class="tl-acc">Uni</span>       <span class="tl-val">Holy Angel University (2027)</span>`,
       `  <span class="tl-acc">Status</span>    <span class="tl-ok">● Open to internship</span>`,
       ``,
-      `  <span class="tl-quote">""Student by day. Developer by night. Always learning."</span>`,
+      `  <span class="tl-quote">"I pick it up. I figure it out. I ship it."</span>`,
     ],
     contact: () => [
       ``,
@@ -5511,15 +5563,18 @@ export class NavigationService {
   readonly currentPage = signal<number>(0);
   readonly isAnimating = signal<boolean>(false);
   readonly theme = signal<'dark' | 'light'>('dark');
-  
-  // Terminal state management
   readonly terminalOpen = signal<boolean>(false);
 
   readonly isDark = computed(() => this.theme() === 'dark');
 
   constructor() {
-    const saved = localStorage.getItem('jk-theme') as 'dark' | 'light' | null;
-    if (saved) this.theme.set(saved);
+    // FIX: Try/Catch prevents iOS Safari crashes if cookies/storage are strictly blocked
+    try {
+      const saved = localStorage.getItem('jk-theme') as 'dark' | 'light' | null;
+      if (saved) this.theme.set(saved);
+    } catch (err) {
+      console.warn('Local storage restricted.');
+    }
   }
 
   goTo(next: number, total: number): void {
@@ -5532,7 +5587,9 @@ export class NavigationService {
   toggleTheme(): void {
     const next = this.theme() === 'dark' ? 'light' : 'dark';
     this.theme.set(next);
-    localStorage.setItem('jk-theme', next);
+    try {
+      localStorage.setItem('jk-theme', next);
+    } catch (err) {}
   }
 
   toggleTerminal(): void {
@@ -5561,11 +5618,18 @@ export class PortfolioDataService {
     {
       num: '01',
       name: 'PathFinder',
-      subtitle: 'VR self-discovery app · Unreal Engine 5.5 + Unity',
-      tags: ['Unreal Engine 5.5', 'Unity', 'C#', 'VR'],
-      desc: 'A VR self-discovery app built in Unreal Engine 5.5 using Blueprints for gameplay systems. Users interact with metaphorical cards, with Wit.ai handling voice-to-text.',
-      purpose: 'Engineered immersive, privacy-first VR mechanics and a scalable Android companion app for VirtuIntelligence.',
-      features: ['Interactive card mechanics in VR', 'AI voice journaling via Wit.ai', 'Local data persistence for privacy', 'Cross-platform deployment'],
+      subtitle: 'VR self-discovery app · Published on Meta Quest Store & Google Play',
+      tags: ['Unreal Engine 5.5', 'Blueprints', 'Unity', 'C#', 'Wit.ai', 'Meta Quest', 'Android'],
+      purpose: 'Shipped a privacy-first immersive VR experience to the Meta Quest Store and Google Play for VirtuIntelligence.',
+      desc: 'PathFinder is an immersive VR tool for self-discovery and creative thinking, built in Unreal Engine 5.5 using Blueprints. Users select metaphorical cards and journal their reflections via voice — powered by Wit.ai for real-time speech-to-text transcription. A companion Android app was built in Unity. All journal data is stored locally on the device; no account is required. The app is rated 3+ and runs on Meta Quest 2, 3, 3S, and Pro.',
+      features: [
+        'Interactive card-drawing mechanic built entirely in Unreal Engine 5.5 Blueprints',
+        'AI voice journaling via Wit.ai speech-to-text — real-time transcription with no stored recordings',
+        'Fully private by design — all data stored locally on-device, no account required',
+        'Dual-platform deployment: Meta Quest Store (VR) and Google Play (Android companion)',
+        'Supports Meta Quest 2, 3, 3S & Pro across both sitting and room-scale modes',
+        'Guided reflection prompts designed to bypass logical blocks and surface intuitive thinking',
+      ],
       live: [
         { name: 'Meta Store ↗', url: 'https://www.meta.com/experiences/pathfinder/24710873175273758/' },
         { name: 'Google Play ↗', url: 'https://play.google.com/store/apps/details?id=com.HumanSide.Pathfinder' }
@@ -5580,12 +5644,21 @@ export class PortfolioDataService {
     {
       num: '02',
       name: 'Symposium',
-      subtitle: 'Real-time AI-mediated chat platform · Angular + Ionic + Node.js',
-      tags: ['Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets'],
-      desc: 'A full-stack real-time chat application with an AI mediator powered by xAI Grok. Features WebSocket-based messaging, streaming AI responses, and a full @mention system.',
-      purpose: 'Architected a complete real-time communication platform with AI integration, demonstrating proficiency in WebSocket protocols and full-stack TypeScript.',
-      features: ['Real-time WebSocket messaging', 'Streaming AI responses via xAI Grok', 'Turn management system', '@mention filtered dropdown', 'Cross-platform via Ionic'],
-      live: [{ name: 'Live Site ↗', url: 'https://www.theaisymposium.net//' }],
+      subtitle: 'Real-time multi-AI group chat platform · Angular + Node.js',
+      tags: ['Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets', 'Express', 'Prisma', 'TypeScript'],
+      purpose: 'Architected a full-stack real-time platform for VirtuIntelligence where humans collaborate with AI personas in shared chat rooms.',
+      desc: 'Symposium is a real-time multi-AI group chat platform where human users converse with AI participants in shared rooms. The frontend is built with Angular 21 and Ionic, deployed on Vercel; the backend is an Express + WebSocket server on Railway, backed by a PostgreSQL database managed via Prisma ORM. The system supports streaming AI responses, room creation with invite links, turn management, and a role-based admin dashboard.',
+      features: [
+        'Real-time WebSocket messaging with low-latency streaming AI responses',
+        'Multi-AI integration — human users interact with distinct AI personas in shared rooms',
+        'Room system with invite links, join flows, and admin-level user management',
+        '@mention system with a live-filtered dropdown for addressing AI or human participants',
+        'Cross-platform deployment via Ionic + Capacitor (web, iOS, Android)',
+        'Role-based admin dashboard for user oversight and room management',
+        'PostgreSQL persistence via Prisma ORM with automatic hourly cleanup of inactive rooms',
+        'Rate limiting, CORS allowlist, and JWT authentication for secure API access',
+      ],
+      live: [{ name: 'Live Site ↗', url: 'https://www.theaisymposium.net/' }],
       github: null,
       imgs: [
         'assets/images/symposium-1.png',
@@ -5596,11 +5669,20 @@ export class PortfolioDataService {
     {
       num: '03',
       name: 'Travel Atelier',
-      subtitle: 'Full-stack travel booking platform · Vue.js + Node.js',
-      tags: ['Vue.js 3', 'Node.js', 'Express', 'JWT'],
-      desc: 'Full-stack travel booking platform featuring secure JWT authentication, protected routing, and real-time destination searches.',
-      purpose: 'Architected a complete full-stack application demonstrating secure data flow from database to frontend UI.',
-      features: ['JWT-based authentication system', 'Protected routing and navigation', 'Backend-connected dynamic forms', 'Real-time destination filtering'],
+      subtitle: 'Full-stack travel booking platform · Vue.js 3 + Node.js',
+      tags: ['Vue.js 3', 'Node.js', 'Express', 'JWT', 'Vue Router', 'Vite', 'Composition API'],
+      purpose: 'Built a complete full-stack travel platform demonstrating secure end-to-end data flow from a REST API to a reactive Vue 3 frontend.',
+      desc: 'Travel Atelier is a modern full-stack web application for browsing and booking international travel destinations. The Vue.js 3 Composition API frontend features smooth page transitions, animated card interactions, and a functional search bar. The Node.js/Express backend powers a REST API handling JWT-based authentication, protected routing via navigation guards, a contact form messaging system viewable in real-time, and a backend-connected booking form. An embedded Google Maps integration is included on the contact page.',
+      features: [
+        'Full JWT authentication — registration, login, and persistent session via localStorage',
+        'Protected routes with Vue Router navigation guards; unauthenticated users are redirected to login',
+        'Live destination search with animated filtering and interactive card hover effects',
+        'Real-time contact messaging system — form submissions immediately visible on a protected admin page',
+        'Embedded Google Maps showing business location on the contact page',
+        'Backend-connected registration and booking forms with server-side validation',
+        'Sticky transparent-to-solid header transition on scroll with smooth page-level animations',
+        'Default test user for easy evaluation (user@example.com / password)',
+      ],
       live: null,
       github: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
       imgs: [
@@ -5612,11 +5694,20 @@ export class PortfolioDataService {
     {
       num: '04',
       name: 'Dropify',
-      subtitle: 'E-commerce platform · Vue.js + MongoDB + Express',
-      tags: ['Vue.js 3', 'MongoDB', 'Express', 'Node.js', 'Pinia'],
-      desc: 'Comprehensive e-commerce platform for a streetwear brand, featuring a full shopping experience with persistent cart, checkout flow, and admin dashboard.',
-      purpose: 'Designed a scalable MongoDB schema with embedded cart architecture and integrated it with a reactive Vue 3 frontend.',
-      features: ['Persistent cart state', 'Full CRUD admin dashboard', 'JWT authentication', 'Product search and paginated filtering'],
+      subtitle: 'Full-stack e-commerce platform · Vue.js 3 + MongoDB',
+      tags: ['Vue.js 3', 'MongoDB', 'Express', 'Node.js', 'Pinia', 'JWT', 'Axios', 'Vite'],
+      purpose: 'Designed a scalable e-commerce platform with a MongoDB-backed persistent cart and a comprehensive admin panel built with Vue 3 and Pinia.',
+      desc: 'Dropify is a complete full-stack e-commerce platform for a content creator streetwear brand. The Vue 3 Composition API frontend features a sticky header with scroll-based transparency, staggered product grid animations, and custom pop-up notifications. The Node.js/Express/MongoDB backend manages persistent, user-specific shopping carts that survive logouts, a multi-step checkout flow with permanent order records, and a fully-featured admin panel for products, users, and orders — including role promotion/demotion and order status tracking.',
+      features: [
+        'Persistent user-specific shopping cart stored in MongoDB — survives sessions and logouts',
+        'Full CRUD admin dashboard for products, users, and orders with search, sort, and pagination',
+        'Role-based access control — promote regular users to admin or demote admins via the panel',
+        'JWT authentication with case-insensitive login and bcrypt password hashing',
+        'Live search and price/date sort on all product category pages (Shirts, Hoodies, Caps)',
+        'Multi-step checkout with a shipping details form and permanent order records in the database',
+        'Order management panel with status updates (e.g. Processing → Shipped) and detailed order modals',
+        'Seeder script to populate the database with initial product data',
+      ],
       live: [{ name: 'Live Site ↗', url: 'https://dropifystore.netlify.app/' }],
       github: 'https://github.com/jarenkendrick14/6WCSERVER-WD303-Dropify',
       imgs: [
@@ -5628,11 +5719,18 @@ export class PortfolioDataService {
     {
       num: '05',
       name: "Einstein's Art",
-      subtitle: 'Dynamic company website · Angular + TypeScript',
-      tags: ['Angular', 'TypeScript', 'Netlify'],
-      desc: "Company website for a local brand built in Angular. Implemented client-side routing, dynamic rendering components, and a custom employee directory.",
-      purpose: "Built a fast, scalable frontend structure using Angular best practices and structural directives.",
-      features: ['Angular client-side routing', 'Dynamic product rendering', 'Conditional component styling', 'Deployed to Netlify'],
+      subtitle: 'Dynamic company website · Angular + TypeScript · Deployed on Netlify',
+      tags: ['Angular', 'TypeScript', 'Angular Router', 'Structural Directives', 'Netlify'],
+      purpose: "Built a fast, scalable Angular frontend for a local brand using component-based architecture, client-side routing, and structural directives.",
+      desc: "Einstein's Art is a dynamic company website built for a local brand using Angular and TypeScript. The site uses Angular's client-side router for seamless page transitions, structural directives for conditional rendering, and dynamic components for product and employee directory displays. The project was deployed to Netlify with a continuous deployment pipeline from GitHub.",
+      features: [
+        'Angular client-side routing with smooth, zero-reload page transitions',
+        'Dynamic product rendering using *ngFor and reactive component inputs',
+        'Conditional component styling and layout using *ngIf and Angular directives',
+        'Custom employee directory with dynamic data binding',
+        'Deployed to Netlify with automatic CI/CD from GitHub on every push',
+        'Built with TypeScript throughout for type-safe component logic',
+      ],
       live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app' }],
       github: null,
       imgs: [

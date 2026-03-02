@@ -56,6 +56,7 @@
            Slide handles transition, directive handles the glitch effect. -->
       
       <app-home class="page-section" 
+        tabindex="0"
         [class.active]="nav.currentPage() === 0" 
         [class.prev]="nav.currentPage() > 0"
         [active]="nav.currentPage() === 0"
@@ -64,6 +65,7 @@
       </app-home>
 
       <app-about class="page-section" 
+        tabindex="0"
         [class.active]="nav.currentPage() === 1" 
         [class.prev]="nav.currentPage() > 1"
         [class.next]="nav.currentPage() < 1"
@@ -71,6 +73,7 @@
       </app-about>
 
       <app-projects class="page-section" 
+        tabindex="0"
         [class.active]="nav.currentPage() === 2" 
         [class.prev]="nav.currentPage() > 2"
         [class.next]="nav.currentPage() < 2"
@@ -80,6 +83,7 @@
       </app-projects>
 
       <app-experience class="page-section" 
+        tabindex="0"
         [class.active]="nav.currentPage() === 3" 
         [class.prev]="nav.currentPage() > 3"
         [class.next]="nav.currentPage() < 3"
@@ -87,6 +91,7 @@
       </app-experience>
 
       <app-blog class="page-section" 
+        tabindex="0"
         [class.active]="nav.currentPage() === 4" 
         [class.prev]="nav.currentPage() > 4"
         [class.next]="nav.currentPage() < 4"
@@ -95,6 +100,7 @@
       </app-blog>
 
       <app-testimonials class="page-section" 
+        tabindex="0"
         [class.active]="nav.currentPage() === 5" 
         [class.prev]="nav.currentPage() > 5"
         [class.next]="nav.currentPage() < 5"
@@ -102,6 +108,7 @@
       </app-testimonials>
 
       <app-contact class="page-section" 
+        tabindex="0"
         [class.active]="nav.currentPage() === 6" 
         [class.prev]="nav.currentPage() > 6"
         [class.next]="nav.currentPage() < 6"

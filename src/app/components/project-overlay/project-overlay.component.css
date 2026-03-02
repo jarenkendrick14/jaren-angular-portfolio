@@ -204,7 +204,8 @@
   display: inline-flex; align-items: center; gap: .5rem;
   padding: .65rem 1.2rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: .88rem; font-weight: 600;
+  font-size: 1.165rem; /* Fixed for a11y contrast: 18.6px+ bold passes 3:1 */
+  font-weight: 700;
   border-radius: 6px; cursor: pointer;
   text-decoration: none; border: none;
   transition: transform .2s, box-shadow .2s;

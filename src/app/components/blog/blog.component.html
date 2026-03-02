@@ -3,12 +3,16 @@
     <div class="pheader au d0">
       <h2 class="ph2">Blog.</h2>
       <span class="pcnt">{{ data.blogPosts.length }} posts</span>
-      <div class="phr"></div>
+      <!-- aria-hidden added to decorative line -->
+      <div class="phr" aria-hidden="true"></div>
     </div>
     <div class="blog-grid">
       @for (post of data.blogPosts; track post.title; let i = $index) {
-        <article class="bc as" [ngClass]="i === 0 ? 'd1' : 'd2'"
-                 (click)="postOpened.emit(post)" role="button" tabindex="0"
+        <!--  Changed from <article> to <div> to avoid semantic conflict with role="button" -->
+        <div class="bc as" [ngClass]="i === 0 ? 'd1' : 'd2'"
+                 (click)="postOpened.emit(post)" 
+                 role="button" 
+                 tabindex="0"
                  (keydown.enter)="postOpened.emit(post)">
           <div class="bc-img">
             <img [src]="post.img" [alt]="post.title" 
@@ -19,9 +23,10 @@
             <p class="bc-date">{{ post.date }}</p>
             <h3 class="bc-title">{{ post.title }}</h3>
             <p class="bc-excerpt">{{ post.excerpt }}</p>
-            <span class="bc-read">Read Post →</span>
+            <!-- aria-hidden added to the decorative arrow suffix -->
+            <span class="bc-read">Read Post <span aria-hidden="true">→</span></span>
           </div>
-        </article>
+        </div>
       }
     </div>
   </div>

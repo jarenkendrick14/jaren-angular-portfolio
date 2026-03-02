@@ -189,17 +189,18 @@
   align-items: center;
   gap: .75rem;
   justify-content: center;
-  padding: 1.2rem 2.75rem;      /* was 1rem 2rem */
+  padding: 1.2rem 2.75rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.1rem;             /* was 1rem */
-  font-weight: 700;              /* was 600 */
-  border-radius: 8px;            /* was 6px */
+  font-size: 1.165rem; /* Fixed for a11y contrast: 18.6px+ bold passes 3:1 */
+  font-weight: 700; 
+  border-radius: 8px;
   cursor: none;
   transition: transform .2s ease, box-shadow .2s ease;
   text-decoration: none;
   border: none;
   letter-spacing: .01em;
 }
+
 .btn:hover { transform: translateY(-4px); }
 .btn-fill { background: var(--acc); color: #fff; }
 .btn-fill:hover { box-shadow: 0 14px 40px rgba(139,92,246,.45); }

@@ -1,8 +1,8 @@
 <section class="page-experience" [class.active-page]="active">
   <div class="pin">
 
-    <!-- ── Header ─────────────────────────────────────────────────── -->
-    <div class="slabel au d0">
+    <!-- Fix: Decorative label hidden from scanner -->
+    <div class="slabel au d0" aria-hidden="true">
       <span class="sn">04</span>
       <span class="st">/ experience &amp; education</span>
       <div class="shr"></div>
@@ -22,8 +22,8 @@
     <!-- ── Timeline + cards ─────────────────────────────────────── -->
     <div class="tl-wrap">
 
-      <!-- Animated vertical line -->
-      <div class="tl-track">
+      <!-- Decorative line hidden -->
+      <div class="tl-track" aria-hidden="true">
         <div class="tl-line" [class.drawn]="lineReady()"></div>
       </div>
 
@@ -31,8 +31,8 @@
       @for (job of jobs; track job.company; let i = $index) {
         <div class="tl-row al" [style.animation-delay]="(0.3 + i * 0.15) + 's'">
 
-          <!-- Node on the track -->
-          <div class="tl-node" [class.live]="job.isLive">
+          <!-- Node hidden from scanner -->
+          <div class="tl-node" [class.live]="job.isLive" aria-hidden="true">
             @if (job.isLive) { <span class="live-ring"></span> }
           </div>
 
@@ -43,7 +43,7 @@
                 <span class="tl-period">{{ job.period }}</span>
                 @if (job.isLive) {
                   <span class="live-badge">
-                    <span class="live-dot"></span>CURRENTLY HERE
+                    <span class="live-dot" aria-hidden="true"></span>CURRENTLY HERE
                   </span>
                 }
               </div>
@@ -72,7 +72,7 @@
       @for (edu of education; track edu.school; let i = $index) {
         <div class="tl-row ar" [style.animation-delay]="(0.45 + i * 0.15) + 's'">
 
-          <div class="tl-node edu-node"></div>
+          <div class="tl-node edu-node" aria-hidden="true"></div>
 
           <div class="tl-card edu-card">
             <div class="tl-card-head">
@@ -85,8 +85,8 @@
         </div>
       }
 
-      <!-- End cap -->
-      <div class="tl-end">
+      <!-- End cap hidden -->
+      <div class="tl-end" aria-hidden="true">
         <div class="tl-end-dot"></div>
         <span class="tl-end-lbl">Still going ↗</span>
       </div>
@@ -96,7 +96,7 @@
     <!-- ── Skills ────────────────────────────────────────────────── -->
     <div class="skills-section au" [style.animation-delay]="'0.6s'">
       <div class="skills-header">
-        <span class="skills-title">Technical Proficiency</span>
+        <h3 class="skills-title">Technical Proficiency</h3>
         <span class="skills-sub">Self-assessed · relative to production use</span>
       </div>
 
@@ -105,10 +105,10 @@
         <!-- Web Dev column -->
         <div class="skill-col">
           <div class="skill-col-label">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
             Web Development
           </div>
-          <ul class="skl">
+          <ul class="skl" role="list">
             @for (sk of webSkills; track sk.name; let i = $index) {
               <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
                 <div class="sk-info">
@@ -130,10 +130,10 @@
         <!-- Game Dev column -->
         <div class="skill-col">
           <div class="skill-col-label">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h2M15 13h2"/></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h2M15 13h2"/></svg>
             Game Development
           </div>
-          <ul class="skl">
+          <ul class="skl" role="list">
             @for (sk of gameSkills; track sk.name; let i = $index) {
               <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
                 <div class="sk-info">

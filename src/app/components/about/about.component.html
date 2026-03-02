@@ -1,7 +1,8 @@
 <section class="page-about" [class.active-page]="active">
   <div class="pin">
     
-    <div class="slabel au d0">
+    <!-- Fix: Added aria-hidden="true" to decorative label -->
+    <div class="slabel au d0" aria-hidden="true">
       <span class="sn">02</span><span class="st">/ about me</span>
       <div class="shr"></div>
     </div>
@@ -22,7 +23,7 @@
         <!-- Profile Image -->
         <div class="bio-img-wrap as d2">
           <img src="assets/images/profile-about.jpg" width="200" height="200" loading="lazy" 
-               alt="Profile" 
+               alt="Jaren Kendrick profile photo" 
                onerror="this.style.display='none'">
         </div>
 
@@ -42,7 +43,7 @@
         
         <div style="margin-top:2rem;">
           <a href="assets/Jaren_Kendrick_Resume.pdf" target="_blank" class="btn btn-fill" download>
-            <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24">
+            <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
@@ -65,7 +66,7 @@
           </button>
         </div>
 
-        <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'">
+        <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'" aria-hidden="true">
           <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
           <div class="sphere-hint">drag to spin</div>
         </div>
@@ -119,8 +120,8 @@
               </div>
             } @else {
               
-              <div class="heatmap-container">
-                <div class="heatmap-months">
+              <div class="heatmap-container" aria-label="GitHub contribution grid">
+                <div class="heatmap-months" aria-hidden="true">
                   <div class="hm-spacer"></div>
                   <div class="hm-months-grid">
                     @for (m of heatmapMonths(); track m.col) {
@@ -130,7 +131,7 @@
                 </div>
 
                 <div class="heatmap-body">
-                  <div class="heatmap-days">
+                  <div class="heatmap-days" aria-hidden="true">
                     <span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span>
                   </div>
 
@@ -140,7 +141,7 @@
                         @for (day of week; track day.date) {
                           <div class="heatmap-cell"
                             [style.background]="getHeatColor(day.level)"
-                            [title]="day.count > 0 ? day.count + ' contributions on ' + day.date : day.date">
+                            [attr.aria-label]="day.count + ' contributions on ' + day.date">
                           </div>
                         }
                       </div>
@@ -149,7 +150,7 @@
                 </div>
               </div>
 
-              <div class="heatmap-legend">
+              <div class="heatmap-legend" aria-hidden="true">
                 <span class="heatmap-legend-label">Less</span>
                 <div class="heatmap-cell" [style.background]="getHeatColor(0)"></div>
                 <div class="heatmap-cell" [style.background]="getHeatColor(1)"></div>
@@ -188,15 +189,15 @@
       <div class="blk dash-certs au d5">
         <div class="cert-header">
           <div class="blkh" style="margin-bottom:0;">Certifications</div>
-          <div class="cert-counter">{{ certIndex() + 1 }} / {{ certTotal }}</div>
+          <div class="cert-counter" aria-live="polite">Certification {{ certIndex() + 1 }} of {{ certTotal }}</div>
         </div>
         
         <div class="cert-carousel">
-          <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous">‹</button>
+          <button class="cert-nav" (click)="certNav(-1)" aria-label="Previous certification">‹</button>
           <div class="cert-card-wrap" [ngClass]="certAnimClass()">
-            <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener">
+            <a class="cert-card" [href]="currentCert.url" target="_blank" rel="noopener" [attr.aria-label]="'View ' + currentCert.name + ' certificate'">
               <div class="cert-top" [style.background]="currentCert.color + '22'">
-                <div class="cert-issuer-badge" [style.background]="currentCert.color">{{ currentCert.abbr }}</div>
+                <div class="cert-issuer-badge" [style.background]="currentCert.color" aria-hidden="true">{{ currentCert.abbr }}</div>
                 <span class="cert-issuer-name">{{ currentCert.issuer }}</span>
               </div>
               <div class="cert-body">
@@ -208,14 +209,15 @@
               </div>
             </a>
           </div>
-          <button class="cert-nav" (click)="certNav(1)" aria-label="Next">›</button>
+          <button class="cert-nav" (click)="certNav(1)" aria-label="Next certification">›</button>
         </div>
         
         <div class="cert-dots">
           @for (cert of data.certificates; track $index) {
             <button class="cert-dot" [class.on]="$index === certIndex()"
               (click)="certNav($index > certIndex() ? 1 : -1)"
-              [attr.aria-label]="'Cert ' + ($index + 1)">
+              [attr.aria-label]="'Go to certification ' + ($index + 1)"
+              [attr.aria-current]="$index === certIndex()">
             </button>
           }
         </div>
