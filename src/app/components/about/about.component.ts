@@ -1,7 +1,8 @@
-import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges, effect } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { Certificate } from '../../models/portfolio.models';
 import { CommonModule } from '@angular/common';
+import { NavigationService } from '../../data/navigation.service';
 
 interface HeatmapDay { date: string; count: number; level: number; }
 interface Commit { sha: string; message: string; repo: string; date: string; url: string; }
@@ -79,7 +80,26 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   private isDrag = false; private lx = 0; private ly = 0;
   private velX = 0; private velY = 0.004;
   private sphereEls: HTMLSpanElement[] = [];
-  private themeObserver?: MutationObserver;
+  private nav = inject(NavigationService);
+
+  constructor() {
+    // React to Angular's theme signal directly — more reliable than MutationObserver
+    // because the signal fires after Angular applies data-theme to <html>
+    effect(() => {
+      const _ = this.nav.isDark(); // subscribe to theme signal
+      // Run after DOM has been updated with new data-theme
+      requestAnimationFrame(() => {
+        if (!this.sphereEls.length) return;
+        const cs      = getComputedStyle(document.documentElement);
+        const newSurf = cs.getPropertyValue('--surf').trim() || '#111120';
+        const newBord = cs.getPropertyValue('--bord').trim() || '#2a2a40';
+        this.sphereEls.forEach(el => {
+          el.style.background  = newSurf;
+          el.style.borderColor = newBord;
+        });
+      });
+    });
+  }
 
   toggleSkills() { this.skillsExpanded.update(v => !v); }
 
@@ -106,7 +126,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() { cancelAnimationFrame(this.animId); this.themeObserver?.disconnect(); }
+  ngOnDestroy() { cancelAnimationFrame(this.animId); }
 
   private animateCounters() {
     this.counters.forEach(c => {
@@ -325,19 +345,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
     animate();
 
-    // Watch for theme changes and update resolved background/border colors
-    this.themeObserver = new MutationObserver(() => {
-      const cs2     = getComputedStyle(document.documentElement);
-      const newSurf = cs2.getPropertyValue('--surf').trim() || '#111120';
-      const newBord = cs2.getPropertyValue('--bord').trim() || '#2a2a40';
-      this.sphereEls.forEach(el => {
-        el.style.background = newSurf;
-        el.style.borderColor = newBord;
-      });
-    });
-    this.themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
-    });
+    // Theme updates handled via Angular effect() — see constructor
   }
 }

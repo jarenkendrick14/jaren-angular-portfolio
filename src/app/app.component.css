@@ -43,15 +43,28 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  will-change: transform;
+  /* will-change removed from base rule — applying it permanently keeps every page
+     in a GPU compositing layer which degrades text rendering (blurry/unfocused look).
+     Only off-screen pages that are about to slide in/out need GPU promotion. */
   transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
   transform: translateY(100%);
   z-index: 10;
 }
 
-.page-section.active { transform: translateY(0); }
-.page-section.prev   { transform: translateY(-100%); }
-.page-section.next   { transform: translateY(100%); }
+/* Active page: no will-change → CPU renders text with full subpixel antialiasing */
+.page-section.active {
+  transform: translateY(0);
+  will-change: auto;
+}
+/* Off-screen pages: GPU-promoted so the slide animation is smooth */
+.page-section.prev {
+  transform: translateY(-100%);
+  will-change: transform;
+}
+.page-section.next {
+  transform: translateY(100%);
+  will-change: transform;
+}
 
 /* ══════════ FIX INNER COMPONENT SCROLLING ══════════ */
 :host ::ng-deep .page-home,
