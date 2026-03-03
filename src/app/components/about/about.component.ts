@@ -1,8 +1,7 @@
-import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges, effect } from '@angular/core';
+import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { Certificate } from '../../models/portfolio.models';
 import { CommonModule } from '@angular/common';
-import { NavigationService } from '../../data/navigation.service';
 
 interface HeatmapDay { date: string; count: number; level: number; }
 interface Commit { sha: string; message: string; repo: string; date: string; url: string; }
@@ -79,27 +78,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   private rotX = 0.4; private rotY = 0;
   private isDrag = false; private lx = 0; private ly = 0;
   private velX = 0; private velY = 0.004;
-  private sphereEls: HTMLSpanElement[] = [];
-  private nav = inject(NavigationService);
-
-  constructor() {
-    // React to Angular's theme signal directly — more reliable than MutationObserver
-    // because the signal fires after Angular applies data-theme to <html>
-    effect(() => {
-      const _ = this.nav.isDark(); // subscribe to theme signal
-      // Run after DOM has been updated with new data-theme
-      requestAnimationFrame(() => {
-        if (!this.sphereEls.length) return;
-        const cs      = getComputedStyle(document.documentElement);
-        const newSurf = cs.getPropertyValue('--surf').trim() || '#111120';
-        const newBord = cs.getPropertyValue('--bord').trim() || '#2a2a40';
-        this.sphereEls.forEach(el => {
-          el.style.background  = newSurf;
-          el.style.borderColor = newBord;
-        });
-      });
-    });
-  }
 
   toggleSkills() { this.skillsExpanded.update(v => !v); }
 
@@ -274,12 +252,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   private initSphere() {
     const RADIUS = 150;
-    // Resolve CSS variables to concrete values so accessibility checkers
-    // can compute contrast ratios correctly (they cannot parse var() in inline styles)
-    const root       = document.documentElement;
-    const cs         = getComputedStyle(root);
-    const surfColor  = cs.getPropertyValue('--surf').trim() || '#111120';
-    const bordColor  = cs.getPropertyValue('--bord').trim() || '#2a2a40';
     const items = this.sphereTags.map((tag, i) => {
       const phi   = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
@@ -289,20 +261,10 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       el.style.color        = tag.color;
       
       el.style.position     = 'absolute';
-      el.style.background   = surfColor;
-      el.style.padding      = '4px 8px';
-      el.style.borderRadius = '4px';
-      el.style.border       = `1px solid ${bordColor}`;
-      el.style.cursor       = 'grab';
-      el.style.userSelect   = 'none';
-      el.style.fontFamily   = "'JetBrains Mono', monospace";
-      el.style.fontSize     = '12px';
-      el.style.whiteSpace   = 'nowrap';
       el.setAttribute('aria-hidden', 'true');
       if (this.sphereContainer?.nativeElement) {
         this.sphereContainer.nativeElement.appendChild(el);
       }
-      this.sphereEls.push(el);
       return { el, phi, theta };
     });
 
@@ -321,7 +283,8 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
         item.el.style.transform   = `translate(-50%,-50%) translate(${x2 * RADIUS}px,${y3 * RADIUS}px)`;
         item.el.style.opacity     = Math.max(0.85, scale).toString();
         item.el.style.zIndex      = Math.round(scale * 20).toString();
-        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250,0.6)' : bordColor;
+        // Front-facing tags get a purple border tint; back-facing revert to CSS var(--bord)
+        item.el.style.borderColor = z3 > 0 ? 'rgba(139,92,246,0.55)' : '';
       });
     };
 
@@ -345,6 +308,5 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
     animate();
 
-    // Theme updates handled via Angular effect() — see constructor
   }
 }
