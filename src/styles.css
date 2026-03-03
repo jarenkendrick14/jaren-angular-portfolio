@@ -8,6 +8,7 @@
   --surf: #111120;
   --bord: #2a2a40;
   --acc: #8b5cf6;
+  --acc-text: #a78bfa;  /* WCAG AA compliant purple for text on dark bg */
   --acc2: #6d28d9;
   --white: #ffffff;
   --text: #e0def0;
@@ -23,6 +24,7 @@
   --bord: #c8c3e0;
   --acc: #7c3aed;
   --acc2: #6d28d9;
+  --acc-text: #6d28d9;  /* WCAG AA compliant purple for text on light bg */
   --white: #1a1826;
   --text: #2d2b3b;
   --muted: #5c597a;
@@ -156,8 +158,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 }
 
 .sn {
-  color: #ffffff !important;
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
 }
 
 svg[aria-hidden="true"] {

@@ -54,13 +54,13 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   ];
 
   readonly sphereTags = [
-    { text: 'Angular',    color: '#dd0031' }, { text: 'Vue.js 3',   color: '#42b883' },
-    { text: 'Node.js',    color: '#339933' }, { text: 'MongoDB',    color: '#47a248' },
-    { text: 'TypeScript', color: '#3178c6' }, { text: 'C#',         color: '#9b59b6' },
-    { text: 'Unity',      color: '#a78bfa' }, { text: 'Express.js', color: '#7a7a9c' },
-    { text: 'REST APIs',  color: '#60a5fa' }, { text: 'Git',        color: '#f05030' },
-    { text: 'PostgreSQL', color: '#336791' }, { text: 'Prisma',     color: '#7c8cf8' },
-    { text: 'Ionic',      color: '#3880ff' }, { text: 'WebSockets', color: '#f59e0b' },
+    { text: 'Angular',    color: '#ff5c78' }, { text: 'Vue.js 3',   color: '#5cd4a0' },
+    { text: 'Node.js',    color: '#5ed65e' }, { text: 'MongoDB',    color: '#60c460' },
+    { text: 'TypeScript', color: '#6baeed' }, { text: 'C#',         color: '#c57ae0' },
+    { text: 'Unity',      color: '#a78bfa' }, { text: 'Express.js', color: '#a8a8c8' },
+    { text: 'REST APIs',  color: '#7db8fc' }, { text: 'Git',        color: '#ff7a5c' },
+    { text: 'PostgreSQL', color: '#5b9fcc' }, { text: 'Prisma',     color: '#9eb0fa' },
+    { text: 'Ionic',      color: '#6aa3ff' }, { text: 'WebSockets', color: '#f59e0b' },
   ];
 
   readonly softSkills = [
@@ -258,8 +258,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       const el    = document.createElement('span');
       el.className          = 'sphere-tag';
       el.textContent        = tag.text;
-      el.style.color        = '#ffffff';
-      (el.style as any).webkitTextFillColor = tag.color;
+      el.style.color        = tag.color;
       
       el.style.position     = 'absolute';
       el.style.background   = 'var(--surf)';

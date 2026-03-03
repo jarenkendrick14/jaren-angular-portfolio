@@ -31,17 +31,28 @@ export class ResumeComponent implements OnChanges {
 
   readonly experience = [
     {
-      period: 'Apr 2025 — Present',
+      period: 'Feb 2026 — Present',
+      company: 'VirtuIntelligence',
+      type: 'Part-time · Remote',
+      title: 'Full Stack Developer',
+      bullets: [
+        'Architected <strong>Symposium</strong>, a full-stack real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket + streaming xAI Grok.',
+        'Building and shipping production-ready Angular components and Node.js services in an async-first remote team.',
+        'Managing own sprint tasks and code reviews across multiple time zones.',
+      ],
+      tags: ['Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets', 'TypeScript'],
+    },
+    {
+      period: 'Apr 2025 — Jan 2026',
       company: 'VirtuIntelligence',
       type: 'Part-time · Remote',
       title: 'Game/App Developer',
       bullets: [
         'Shipped <strong>PathFinder</strong> VR app to Meta Quest store using Unreal Engine 5.5 Blueprints; built its Android companion in Unity.',
-        'Architected <strong>Symposium</strong>, a full-stack real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket + streaming xAI Grok.',
-        'Currently developing <strong>Robots vs Aliens</strong>, a mobile action game in Unity (C#) with procedural level generation.',
-        'Managing own sprint tasks and code reviews across multiple time zones.',
+        'Developed <strong>Robots vs Aliens</strong>, a mobile action game in Unity (C#) with procedural level generation.',
+        'Managed sprint tasks and code reviews across multiple time zones.',
       ],
-      tags: ['Unreal 5.5', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets'],
+      tags: ['Unreal 5.5', 'Blueprints', 'Unity', 'C#'],
     },
   ];
 

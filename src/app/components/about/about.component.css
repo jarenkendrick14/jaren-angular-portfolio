@@ -31,8 +31,7 @@
   font-size: .85rem; 
   letter-spacing: .1em; 
   font-weight: 600; 
-  color: #ffffff !important; 
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
 }
 
 
@@ -65,8 +64,7 @@
   font-size: clamp(3rem, 5vw, 4rem);
   line-height: 1;
   letter-spacing: -.03em;
-  color: #ffffff !important;
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
 }
 
 .stat-label {
@@ -176,8 +174,7 @@
 /* Fix: Contrast Masking for Skill Button */
 .skill-toggle-btn {
   font-family: 'JetBrains Mono', monospace; font-size: .8rem; letter-spacing: .06em;
-  color: #ffffff !important; 
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
   border: 1px solid rgba(139,92,246,.4); padding: .45rem 1rem;
   border-radius: 6px; cursor: pointer; background: none; transition: background .2s, border-color .2s;
   font-weight: 600;
@@ -272,8 +269,7 @@
 /* Fix: Contrast Masking for Heatmap Total */
 .heatmap-total {
   font-size: .7rem;
-  color: #ffffff !important;
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
   letter-spacing: .06em;
   font-weight: 500;
 }
@@ -415,8 +411,7 @@
 /* Fix: Contrast Masking for Commits SHA */
 .commit-sha { 
   font-family: 'JetBrains Mono', monospace; font-size: .7rem; 
-  color: #ffffff !important; 
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
   letter-spacing: .03em; font-weight: 600; flex-shrink: 0; 
 }
 
@@ -426,8 +421,7 @@
 /* Fix: Contrast Masking for Repo Badge */
 .commit-repo { 
   font-family: 'JetBrains Mono', monospace; font-size: .6rem; 
-  color: #ffffff !important; 
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
   background: rgba(139,92,246,.1); padding: .15rem .4rem; border-radius: 3px; letter-spacing: .03em; white-space: nowrap; 
 }
 
@@ -471,8 +465,7 @@
 /* Fix: Contrast Masking for View Cert link */
 .cert-view { 
   font-family: 'JetBrains Mono', monospace; font-size: .7rem; 
-  color: #ffffff !important; 
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
   letter-spacing: .06em; font-weight: 500; 
 }
 

@@ -72,18 +72,30 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   // ─── Work experience ───
   readonly jobs = [
     {
-      period:    'Apr 2025 — Present',
+      period:    'Feb 2026 — Present',
       isLive:    true,
       company:   'VirtuIntelligence',
-      type:      'Game/App Developer · Part-time · Remote',
+      type:      'Contract · Part-time · Remote',
+      headline:  'Web Developer',
+      bullets: [
+        'Architected <strong>Symposium</strong>, a real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket streaming & xAI Grok integration.',
+        'Building and maintaining full-stack web features across multiple time zones in an async-first remote workflow.',
+        'Participating in sprint planning, async code reviews, and shipping production-ready Angular components.',
+      ],
+      tags: ['Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets', 'TypeScript'],
+    },
+    {
+      period:    'Apr 2025 — Jan 2026',
+      isLive:    false,
+      company:   'VirtuIntelligence',
+      type:      'Contract · Part-time · Remote',
       headline:  'Game/App Developer',
       bullets: [
         'Shipped <strong>PathFinder</strong> — a VR self-discovery app — to the Meta Quest Store using Unreal Engine 5.5 Blueprints; built its Android companion in Unity.',
-        'Architected <strong>Symposium</strong>, a real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket streaming & xAI Grok integration.',
-        'Actively developing <strong>Robots vs Aliens</strong>, a mobile tower-defense game in Unity (C#) with procedural level generation.',
-        'Managing own sprint tasks and participating in async code reviews across multiple time zones.',
+        'Actively developed <strong>Robots vs Aliens</strong>, a mobile tower-defense game in Unity (C#) with procedural level generation.',
+        'Managed own sprint tasks and participated in async code reviews across multiple time zones.',
       ],
-      tags: ['Unreal Engine 5.5', 'Blueprints', 'Unity', 'C#', 'Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets'],
+      tags: ['Unreal Engine 5.5', 'Blueprints', 'Unity', 'C#'],
     },
   ];
 
