@@ -21,7 +21,8 @@
 .sn { 
   font-family: 'JetBrains Mono', monospace; 
   font-size: .85rem; 
-  color: var(--acc-text) !important;
+  color: #ffffff !important; 
+  -webkit-text-fill-color: var(--acc) !important;
   letter-spacing: .1em; 
   font-weight: 600; 
 }
@@ -198,7 +199,7 @@
 .tl-period {
   font-family: 'JetBrains Mono', monospace;
   font-size: .8rem;
-  color: var(--acc);
+  color: var(--acc-text);
   letter-spacing: .06em;
   font-weight: 600;
 }
@@ -374,7 +375,6 @@
   font-size: .65rem;
   color: var(--muted);
   letter-spacing: .06em;
-  opacity: .6;
 }
 
 .skills-grid {

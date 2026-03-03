@@ -78,6 +78,8 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   private rotX = 0.4; private rotY = 0;
   private isDrag = false; private lx = 0; private ly = 0;
   private velX = 0; private velY = 0.004;
+  private sphereEls: HTMLSpanElement[] = [];
+  private themeObserver?: MutationObserver;
 
   toggleSkills() { this.skillsExpanded.update(v => !v); }
 
@@ -104,7 +106,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() { cancelAnimationFrame(this.animId); }
+  ngOnDestroy() { cancelAnimationFrame(this.animId); this.themeObserver?.disconnect(); }
 
   private animateCounters() {
     this.counters.forEach(c => {
@@ -252,6 +254,12 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   private initSphere() {
     const RADIUS = 150;
+    // Resolve CSS variables to concrete values so accessibility checkers
+    // can compute contrast ratios correctly (they cannot parse var() in inline styles)
+    const root       = document.documentElement;
+    const cs         = getComputedStyle(root);
+    const surfColor  = cs.getPropertyValue('--surf').trim() || '#111120';
+    const bordColor  = cs.getPropertyValue('--bord').trim() || '#2a2a40';
     const items = this.sphereTags.map((tag, i) => {
       const phi   = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
@@ -261,10 +269,10 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       el.style.color        = tag.color;
       
       el.style.position     = 'absolute';
-      el.style.background   = 'var(--surf)';
+      el.style.background   = surfColor;
       el.style.padding      = '4px 8px';
       el.style.borderRadius = '4px';
-      el.style.border       = '1px solid var(--bord)';
+      el.style.border       = `1px solid ${bordColor}`;
       el.style.cursor       = 'grab';
       el.style.userSelect   = 'none';
       el.style.fontFamily   = "'JetBrains Mono', monospace";
@@ -273,6 +281,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       if (this.sphereContainer?.nativeElement) {
         this.sphereContainer.nativeElement.appendChild(el);
       }
+      this.sphereEls.push(el);
       return { el, phi, theta };
     });
 
@@ -291,7 +300,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
         item.el.style.transform   = `translate(-50%,-50%) translate(${x2 * RADIUS}px,${y3 * RADIUS}px)`;
         item.el.style.opacity     = Math.max(0.1, scale).toString();
         item.el.style.zIndex      = Math.round(scale * 20).toString();
-        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250,0.6)' : 'var(--bord)';
+        item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250,0.6)' : bordColor;
       });
     };
 
@@ -314,5 +323,19 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       document.addEventListener('mouseup', () => this.isDrag = false);
     }
     animate();
+
+    this.themeObserver = new MutationObserver(() => {
+      const cs2     = getComputedStyle(document.documentElement);
+      const newSurf = cs2.getPropertyValue('--surf').trim() || '#111120';
+      const newBord = cs2.getPropertyValue('--bord').trim() || '#2a2a40';
+      this.sphereEls.forEach(el => {
+        el.style.background = newSurf;
+        el.style.borderColor = newBord;
+      });
+    });
+    this.themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
   }
 }
