@@ -21,8 +21,7 @@
 .sn { 
   font-family: 'JetBrains Mono', monospace; 
   font-size: .85rem; 
-  color: #ffffff !important; 
-  -webkit-text-fill-color: var(--acc) !important;
+  color: var(--acc-text) !important;
   letter-spacing: .1em; 
   font-weight: 600; 
 }
@@ -376,6 +375,7 @@
   color: var(--muted);
   letter-spacing: .06em;
 }
+
 
 .skills-grid {
   display: grid;

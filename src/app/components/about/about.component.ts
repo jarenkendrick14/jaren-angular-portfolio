@@ -278,6 +278,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       el.style.fontFamily   = "'JetBrains Mono', monospace";
       el.style.fontSize     = '12px';
       el.style.whiteSpace   = 'nowrap';
+      el.setAttribute('aria-hidden', 'true');
       if (this.sphereContainer?.nativeElement) {
         this.sphereContainer.nativeElement.appendChild(el);
       }
@@ -298,7 +299,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
         const z3 = y * sinRX + z2 * cosRX;
         const scale = (z3 + 2.2) / 3.2;
         item.el.style.transform   = `translate(-50%,-50%) translate(${x2 * RADIUS}px,${y3 * RADIUS}px)`;
-        item.el.style.opacity     = Math.max(0.1, scale).toString();
+        item.el.style.opacity     = Math.max(0.85, scale).toString();
         item.el.style.zIndex      = Math.round(scale * 20).toString();
         item.el.style.borderColor = z3 > 0 ? 'rgba(167,139,250,0.6)' : bordColor;
       });
@@ -324,6 +325,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
     animate();
 
+    // Watch for theme changes and update resolved background/border colors
     this.themeObserver = new MutationObserver(() => {
       const cs2     = getComputedStyle(document.documentElement);
       const newSurf = cs2.getPropertyValue('--surf').trim() || '#111120';
