@@ -263,8 +263,11 @@
 
   .thm, .mbg { cursor: pointer; }
 
-  /* Hide resume page from mobile scroll stack */
-  app-resume.page-section { display: none !important; }
+  /* Hide resume page from mobile scroll stack — must override all .page-section variants */
+  app-resume.page-section,
+  app-resume.page-section.active,
+  app-resume.page-section.prev,
+  app-resume.page-section.next { display: none !important; }
 }
 
 .page-section:focus {

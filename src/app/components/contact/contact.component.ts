@@ -3,14 +3,7 @@ import { FormsModule } from '@angular/forms';
 import emailjs from '@emailjs/browser';
 
 // ── EmailJS config ──────────────────────────────────────────────────────────
-// 1. Sign up at https://emailjs.com and create an Email Service (Gmail, etc.)
-// 2. Create TWO email templates:
-//    • NOTIFICATION template  — sends to you when someone contacts you
-//      Template variables: {{name}}, {{email}}, {{title}}, {{message}}
-//    • AUTO-REPLY template    — sends to the person who filled the form
-//      Set "To Email" to {{email}}; use {{name}} in the body
-// 3. Replace the three placeholder values below with your real IDs.
-const EMAILJS_SERVICE_ID  = 'sservice_injp6ys';
+const EMAILJS_SERVICE_ID  = 'service_injp6ys';
 const EMAILJS_NOTIFY_TID  = 'template_nuocdgk';
 const EMAILJS_REPLY_TID   = 'template_690wboe';
 const EMAILJS_PUBLIC_KEY  = 'OziQGvoCmd0TkXjg1';
