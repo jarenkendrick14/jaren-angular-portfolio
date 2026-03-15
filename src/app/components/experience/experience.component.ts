@@ -76,7 +76,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
       isLive:    true,
       company:   'VirtuIntelligence',
       type:      'Contract · Part-time · Remote',
-      headline:  'Web Developer',
+      headline:  'Angular Developer',
       bullets: [
         'Architected <strong>Symposium</strong>, a real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket streaming & xAI Grok integration.',
         'Building and maintaining full-stack web features across multiple time zones in an async-first remote workflow.',
