@@ -37,9 +37,9 @@ export class PortfolioDataService {
       ],
       github: null,
       imgs: [
-        'assets/images/pathfinder-1.png',
-        'assets/images/pathfinder-2.png',
-        'assets/images/pathfinder-3.jpg'
+        'assets/images/pathfinder-1.webp',
+        'assets/images/pathfinder-2.webp',
+        'assets/images/pathfinder-3.webp'
       ]
     },
     {
@@ -62,9 +62,9 @@ export class PortfolioDataService {
       live: [{ name: 'Live Site ↗', url: 'https://www.theaisymposium.net/' }],
       github: null,
       imgs: [
-        'assets/images/symposium-1.png',
-        'assets/images/symposium-2.png',
-        'assets/images/symposium-3.png'
+        'assets/images/symposium-1.webp',
+        'assets/images/symposium-2.webp',
+        'assets/images/symposium-3.webp'
       ]
     },
     {
@@ -87,9 +87,9 @@ export class PortfolioDataService {
       live: null,
       github: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
       imgs: [
-        'assets/images/travel-atelier-1.png',
-        'assets/images/travel-atelier-2.png',
-        'assets/images/travel-atelier-3.png'
+        'assets/images/travel-atelier-1.webp',
+        'assets/images/travel-atelier-2.webp',
+        'assets/images/travel-atelier-3.webp'
       ]
     },
     {
@@ -112,9 +112,9 @@ export class PortfolioDataService {
       live: [{ name: 'Live Site ↗', url: 'https://dropifystore.netlify.app/' }],
       github: 'https://github.com/jarenkendrick14/6WCSERVER-WD303-Dropify',
       imgs: [
-        'assets/images/dropify-1.png',
-        'assets/images/dropify-2.png',
-        'assets/images/dropify-3.png'
+        'assets/images/dropify-1.webp',
+        'assets/images/dropify-2.webp',
+        'assets/images/dropify-3.webp'
       ]
     },
     {
@@ -135,9 +135,9 @@ export class PortfolioDataService {
       live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app' }],
       github: null,
       imgs: [
-        'assets/images/einsteins-art-1.png',
-        'assets/images/einsteins-art-2.png',
-        'assets/images/einsteins-art-3.png'
+        'assets/images/einsteins-art-1.webp',
+        'assets/images/einsteins-art-2.webp',
+        'assets/images/einsteins-art-3.webp'
       ]
     }
   ];
@@ -218,7 +218,7 @@ export class PortfolioDataService {
       img: 'assets/images/blog-vr-gamedev.webp',
       content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p>
 
-<img src="assets/images/blog-vr-shipping.jpg" alt="VR development workflow">
+<img src="assets/images/blog-vr-shipping.webp" alt="VR development workflow">
 <div class="blog-img-caption">Shipping to Meta Quest taught me more about deployment than any course.</div>
 
 <h3>Users don't read. They react.</h3>
@@ -244,14 +244,14 @@ export class PortfolioDataService {
       date: 'February 2026',
       title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
       excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
-      img: 'assets/images/travel-atelier-1.png',
+      img: 'assets/images/travel-atelier-1.webp',
       content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p>
 
 <h3>The case for vanilla first</h3>
 <p>I've done it. I've built projects with pure HTML, CSS, and JavaScript. No build step. No dependencies. Total control. I knew exactly what every line did because I wrote every line. For a showcase site — a product page, a portfolio — vanilla is often the right answer.</p>
 <p>It's fast, it's transparent, and it forces you to understand fundamentals. If you've never built a simple SPA without a framework, you don't really know what frameworks are solving for you. I mean that seriously.</p>
 
-<img src="assets/images/blog-vue-setup.png" alt="Vue.js project setup">
+<img src="assets/images/blog-vue-setup.webp" alt="Vue.js project setup">
 <div class="blog-img-caption">Travel Atelier's Vue.js 3 project structure — Composition API all the way.</div>
 
 <h3>But Travel Atelier wasn't a showcase</h3>
@@ -262,7 +262,7 @@ export class PortfolioDataService {
 <p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p>
 <p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p>
 
-<img src="assets/images/blog-vue-code.jpeg" alt="Vue.js Composition API code">
+<img src="assets/images/blog-vue-code.webp" alt="Vue.js Composition API code">
 <div class="blog-img-caption">Composables in Vue feel natural coming from Unity's component model.</div>
 
 <h3>What I'd do differently</h3>
@@ -278,21 +278,21 @@ export class PortfolioDataService {
       name: 'Louiery Sincioco',
       role: 'Chief Technology Officer · VirtuIntelligence',
       initial: 'L',
-      img: 'assets/images/testimonial-louiery.jpg'
+      img: 'assets/images/testimonial-louiery.webp'
     },
     {
       quote: '"Working with Jaren is refreshing. He takes ownership, communicates effectively, and the code he submits is clean and functional on the first pull request."',
       name: 'Samantha Tomoling',
       role: 'Classmate & Collaborator · Holy Angel University',
       initial: 'S',
-      img: 'assets/images/testimonial-samantha.png'
+      img: 'assets/images/testimonial-samantha.webp'
     },
     {
       quote: '"Jaren built a solid web application that really exceeded what we expected. Between the clean database structure and the reliable API design, he showed he is a very capable full-stack developer who stays on schedule."',
       name: 'Kenneth Punsalan',
       role: 'Classmate & Collaborator · Holy Angel University',
       initial: 'P',
-      img: 'assets/images/testimonial-prof.jpg'
+      img: 'assets/images/testimonial-prof.webp'
     },
   ];
 }

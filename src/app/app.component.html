@@ -24,9 +24,9 @@
   <header class="mobnav" role="banner">
 <a href="#" class="mlogo" (click)="goTo(0); $event.preventDefault()">
       @if (nav.isDark()) {
-        <img src="assets/logo-dark.png" alt="Jaren Kendrick" />
+        <img src="assets/logo-dark.webp" alt="Jaren Kendrick" />
       } @else {
-        <img src="assets/logo-light.png" alt="Jaren Kendrick" />
+        <img src="assets/logo-light.webp" alt="Jaren Kendrick" />
       }
     </a>
     <div class="mnr">
@@ -67,12 +67,13 @@
         (resumeOpened)="goTo(7)">
       </app-home>
 
-      <app-about class="page-section" 
+      <app-about class="page-section"
         tabindex="0"
-        [class.active]="nav.currentPage() === 1" 
+        [class.active]="nav.currentPage() === 1"
         [class.prev]="nav.currentPage() > 1"
         [class.next]="nav.currentPage() < 1"
-        [active]="nav.currentPage() === 1">
+        [active]="nav.currentPage() === 1"
+        (resumeOpened)="goTo(7)">
       </app-about>
 
       <app-projects class="page-section" 
@@ -123,6 +124,7 @@
         [class.active]="nav.currentPage() === 7"
         [class.prev]="nav.currentPage() > 7"
         [class.next]="nav.currentPage() < 7"
+        [class.resume-mobile-open]="nav.currentPage() === 7"
         [active]="nav.currentPage() === 7">
       </app-resume>
     </div>

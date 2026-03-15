@@ -263,11 +263,23 @@
 
   .thm, .mbg { cursor: pointer; }
 
-  /* Hide resume page from mobile scroll stack — must override all .page-section variants */
+  /* Hide resume from mobile scroll stack */
   app-resume.page-section,
   app-resume.page-section.active,
   app-resume.page-section.prev,
   app-resume.page-section.next { display: none !important; }
+
+  /* Show resume as full-screen overlay when navigated to */
+  app-resume.page-section.resume-mobile-open {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important; left: 0 !important;
+    right: 0 !important; bottom: 0 !important;
+    z-index: 900 !important;
+    overflow-y: auto !important;
+    min-height: 100vh !important;
+    transform: none !important;
+  }
 }
 
 .page-section:focus {

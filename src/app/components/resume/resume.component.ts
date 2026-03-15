@@ -18,7 +18,11 @@ export class ResumeComponent {
   downloading = signal(false);
 
   goBack() {
-    this.nav.goTo(0, this.data.navItems.length);
+    if (window.innerWidth < 960 && window.history.length > 1) {
+      history.back();
+    } else {
+      this.nav.goTo(0, this.data.navItems.length);
+    }
   }
 
   // ── Professional Summary ───────────────────────────────────

@@ -132,13 +132,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   goTo(index: number) {
     if (window.innerWidth < 960) {
-      const sections = document.querySelectorAll('.page-section');
-      const el = sections[index] as HTMLElement;
-      if (el) {
-        const top = el.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      if (index === 7) {
+        // Resume: show as full-screen overlay — no scroll needed
+        this.nav.currentPage.set(7);
+      } else {
+        const sections = document.querySelectorAll('.page-section:not(app-resume)');
+        const el = sections[index] as HTMLElement;
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 70;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }
+        this.nav.currentPage.set(index);
       }
-      this.nav.currentPage.set(index);
+      history.pushState({ page: index }, '', this.nav.getPath(index));
     } else {
       this.nav.goTo(index, this.totalPages);
     }
