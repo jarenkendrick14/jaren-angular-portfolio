@@ -10,7 +10,7 @@ import emailjs from '@emailjs/browser';
 //    • AUTO-REPLY template    — sends to the person who filled the form
 //      Set "To Email" to {{email}}; use {{name}} in the body
 // 3. Replace the three placeholder values below with your real IDs.
-const EMAILJS_SERVICE_ID  = 'service_rs2ju2y';
+const EMAILJS_SERVICE_ID  = 'sservice_injp6ys';
 const EMAILJS_NOTIFY_TID  = 'template_nuocdgk';
 const EMAILJS_REPLY_TID   = 'template_690wboe';
 const EMAILJS_PUBLIC_KEY  = 'OziQGvoCmd0TkXjg1';
@@ -84,15 +84,16 @@ export class ContactComponent {
 
     try {
       // Send notification to you
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_NOTIFY_TID, params, EMAILJS_PUBLIC_KEY);
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_NOTIFY_TID, params, { publicKey: EMAILJS_PUBLIC_KEY });
       // Send auto-reply to the sender
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REPLY_TID,  params, EMAILJS_PUBLIC_KEY);
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REPLY_TID,  params, { publicKey: EMAILJS_PUBLIC_KEY });
 
       this.submitted.set(true);
       this.formData.set({ name: '', email: '', subject: '', message: '' });
       this.fieldErrors.set({});
       setTimeout(() => this.submitted.set(false), 6000);
     } catch (err: any) {
+      console.error('EmailJS error:', err?.status, err?.text ?? err);
       if (!navigator.onLine) {
         this.errorMsg.set('No network connection. Check your internet and try again.');
       } else if (err?.status === 429) {
