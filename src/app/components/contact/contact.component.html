@@ -22,14 +22,24 @@
             </a>
           </li>
           <li>
-            <a href="mailto:jarenkendrickyambao@gmail.com" class="solink">
+            <a href="mailto:jarenkendricky@gmail.com" class="solink">
               <span class="soico soico-mail">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="4" width="20" height="16" rx="2"/>
                   <path d="M22 4L12 13L2 4"/>
                 </svg>
               </span>
-              jarenkendrickyambao&#64;gmail.com
+              jarenkendricky&#64;gmail.com
+            </a>
+          </li>
+          <li>
+            <a href="tel:+639763380683" class="solink">
+              <span class="soico">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;">
+                  <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.58a1 1 0 0 1-.25 1.01l-2.2 2.2z"/>
+                </svg>
+              </span>
+              +63 976 338 0683
             </a>
           </li>
         </ul>
@@ -42,30 +52,54 @@
         <div class="frow">
           <div class="fg">
             <label for="fn">Name</label>
-            <input type="text" id="fn" placeholder="Your name" [value]="formData().name" (input)="updateField('name', $any($event.target).value)" autocomplete="name" [disabled]="sending()"/>
+            <input type="text" id="fn" placeholder="Your name"
+              [value]="formData().name"
+              (input)="updateField('name', $any($event.target).value)"
+              autocomplete="name"
+              [disabled]="sending()"
+              [class.finput-err]="fieldErrors().name"/>
+            @if (fieldErrors().name) {
+              <span class="ferr" role="alert">{{ fieldErrors().name }}</span>
+            }
           </div>
           <div class="fg">
             <label for="fe">Email</label>
-            <input type="email" id="fe" placeholder="you@company.com" [value]="formData().email" (input)="updateField('email', $any($event.target).value)" autocomplete="email" [disabled]="sending()"/>
+            <input type="email" id="fe" placeholder="you@company.com"
+              [value]="formData().email"
+              (input)="updateField('email', $any($event.target).value)"
+              autocomplete="email"
+              [disabled]="sending()"
+              [class.finput-err]="fieldErrors().email"/>
+            @if (fieldErrors().email) {
+              <span class="ferr" role="alert">{{ fieldErrors().email }}</span>
+            }
           </div>
         </div>
         <div class="fg">
-          <label for="fs">Subject</label>
-          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..." [value]="formData().subject" (input)="updateField('subject', $any($event.target).value)" [disabled]="sending()"/>
+          <label for="fs">Subject <span class="fopt">(optional)</span></label>
+          <input type="text" id="fs" placeholder="Internship inquiry, collaboration..."
+            [value]="formData().subject"
+            (input)="updateField('subject', $any($event.target).value)"
+            [disabled]="sending()"/>
         </div>
         <div class="fg">
           <label for="fm">Message</label>
-          <textarea id="fm" placeholder="Tell me about what you're building..." [value]="formData().message" (input)="updateField('message', $any($event.target).value)" [disabled]="sending()"></textarea>
+          <textarea id="fm" placeholder="Tell me about what you're building..."
+            [value]="formData().message"
+            (input)="updateField('message', $any($event.target).value)"
+            [disabled]="sending()"
+            [class.finput-err]="fieldErrors().message"></textarea>
+          @if (fieldErrors().message) {
+            <span class="ferr" role="alert">{{ fieldErrors().message }}</span>
+          }
         </div>
         <button type="button" class="btn btn-fill" (click)="submit()" style="width:100%;" [disabled]="sending()">
-          @if (sending()) {
-            Sending...
-          } @else {
-            Send Message
-          }
+          @if (sending()) { Sending… } @else { Send Message }
         </button>
         @if (submitted()) {
-          <div class="fsok" role="status" aria-live="polite">✓ Sent — I'll get back to you soon.</div>
+          <div class="fsok" role="status" aria-live="polite">
+            ✓ Message sent! A confirmation has been emailed to you.
+          </div>
         }
         @if (errorMsg()) {
           <div class="fserr" role="alert">⚠ {{ errorMsg() }}</div>

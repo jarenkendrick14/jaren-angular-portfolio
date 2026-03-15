@@ -2,6 +2,7 @@ import { Component, inject, signal, ElementRef, ViewChild, AfterViewInit, OnDest
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { Certificate } from '../../models/portfolio.models';
 import { CommonModule } from '@angular/common';
+import { NavigationService } from '../../data/navigation.service';
 
 interface HeatmapDay { date: string; count: number; level: number; }
 interface Commit { sha: string; message: string; repo: string; date: string; url: string; }
@@ -16,6 +17,9 @@ interface Commit { sha: string; message: string; repo: string; date: string; url
 export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() active = false;
   data = inject(PortfolioDataService);
+  nav  = inject(NavigationService);
+
+  goToResume() { this.nav.goTo(7, this.data.navItems.length); }
 
   @ViewChild('sphereContainer') sphereContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('sphereWrap') sphereWrap!: ElementRef<HTMLDivElement>;

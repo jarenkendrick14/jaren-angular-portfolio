@@ -17,6 +17,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { ProjectOverlayComponent } from './components/project-overlay/project-overlay.component';
 import { BlogOverlayComponent } from './components/blog-overlay/blog-overlay.component';
 import { TerminalComponent } from './components/terminal/terminal.component';
+import { ResumeComponent } from './components/resume/resume.component';
 
 // ─── Per-page metadata ────────────────────────────────────────────────────────
 const PAGE_META: { title: string; description: string }[] = [
@@ -55,6 +56,11 @@ const PAGE_META: { title: string; description: string }[] = [
     description:
       'Get in touch with Jaren Kendrick for internship opportunities, freelance web development, or collaboration on full-stack or VR projects.',
   },
+  {
+    title: 'Resume — Jaren Kendrick',
+    description:
+      'View the professional resume of Jaren Kendrick Yambao — Full Stack Developer and Game/App Developer with experience in Angular, Node.js, and Unreal Engine.',
+  },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -64,7 +70,7 @@ const PAGE_META: { title: string; description: string }[] = [
   imports: [
     SidebarComponent, HomeComponent, AboutComponent, ProjectsComponent,
     ExperienceComponent, BlogComponent, TestimonialsComponent, ContactComponent,
-    ProjectOverlayComponent, BlogOverlayComponent, TerminalComponent,
+    ProjectOverlayComponent, BlogOverlayComponent, TerminalComponent, ResumeComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -84,7 +90,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   readonly activeProject  = signal<Project | null>(null);
   readonly activeBlogPost = signal<BlogPost | null>(null);
   readonly mobileMenuOpen = signal(false);
-  readonly totalPages     = this.data.navItems.length;
+  readonly totalPages       = this.data.navItems.length;
+  readonly navigablePages   = this.data.navItems.filter(n => !n.hidden).length;
 
   readonly cursorHover  = signal(false);
   readonly previewActive = signal<number | null>(null);
@@ -182,7 +189,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       return;
     }
     if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') return;
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') this.goTo(Math.min(this.nav.currentPage() + 1, this.totalPages - 1));
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') this.goTo(Math.min(this.nav.currentPage() + 1, this.navigablePages - 1));
     if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  this.goTo(Math.max(this.nav.currentPage() - 1, 0));
     if (e.key === 'Escape' && this.nav.terminalOpen()) this.nav.terminalOpen.set(false);
   }
@@ -201,7 +208,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const atBottom = Math.ceil(activePage.scrollTop + activePage.clientHeight) >= activePage.scrollHeight - 5;
 
     if (e.deltaY > 20 && atBottom) {
-      if (this.nav.currentPage() < this.totalPages - 1) {
+      if (this.nav.currentPage() < this.navigablePages - 1) {
         this.goTo(this.nav.currentPage() + 1);
         this.wheelTimer = setTimeout(() => { this.wheelTimer = null; }, 800);
       }

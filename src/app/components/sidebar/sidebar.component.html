@@ -11,17 +11,19 @@
 <ul class="sb-nav" style="list-style: none;">
     <!-- The line is now drawn via CSS on .sb-nav::before -->
     @for (item of navItems; track item.index) {
-      <li style="margin: 0; padding: 0;">
-        <button
-          class="sdw"
-          [class.on]="nav.currentPage() === item.index"
-          (click)="goTo(item.index)"
-          [attr.aria-label]="item.label"
-          [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
-          <span class="sdot"></span>
-          <span class="slbl">{{ item.short }}</span>
-        </button>
-      </li>
+      @if (!item.hidden) {
+        <li style="margin: 0; padding: 0;">
+          <button
+            class="sdw"
+            [class.on]="nav.currentPage() === item.index"
+            (click)="goTo(item.index)"
+            [attr.aria-label]="item.label"
+            [attr.aria-current]="nav.currentPage() === item.index ? 'page' : null">
+            <span class="sdot"></span>
+            <span class="slbl">{{ item.short }}</span>
+          </button>
+        </li>
+      }
     }
   </ul>
 

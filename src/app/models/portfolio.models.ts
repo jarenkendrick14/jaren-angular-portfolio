@@ -41,4 +41,5 @@ export interface NavItem {
   label: string;
   short: string;
   index: number;
+  hidden?: boolean; // hide from sidebar / mobile nav but still navigable
 }

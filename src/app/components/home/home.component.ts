@@ -17,6 +17,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   nav  = inject(NavigationService);
   projectOpened = output<number>();
   previewHover  = output<number | null>();
+  resumeOpened  = output<void>();
 
   readonly featuredIndices = [0, 1, 3];
 

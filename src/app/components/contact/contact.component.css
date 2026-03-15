@@ -156,3 +156,22 @@ textarea { min-height: 150px; }
   cursor: not-allowed;
   transform: none !important;
 }
+
+/* Per-field inline errors */
+.finput-err { border-color: #ef4444 !important; }
+.finput-err:focus { border-color: #ef4444 !important; }
+
+.ferr {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: #ef4444;
+  margin-top: -.2rem;
+}
+
+.fopt {
+  font-size: .7rem;
+  color: var(--muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}

@@ -81,12 +81,12 @@
   width: 100% !important;
 }
 
-/* Resume should fill exact viewport with no internal scroll */
+/* Resume scrolls within the page-section container */
 :host ::ng-deep .page-resume {
   position: static !important;
-  height: 100% !important;
-  min-height: unset !important;
-  overflow: hidden !important;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow: visible !important;
   width: 100% !important;
 }
 
@@ -219,7 +219,7 @@
   :host ::ng-deep .page-resume {
     height: auto !important;
     overflow: visible !important;
-    min-height: 100vh !important;
+    min-height: auto !important;
   }
 
   .mobnav { display: flex; }
@@ -262,6 +262,9 @@
   #cdot, #cring, #prvw { display: none !important; }
 
   .thm, .mbg { cursor: pointer; }
+
+  /* Hide resume page from mobile scroll stack */
+  app-resume.page-section { display: none !important; }
 }
 
 .page-section:focus {

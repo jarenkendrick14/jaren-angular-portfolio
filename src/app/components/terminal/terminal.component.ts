@@ -78,7 +78,7 @@ export class TerminalComponent {
       `    <span class="tl-val">Angular · Vue.js 3 · Node.js · PostgreSQL · MongoDB · C# · TypeScript</span>`,
       ``,
       `  <span class="tl-warn">▸ LOOKING FOR</span>`,
-      `    <span class="tl-val">Full-stack internship</span> <span class="tl-acc">→ jarenkendrickyambao@gmail.com</span>`,
+      `    <span class="tl-val">Full-stack internship</span> <span class="tl-acc">→ jarenkendricky@gmail.com</span>`,
     ],
     skills: () => [
       ``,
@@ -109,7 +109,7 @@ export class TerminalComponent {
       ``,
       `  <span class="tl-head">Contact</span>`,
       `<span class="tl-dim">  ──────────────────────────────</span>`,
-      `  <span class="tl-acc">Email</span>     <span class="tl-val">jarenkendrickyambao@gmail.com</span>`,
+      `  <span class="tl-acc">Email</span>     <span class="tl-val">jarenkendricky@gmail.com</span>`,
       `  <span class="tl-acc">LinkedIn</span>  <span class="tl-val">linkedin.com/in/jarenkendrick</span>`,
       `  <span class="tl-acc">GitHub</span>    <span class="tl-val">github.com/jarenkendrick14</span>`,
     ],

@@ -164,3 +164,4 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 svg[aria-hidden="true"] {
   pointer-events: none;
 }
+

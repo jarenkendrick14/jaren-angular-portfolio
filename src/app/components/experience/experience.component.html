@@ -28,7 +28,7 @@
       </div>
 
       <!-- ── Work entries ── -->
-      @for (job of jobs; track job.company; let i = $index) {
+      @for (job of jobs; track $index; let i = $index) {
         <div class="tl-row al" [style.animation-delay]="(0.3 + i * 0.15) + 's'">
 
           <!-- Node hidden from scanner -->

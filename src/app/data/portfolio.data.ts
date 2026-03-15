@@ -12,6 +12,7 @@ export class PortfolioDataService {
     { label: 'Blog', short: 'Blog', index: 4 },
     { label: 'Testimonials', short: 'reviews', index: 5 },
     { label: 'Contact', short: 'Contact', index: 6 },
+    { label: 'Resume', short: 'Resume', index: 7, hidden: true },
   ];
 
   readonly projects: Project[] = [

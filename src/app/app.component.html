@@ -45,7 +45,9 @@
   @if (mobileMenuOpen()) {
     <nav class="mobmenu" role="navigation">
       @for (item of data.navItems; track item.index) {
-        <a (click)="goTo(item.index)" [class.on]="nav.currentPage() === item.index">0{{ item.index + 1 }} {{ item.label }}</a>
+        @if (!item.hidden) {
+          <a (click)="goTo(item.index)" [class.on]="nav.currentPage() === item.index">0{{ item.index + 1 }} {{ item.label }}</a>
+        }
       }
     </nav>
   }
@@ -55,13 +57,14 @@
       <!-- Logic: Component receives [active]="true" only when slide finishes. 
            Slide handles transition, directive handles the glitch effect. -->
       
-      <app-home class="page-section" 
+      <app-home class="page-section"
         tabindex="0"
-        [class.active]="nav.currentPage() === 0" 
+        [class.active]="nav.currentPage() === 0"
         [class.prev]="nav.currentPage() > 0"
         [active]="nav.currentPage() === 0"
-        (projectOpened)="openProject($event)" 
-        (previewHover)="setPreview($event)">
+        (projectOpened)="openProject($event)"
+        (previewHover)="setPreview($event)"
+        (resumeOpened)="goTo(7)">
       </app-home>
 
       <app-about class="page-section" 
@@ -107,13 +110,21 @@
         [active]="nav.currentPage() === 5">
       </app-testimonials>
 
-      <app-contact class="page-section" 
+      <app-contact class="page-section"
         tabindex="0"
-        [class.active]="nav.currentPage() === 6" 
+        [class.active]="nav.currentPage() === 6"
         [class.prev]="nav.currentPage() > 6"
         [class.next]="nav.currentPage() < 6"
         [active]="nav.currentPage() === 6">
       </app-contact>
+
+      <app-resume class="page-section"
+        tabindex="0"
+        [class.active]="nav.currentPage() === 7"
+        [class.prev]="nav.currentPage() > 7"
+        [class.next]="nav.currentPage() < 7"
+        [active]="nav.currentPage() === 7">
+      </app-resume>
     </div>
   </main>
 
