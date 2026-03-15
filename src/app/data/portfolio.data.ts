@@ -132,8 +132,8 @@ export class PortfolioDataService {
         'Deployed to Netlify with automatic CI/CD from GitHub on every push',
         'Built with TypeScript throughout for type-safe component logic',
       ],
-      live: [{ name: 'Live Demo ↗', url: 'https://prelim-project-einsteins-art.netlify.app' }],
-      github: null,
+      live: [{ name: 'Live Site ↗', url: 'https://einsteins-art.netlify.app/' }],
+      github: 'https://github.com/jarenkendrick14/einsteins-art',
       imgs: [
         'assets/images/einsteins-art-1.webp',
         'assets/images/einsteins-art-2.webp',
