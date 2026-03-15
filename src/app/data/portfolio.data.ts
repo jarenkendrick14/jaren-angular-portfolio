@@ -262,7 +262,7 @@ export class PortfolioDataService {
 <p>The job market clearly favors React. I know that. But Vue's Composition API fits how I think. Logic lives in <code>setup()</code>. You compose behavior in reusable composables. The template syntax doesn't feel like a fight. For someone learning reactivity for the first time — especially coming from Unity's component-based architecture in C# — Vue's mental model clicked faster.</p>
 <p>I'm not against React. I'll learn it. But for a solo developer building a real app with a deadline, you pick the tool you can move fastest with while still writing code you're proud of.</p>
 
-<img src="assets/images/blog-view-code.jpeg" alt="Vue.js Composition API code">
+<img src="assets/images/blog-vue-code.jpeg" alt="Vue.js Composition API code">
 <div class="blog-img-caption">Composables in Vue feel natural coming from Unity's component model.</div>
 
 <h3>What I'd do differently</h3>
