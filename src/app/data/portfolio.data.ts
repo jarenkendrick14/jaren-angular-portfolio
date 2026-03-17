@@ -40,7 +40,9 @@ export class PortfolioDataService {
         'assets/images/pathfinder-1.webp',
         'assets/images/pathfinder-2.webp',
         'assets/images/pathfinder-3.webp'
-      ]
+      ],
+      category: 'Game',
+      outcome: 'Published on the Meta Quest Store and Google Play. Live product used by VirtuIntelligence clients — passed Meta\'s hardware and content review across Quest 2, 3, 3S, and Pro.'
     },
     {
       num: '02',
@@ -65,7 +67,9 @@ export class PortfolioDataService {
         'assets/images/symposium-1.webp',
         'assets/images/symposium-2.webp',
         'assets/images/symposium-3.webp'
-      ]
+      ],
+      category: 'Full Stack',
+      outcome: 'Live at theaisymposium.net. Deployed on Vercel + Railway — actively used by VirtuIntelligence for AI-assisted ideation sessions with real users in shared rooms.'
     },
     {
       num: '03',
@@ -90,7 +94,9 @@ export class PortfolioDataService {
         'assets/images/travel-atelier-1.webp',
         'assets/images/travel-atelier-2.webp',
         'assets/images/travel-atelier-3.webp'
-      ]
+      ],
+      category: 'Full Stack',
+      outcome: 'Live on Vercel. Demonstrates complete full-stack ownership — from database schema to a polished, animated frontend — in a single cohesive codebase.'
     },
     {
       num: '04',
@@ -115,7 +121,9 @@ export class PortfolioDataService {
         'assets/images/dropify-1.webp',
         'assets/images/dropify-2.webp',
         'assets/images/dropify-3.webp'
-      ]
+      ],
+      category: 'Full Stack',
+      outcome: 'Live at dropifystore.netlify.app. Fully functional e-commerce platform with MongoDB-backed persistent cart, CRUD admin panel, and role-based access control.'
     },
     {
       num: '05',
@@ -138,7 +146,9 @@ export class PortfolioDataService {
         'assets/images/einsteins-art-1.webp',
         'assets/images/einsteins-art-2.webp',
         'assets/images/einsteins-art-3.webp'
-      ]
+      ],
+      category: 'Web',
+      outcome: 'Live at einsteins-art.netlify.app. Production Angular site for a real local brand — shipped with CI/CD from GitHub and zero-reload routing.'
     }
   ];
 
@@ -216,6 +226,8 @@ export class PortfolioDataService {
       title: 'From Game Dev to Full Stack: What Shipping a VR App Taught Me',
       excerpt: 'When I shipped PathFinder to the Meta Quest store, I learned more about software development than any tutorial ever taught me. Here\'s what directly translates to web development.',
       img: 'assets/images/blog-vr-gamedev.webp',
+      readingTime: '6 min read',
+      category: 'Game Dev',
       content: `<p>When I joined VirtuIntelligence as a part-time Game Developer, I wasn't sure how working in Unreal Engine and Unity would shape me as a web developer. After shipping PathFinder to the Meta Quest store, I figured it out — a lot transfers, and some of it surprised me.</p>
 
 <img src="assets/images/blog-vr-shipping.webp" alt="VR development workflow">
@@ -245,6 +257,8 @@ export class PortfolioDataService {
       title: 'Vue.js vs Starting from Scratch: Why I Chose a Framework',
       excerpt: 'When building Travel Atelier, I faced a real choice: vanilla JavaScript or Vue.js. Here\'s the honest breakdown — when frameworks earn their place, and when they don\'t.',
       img: 'assets/images/travel-atelier-1.webp',
+      readingTime: '5 min read',
+      category: 'Full Stack',
       content: `<p>When I started building Travel Atelier, I had a real choice: vanilla JavaScript or Vue.js. Here's the honest breakdown — why I picked a framework, when that's the right call, and what I'd do differently now.</p>
 
 <h3>The case for vanilla first</h3>
@@ -269,6 +283,53 @@ export class PortfolioDataService {
 <p>Spend two weeks in vanilla JavaScript before touching any framework. Not because frameworks are bad — but because you don't fully appreciate what they give you until you've felt the pain of doing it yourself. Reactivity, component lifecycle, two-way binding — these are harder concepts when a framework is handling them invisibly for you.</p>
 <p><em>Understanding the "why" behind your tools makes you significantly better at using them.</em></p>
 <p>Pick the right tool. But understand what the tool is doing for you. That understanding is the difference between a developer who can use a framework and a developer who can build without one.</p>`
+    },
+    {
+      date: 'January 2026',
+      title: 'Building Symposium: What I Learned Making a Real-Time Multi-AI Chat',
+      excerpt: 'Symposium was the most architecturally complex thing I had built. WebSockets, streaming AI, shared rooms, admin dashboards — here\'s how I approached the hardest parts.',
+      img: 'assets/images/symposium-1.webp',
+      readingTime: '7 min read',
+      category: 'Full Stack',
+      content: `<p>Symposium started with a simple question from VirtuIntelligence: "What if multiple AI assistants could talk to each other and to a human user, all in the same room?" Six weeks later, it was live at theaisymposium.net. Here's what I learned building the hardest system I've tackled so far.</p>
+
+<h3>The real-time problem</h3>
+<p>HTTP request/response is fine for most web apps. But a chat platform — especially one with streaming AI responses — needed persistent, bidirectional connections. WebSockets were the obvious answer. The hard part wasn't the protocol. It was managing <em>state across connections</em>.</p>
+<p>When a user joins a room, they need to see messages that arrived before they connected. When an AI responds, all connected clients need to receive it simultaneously. When a user disconnects and reconnects, their session needs to be recognized. That's three separate state synchronization problems before you've written a single AI integration.</p>
+
+<h3>Streaming AI responses</h3>
+<p>Nobody wants to wait 10 seconds for an AI response to appear all at once. The solution is streaming — sending tokens as they're generated and progressively rendering them in the UI. On the backend, this means handling the AI provider's stream, buffering tokens, and broadcasting them over WebSocket. On the frontend, it means appending characters to a live message element without triggering full re-renders.</p>
+<p>Angular's signals made this surprisingly clean. A signal holding the current streaming message updates character by character, and the template reacts exactly as needed — no change detection overhead from re-rendering the full message list.</p>
+
+<h3>Multi-AI turn management</h3>
+<p>When you have multiple AI participants in a room, you need rules about who speaks when. An uncontrolled system will have all AIs responding simultaneously, which is chaotic and expensive. I implemented a turn-based queue on the server: when a human sends a message, the system determines which AI should respond next based on @mention priority, then round-robin order, with a cooldown to prevent response loops.</p>
+<p>This required a small but careful state machine on the backend — the kind of thing that's easy to under-engineer and painful to debug under load.</p>
+
+<h3>What I'd do differently</h3>
+<p>I'd invest more time in the database schema upfront. I added features mid-build — invite links, admin dashboards, hourly room cleanup — and each one required schema changes that rippled through the Prisma models, API handlers, and frontend types. Design the data model for your v2 features, not just v1. The migration cost of schema changes compounds quickly.</p>
+<p>Real-time systems expose architecture problems you'd never see in a traditional REST app. If you want to level up quickly as a full-stack developer, build something with WebSockets. The constraints force good decisions.</p>`
+    },
+    {
+      date: 'March 2026',
+      title: 'The Stack I Reach For in 2026 (And Why)',
+      excerpt: 'After shipping 5 projects across web and VR, I have clear opinions about tooling. Here\'s my default stack, why I chose each piece, and what I\'d swap out for the right job.',
+      img: 'assets/images/dropify-1.webp',
+      readingTime: '4 min read',
+      category: 'Opinion',
+      content: `<p>After shipping five projects — across Angular, Vue.js, Node.js, Unreal Engine, and Unity — I've stopped treating my tool choices as experiments and started treating them as decisions. Here's where I land in 2026.</p>
+
+<h3>Frontend: Angular for complex apps, Vue for everything else</h3>
+<p><strong>Angular</strong> is my default for large, complex applications. The opinionated structure — standalone components, dependency injection, signals-based reactivity, strong typing throughout — removes a class of architectural debates that waste time on big codebases. It's verbose. It's also predictable. When I return to Angular code I wrote three months ago, I know exactly where everything is.</p>
+<p><strong>Vue.js 3</strong> wins for medium-complexity projects and anything I need to ship quickly. The Composition API is genuinely elegant. For a full-stack project with a two-week deadline, Vue gets me to a polished frontend faster than Angular.</p>
+
+<h3>Backend: Node.js + Express + Prisma</h3>
+<p>I'm comfortable in this stack and I trust it. Express gives me just enough structure without hiding what's happening. Prisma's type-safe queries catch entire categories of bugs before runtime — and the schema-first approach forces you to think carefully about your data model before writing a single handler. PostgreSQL for relational data, MongoDB when I need document flexibility.</p>
+
+<h3>Game/VR: Unreal Engine 5.5 for VR, Unity for cross-platform mobile</h3>
+<p>PathFinder is a Meta Quest app — Unreal's native XR support and Blueprints visual scripting made iteration fast. The companion Android app lives in Unity, because deploying to Google Play from Unity is significantly simpler. Different tools, different jobs.</p>
+
+<h3>What I'd swap out</h3>
+<p>I'm increasingly skeptical of ORMs for simple data access patterns. Prisma is excellent for complex schemas, but raw SQL with a lightweight query builder is often faster to reason about for straightforward CRUD. The best stack is the one your team knows and your project actually needs. Having a default — a stack you can reach for without thinking — is a competitive advantage.</p>`
     }
   ];
 

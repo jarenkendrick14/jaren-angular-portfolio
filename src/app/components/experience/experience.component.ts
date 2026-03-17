@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, signal, AfterViewInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, signal, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,17 +10,27 @@ import { CommonModule } from '@angular/common';
 })
 export class ExperienceComponent implements OnChanges, AfterViewInit {
   @Input() active = false;
+  @ViewChild('radarCanvas') radarCanvas!: ElementRef<HTMLCanvasElement>;
 
   readonly barsReady   = signal(false);
   readonly lineReady   = signal(false);
   private barsAnimated = false;
 
+  readonly radarAxes = [
+    { label: 'Frontend',       value: 0.78 },
+    { label: 'Backend',        value: 0.72 },
+    { label: 'Game Dev',       value: 0.70 },
+    { label: 'API Design',     value: 0.68 },
+    { label: 'Problem Solving',value: 0.82 },
+    { label: 'UI/UX',          value: 0.62 },
+  ];
+
   // ─── Stats with count-up ───
   readonly counters = [
     { target: 2,  suffix: '+', label: 'Years Coding',               current: signal(0) },
     { target: 5,  suffix: '+', label: 'Projects Completed',          current: signal(0) },
-    { target: 8,  suffix: '+', label: 'Technologies in Production',  current: signal(0) },
-    { target: 12, suffix: '+', label: 'Certifications Earned',       current: signal(0) },
+    { target: 8,  suffix: '+', label: 'Technologies Used',           current: signal(0) },
+    { target: 12, suffix: '+', label: 'Certifications',              current: signal(0) },
   ];
 
   ngOnChanges(changes: SimpleChanges) {
@@ -43,11 +53,111 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
   private triggerAnimations() {
     if (this.barsAnimated) return;
     this.barsAnimated = true;
-    
+
     this.counters.forEach(c => c.current.set(0));
     setTimeout(() => this.animateCounters(), 350);
     setTimeout(() => this.lineReady.set(true),  300);
     setTimeout(() => this.barsReady.set(true),  700);
+    setTimeout(() => this.animateRadar(),        900);
+  }
+
+  private animateRadar() {
+    const canvas = this.radarCanvas?.nativeElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const size = canvas.width;
+    const cx = size / 2, cy = size / 2;
+    const r = size * 0.32;
+    const n = this.radarAxes.length;
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--acc').trim() || '#8b5cf6';
+    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#888';
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const gridColor = isDark ? 'rgba(42,42,64,0.55)' : 'rgba(190,185,215,0.35)';
+
+    let progress = 0;
+    const duration = 60;
+
+    const draw = () => {
+      progress = Math.min(progress + 1, duration);
+      const t = 1 - Math.pow(1 - progress / duration, 3);
+      ctx.clearRect(0, 0, size, size);
+
+      // Grid rings
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 0.8;
+      [0.25, 0.5, 0.75, 1].forEach(ring => {
+        ctx.beginPath();
+        for (let i = 0; i < n; i++) {
+          const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+          const px = cx + Math.cos(a) * r * ring;
+          const py = cy + Math.sin(a) * r * ring;
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      });
+
+      // Axis lines
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+        ctx.strokeStyle = gridColor;
+        ctx.stroke();
+      }
+
+      // Data polygon
+      ctx.beginPath();
+      this.radarAxes.forEach((ax, i) => {
+        const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+        const dist = r * ax.value * t;
+        const px = cx + Math.cos(a) * dist;
+        const py = cy + Math.sin(a) * dist;
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      });
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(139,92,246,0.18)';
+      ctx.fill();
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      // Dots
+      this.radarAxes.forEach((ax, i) => {
+        const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+        const dist = r * ax.value * t;
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(a) * dist, cy + Math.sin(a) * dist, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = accent;
+        ctx.fill();
+      });
+
+      // Labels
+      ctx.font = `500 10px "JetBrains Mono", monospace`;
+      ctx.fillStyle = textColor;
+      ctx.textBaseline = 'middle';
+      this.radarAxes.forEach((ax, i) => {
+        const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+        const cosA = Math.cos(a);
+        const lx = cx + cosA * (r + 26);
+        const ly = cy + Math.sin(a) * (r + 24);
+        ctx.textAlign = cosA > 0.2 ? 'left' : cosA < -0.2 ? 'right' : 'center';
+        const words = ax.label.split(' ');
+        if (words.length > 1) {
+          ctx.fillText(words[0], lx, ly - 7);
+          ctx.fillText(words[1], lx, ly + 7);
+        } else {
+          ctx.fillText(ax.label, lx, ly);
+        }
+      });
+
+      if (progress < duration) requestAnimationFrame(draw);
+    };
+
+    requestAnimationFrame(draw);
   }
 
   private animateCounters() {

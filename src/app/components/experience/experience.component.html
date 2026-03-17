@@ -93,6 +93,27 @@
 
     </div><!-- /tl-wrap -->
 
+    <!-- ── Skill Radar Chart ─────────────────────────────────────── -->
+    <div class="radar-section au" [style.animation-delay]="'0.55s'">
+      <div class="radar-wrap">
+        <div class="radar-left">
+          <p class="radar-label">Skill Radar</p>
+          <canvas #radarCanvas width="300" height="300" class="radar-canvas" aria-label="Skill radar chart"></canvas>
+        </div>
+        <div class="radar-legend">
+          @for (ax of radarAxes; track ax.label) {
+            <div class="radar-leg-item">
+              <div class="radar-leg-bar">
+                <div class="radar-leg-fill" [style.--target-w]="(ax.value * 100) + '%'" [style.animation-play-state]="barsReady() ? 'running' : 'paused'"></div>
+              </div>
+              <span class="radar-leg-label">{{ ax.label }}</span>
+              <span class="radar-leg-pct">{{ (ax.value * 100).toFixed(0) }}%</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
     <!-- ── Skills ────────────────────────────────────────────────── -->
     <div class="skills-section au" [style.animation-delay]="'0.6s'">
       <div class="skills-header">
@@ -165,6 +186,34 @@
       </div>
 
     </div><!-- /skills-section -->
+
+    <!-- ── What I Bring ─────────────────────────────────────── -->
+    <div class="wib-section au" [style.animation-delay]="'0.7s'">
+      <p class="wib-label">What I Bring</p>
+      <div class="wib-grid">
+        <div class="wib-card">
+          <div class="wib-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h4 class="wib-title">Self-Directed Learner</h4>
+          <p class="wib-desc">I've picked up most of my stack — Angular, Node.js, Unreal Engine — outside of class by building things and seeing what breaks. That process is still very much ongoing.</p>
+        </div>
+        <div class="wib-card">
+          <div class="wib-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h4 class="wib-title">Full-Stack Minded</h4>
+          <p class="wib-desc">I'm comfortable working across frontend, backend, and the database layer. I try to understand how the pieces connect rather than staying in one narrow slice.</p>
+        </div>
+        <div class="wib-card">
+          <div class="wib-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <h4 class="wib-title">Shipping Experience</h4>
+          <p class="wib-desc">PathFinder is live on the Meta Quest Store and Symposium runs in production. I've gotten a taste of what it takes to take something from idea to deployed — and I want more of it.</p>
+        </div>
+      </div>
+    </div>
 
   </div><!-- /pin -->
 </section>

@@ -1,3 +1,14 @@
+<!-- Film grain overlay -->
+<div class="grain-overlay" aria-hidden="true"></div>
+<!-- Ambient gradient -->
+<div class="ambient-gradient" aria-hidden="true"></div>
+<!-- Scroll progress bar -->
+<div class="progress-bar" [style.width]="progressWidth() + '%'" aria-hidden="true"></div>
+<!-- Ripple container -->
+<div id="ripple-layer" aria-hidden="true"></div>
+<!-- Command Palette (Ctrl+K) -->
+<app-command-palette />
+
 <div id="cdot" #cdot aria-hidden="true"></div>
 <div id="cring" #cring [class.big]="cursorHover()" aria-hidden="true"><span class="cl">VIEW</span></div>
 

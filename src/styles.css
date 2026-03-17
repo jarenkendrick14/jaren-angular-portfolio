@@ -32,6 +32,21 @@
   --sbbrd: #d0cceb;
 }
 
+/* ══ Light-mode green: #4ade80 is unreadable on light bg ══ */
+[data-theme="light"] .h-avail-pill,
+[data-theme="light"] .avail-text { color: #15803d !important; }
+
+[data-theme="light"] .h-avail-pill {
+  background: rgba(22,163,74,.08) !important;
+  border-color: rgba(22,163,74,.28) !important;
+}
+[data-theme="light"] .avail-strip {
+  background: rgba(22,163,74,.06) !important;
+  border-color: rgba(22,163,74,.25) !important;
+}
+[data-theme="light"] .h-avail-dot,
+[data-theme="light"] .avail-dot { background: #16a34a !important; }
+
 /* ══════════ RESET ══════════ */
 *, *::before, *::after {
   box-sizing: border-box;

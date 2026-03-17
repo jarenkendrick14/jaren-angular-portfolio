@@ -9,6 +9,8 @@ export interface Project {
   github: string | null;
   imgs: string[];
   subtitle: string;
+  category: 'Web' | 'Game' | 'Mobile' | 'Full Stack';
+  outcome?: string;
 }
 
 export interface Certificate {
@@ -25,7 +27,9 @@ export interface BlogPost {
   title: string;
   excerpt: string;
   content: string;
-  img?: string; // Optional image path
+  img?: string;
+  readingTime?: string;
+  category?: string;
 }
 
 export interface Testimonial {

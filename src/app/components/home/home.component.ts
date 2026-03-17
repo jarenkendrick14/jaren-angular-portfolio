@@ -1,8 +1,7 @@
-import { Component, inject, ElementRef, AfterViewInit, OnDestroy, output, Input, effect } from '@angular/core';
+import { Component, inject, signal, AfterViewInit, OnDestroy, output, Input } from '@angular/core';
 import { PortfolioDataService } from '../../data/portfolio.data';
 import { NavigationService } from '../../data/navigation.service';
 import { DecryptDirective } from '../../directives/decrypt.directive';
-
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -20,6 +19,28 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   resumeOpened  = output<void>();
 
   readonly featuredIndices = [0, 1, 3];
+
+  readonly pampangaTime = signal(this.getPhTime());
+  readonly pampangaIcon = signal(this.getPhIcon());
+  private clockTimer: any = null;
+
+  private getPhDate(): Date {
+    return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+  }
+
+  private getPhTime(): string {
+    const ph = this.getPhDate();
+    const h = ph.getHours();
+    const m = ph.getMinutes().toString().padStart(2, '0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = ((h % 12) || 12);
+    return `${h12}:${m} ${ampm} in Pampanga`;
+  }
+
+  private getPhIcon(): 'moon' | 'sun' | 'cloud' {
+    const h = this.getPhDate().getHours();
+    return (h >= 18 || h < 6) ? 'moon' : (h >= 12 ? 'sun' : 'cloud');
+  }
 
   private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
@@ -44,7 +65,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     return this.featuredIndices.map(i => ({ project: this.data.projects[i], index: i }));
   }
 
+
   ngAfterViewInit() {
+    this.clockTimer = setInterval(() => {
+      this.pampangaTime.set(this.getPhTime());
+      this.pampangaIcon.set(this.getPhIcon());
+    }, 1000);
     this.canvas = document.getElementById('bg-canvas') as HTMLCanvasElement;
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d')!;
@@ -72,6 +98,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.clockTimer) clearInterval(this.clockTimer);
     cancelAnimationFrame(this.animId);
     document.removeEventListener('mousemove',  this._docMouseMove);
     document.removeEventListener('mouseleave', this._docMouseLeave);

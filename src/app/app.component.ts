@@ -1,5 +1,5 @@
 import {
-  Component, inject, signal, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, effect
+  Component, inject, signal, computed, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, effect
 } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
 import { NavigationService } from './data/navigation.service';
@@ -18,6 +18,7 @@ import { ProjectOverlayComponent } from './components/project-overlay/project-ov
 import { BlogOverlayComponent } from './components/blog-overlay/blog-overlay.component';
 import { TerminalComponent } from './components/terminal/terminal.component';
 import { ResumeComponent } from './components/resume/resume.component';
+import { CommandPaletteComponent } from './components/command-palette/command-palette.component';
 
 // ─── Per-page metadata ────────────────────────────────────────────────────────
 const PAGE_META: { title: string; description: string }[] = [
@@ -71,6 +72,7 @@ const PAGE_META: { title: string; description: string }[] = [
     SidebarComponent, HomeComponent, AboutComponent, ProjectsComponent,
     ExperienceComponent, BlogComponent, TestimonialsComponent, ContactComponent,
     ProjectOverlayComponent, BlogOverlayComponent, TerminalComponent, ResumeComponent,
+    CommandPaletteComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -95,6 +97,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   readonly cursorHover  = signal(false);
   readonly previewActive = signal<number | null>(null);
+  readonly progressWidth = computed(() => (this.nav.currentPage() / (this.navigablePages - 1)) * 100);
 
   private mx = 0; private my = 0;
   private rx = 0; private ry = 0;
@@ -172,6 +175,20 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() { cancelAnimationFrame(this.animId); }
 
+  @HostListener('document:mousedown', ['$event'])
+  onMouseDown(e: MouseEvent) {
+    if (window.innerWidth < 960) return;
+    const layer = document.getElementById('ripple-layer');
+    if (!layer) return;
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple-dot';
+    ripple.style.left = `${e.clientX}px`;
+    ripple.style.top  = `${e.clientY}px`;
+    layer.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+  }
+
+
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e: MouseEvent) {
     this.mx = e.clientX;
@@ -183,6 +200,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const target = e.target as HTMLElement;
     const isHoverable = target.closest('a, button, .btn, .sdw, .pi, .bc, .tmc, .feat-card, .term-trigger, .skill-toggle-btn, .cert-nav, .cert-card');
     this.cursorHover.set(!!isHoverable);
+
   }
 
   @HostListener('document:keydown', ['$event'])
