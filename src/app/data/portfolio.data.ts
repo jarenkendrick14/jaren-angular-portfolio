@@ -88,7 +88,7 @@ export class PortfolioDataService {
         'Sticky transparent-to-solid header transition on scroll with smooth page-level animations',
         'Default test user for easy evaluation (user@example.com / password)',
       ],
-      live: [{ name: 'Live Site ↗', url: 'https://travelatelier.vercel.app/' }],
+      live: [{ name: 'Live Site ↗', url: 'https://travelatelier.netlify.app/' }],
       github: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
       imgs: [
         'assets/images/travel-atelier-1.webp',
