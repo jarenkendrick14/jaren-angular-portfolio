@@ -34,7 +34,7 @@ export class ResumeComponent {
     {
       period: 'Feb 2026 — Present',
       company: 'HumanSide Technologies',
-      type: 'Part-time · Remote',
+      type: 'Part-time · Remote · Contract',
       title: 'Full Stack Developer',
       bullets: [
         'Architected and shipped <strong>Symposium</strong> — a real-time multi-AI chat platform built with Angular, Ionic, Node.js, WebSockets, and PostgreSQL.',
@@ -44,7 +44,7 @@ export class ResumeComponent {
     {
       period: 'Apr 2025 — Jan 2026',
       company: 'HumanSide Technologies',
-      type: 'Part-time · Remote',
+      type: 'Part-time · Remote · Contract',
       title: 'Game / App Developer',
       bullets: [
         'Shipped <strong>PathFinder</strong> to the Meta Quest Store using Unreal Engine 5.5 Blueprints; built an Android companion app in Unity.',
@@ -180,12 +180,17 @@ export class ResumeComponent {
     /* ── HEADER ── */
     .rd-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 12pt;
-      padding-bottom: 8pt;
+      padding-bottom: 6pt;
       margin-bottom: 7pt;
       border-bottom: 1.5pt solid #1a1824;
+    }
+    .rd-name-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     .rd-name {
       font-family: 'Cormorant Garamond', serif;

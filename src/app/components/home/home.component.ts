@@ -45,20 +45,19 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
   private animId = 0;
-  private islands: {
-    cx: number;
-    cy: number;
-    rx: number;
-    ry: number;
-    rot: number;
+  private ribbons: {
+    base: number;
+    amp: number;
+    thickness: number;
     phase: number;
-    drift: number;
-    rings: number;
+    speed: number;
+    tilt: number;
+    color: 'violet' | 'teal' | 'rose';
   }[] = [];
   private cmx = -9999;
   private cmy = -9999;
 
-  private readonly INFLUENCE = 190;
+  private readonly INFLUENCE = 260;
 
   private _docMouseMove!: (e: MouseEvent) => void;
   private _docMouseLeave!: () => void;
@@ -125,87 +124,116 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.canvas.width  = W;
     this.canvas.height = H;
 
-    this.islands = [];
-    const count = Math.max(7, Math.min(18, Math.round((W * H) / 125000)));
-
-    for (let i = 0; i < count; i++) {
-      const band = i / Math.max(1, count - 1);
-      const sideBias = i % 3 === 0 ? -0.12 : i % 3 === 1 ? 0.12 : 0;
-      this.islands.push({
-        cx: (0.16 + ((i * 0.381966) % 0.72) + sideBias) * W,
-        cy: (0.08 + band * 0.9) * H,
-        rx: 70 + ((i * 47) % 120),
-        ry: 42 + ((i * 31) % 95),
-        rot: ((i * 29) % 180) * Math.PI / 180,
-        phase: i * 1.73,
-        drift: i % 2 === 0 ? 1 : -1,
-        rings: 4 + (i % 4),
-      });
-    }
+    const colors: Array<'violet' | 'teal' | 'rose'> = ['violet', 'teal', 'rose'];
+    this.ribbons = Array.from({ length: 9 }, (_, i) => ({
+      base: -0.08 + i * 0.145,
+      amp: 34 + (i % 3) * 18,
+      thickness: 90 + (i % 4) * 26,
+      phase: i * 1.27,
+      speed: 0.55 + (i % 5) * 0.12,
+      tilt: (i % 2 === 0 ? 1 : -1) * (0.035 + (i % 3) * 0.018),
+      color: colors[i % colors.length],
+    }));
   }
 
   private draw() {
     const { ctx, canvas: { width: W, height: H } } = this;
     ctx.clearRect(0, 0, W, H);
     const isDark = this.nav.isDark();
-    const t = performance.now() * 0.00035;
+    const t = performance.now() * 0.00045;
 
-    const glow = ctx.createRadialGradient(W * 0.72, H * 0.18, 0, W * 0.72, H * 0.18, Math.max(W, H) * 0.75);
-    glow.addColorStop(0, isDark ? 'rgba(20,184,166,0.08)' : 'rgba(20,184,166,0.12)');
-    glow.addColorStop(0.42, isDark ? 'rgba(139,92,246,0.055)' : 'rgba(139,92,246,0.075)');
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, isDark ? 'rgba(15,12,24,0.74)' : 'rgba(255,255,255,0.72)');
+    bg.addColorStop(0.48, isDark ? 'rgba(8,17,27,0.54)' : 'rgba(238,250,247,0.64)');
+    bg.addColorStop(1, isDark ? 'rgba(20,12,31,0.78)' : 'rgba(246,241,255,0.72)');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const glow = ctx.createRadialGradient(W * 0.78, H * 0.2, 0, W * 0.78, H * 0.2, Math.max(W, H) * 0.82);
+    glow.addColorStop(0, isDark ? 'rgba(20,184,166,0.16)' : 'rgba(20,184,166,0.2)');
+    glow.addColorStop(0.45, isDark ? 'rgba(139,92,246,0.1)' : 'rgba(139,92,246,0.12)');
     glow.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
 
-    for (const island of this.islands) {
-      const cx = island.cx + Math.sin(t * 0.7 + island.phase) * 10 * island.drift;
-      const cy = island.cy + Math.cos(t * 0.55 + island.phase) * 8;
-      const dx = cx - this.cmx;
-      const dy = cy - this.cmy;
-      const dist = Math.hypot(dx, dy) || 1;
-      const pull = Math.max(0, 1 - dist / this.INFLUENCE);
-      const px = cx + (dx / dist) * pull * 28;
-      const py = cy + (dy / dist) * pull * 28;
-
-      for (let ring = island.rings; ring >= 1; ring--) {
-        const scale = ring / island.rings;
-        const alpha = (isDark ? 0.11 : 0.16) * (1 - scale * 0.18) + pull * 0.08;
-        ctx.strokeStyle = ring === 1
-          ? `rgba(20,184,166,${alpha + 0.04})`
-          : `rgba(139,92,246,${alpha})`;
-        ctx.lineWidth = ring === 1 ? 1.1 : 0.75;
-        ctx.beginPath();
-
-        const steps = 88;
-        for (let s = 0; s <= steps; s++) {
-          const a = (s / steps) * Math.PI * 2;
-          const wobble =
-            1 +
-            Math.sin(a * 3 + island.phase + t * island.drift) * 0.08 +
-            Math.cos(a * 5 - island.phase * 0.7 + t * 1.4) * 0.045 +
-            pull * Math.sin(a - Math.atan2(dy, dx)) * 0.16;
-
-          const ex = Math.cos(a) * island.rx * scale * wobble;
-          const ey = Math.sin(a) * island.ry * scale * wobble;
-          const x = px + ex * Math.cos(island.rot) - ey * Math.sin(island.rot);
-          const y = py + ex * Math.sin(island.rot) + ey * Math.cos(island.rot);
-          s === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        }
-
-        ctx.closePath();
-        ctx.stroke();
+    ctx.globalCompositeOperation = isDark ? 'lighter' : 'source-over';
+    for (const ribbon of this.ribbons) {
+      const grad = ctx.createLinearGradient(0, H * ribbon.base, W, H * (ribbon.base + 0.18));
+      if (ribbon.color === 'teal') {
+        grad.addColorStop(0, isDark ? 'rgba(20,184,166,0)' : 'rgba(20,184,166,0)');
+        grad.addColorStop(0.45, isDark ? 'rgba(20,184,166,0.11)' : 'rgba(20,184,166,0.14)');
+        grad.addColorStop(1, isDark ? 'rgba(20,184,166,0)' : 'rgba(20,184,166,0)');
+      } else if (ribbon.color === 'rose') {
+        grad.addColorStop(0, isDark ? 'rgba(244,114,182,0)' : 'rgba(219,39,119,0)');
+        grad.addColorStop(0.48, isDark ? 'rgba(244,114,182,0.075)' : 'rgba(219,39,119,0.08)');
+        grad.addColorStop(1, isDark ? 'rgba(244,114,182,0)' : 'rgba(219,39,119,0)');
+      } else {
+        grad.addColorStop(0, isDark ? 'rgba(139,92,246,0)' : 'rgba(109,40,217,0)');
+        grad.addColorStop(0.5, isDark ? 'rgba(139,92,246,0.13)' : 'rgba(109,40,217,0.11)');
+        grad.addColorStop(1, isDark ? 'rgba(139,92,246,0)' : 'rgba(109,40,217,0)');
       }
-    }
 
-    ctx.fillStyle = isDark ? 'rgba(230,225,255,0.13)' : 'rgba(71,65,102,0.13)';
-    for (let i = 0; i < 52; i++) {
-      const x = ((i * 137.5 + Math.sin(t + i) * 7) % W + W) % W;
-      const y = ((i * 83.25 + Math.cos(t * 1.3 + i) * 7) % H + H) % H;
+      ctx.fillStyle = grad;
+      this.drawRibbonPath(W, H, t, ribbon, ribbon.thickness);
+      ctx.fill();
+
+      ctx.strokeStyle = ribbon.color === 'teal'
+        ? (isDark ? 'rgba(94,234,212,0.18)' : 'rgba(15,118,110,0.18)')
+        : ribbon.color === 'rose'
+          ? (isDark ? 'rgba(244,114,182,0.14)' : 'rgba(190,24,93,0.12)')
+          : (isDark ? 'rgba(196,181,253,0.16)' : 'rgba(109,40,217,0.14)');
+      ctx.lineWidth = 0.9;
+      this.drawRibbonPath(W, H, t, ribbon, 0);
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+
+    ctx.fillStyle = isDark ? 'rgba(230,225,255,0.1)' : 'rgba(71,65,102,0.1)';
+    for (let i = 0; i < 90; i++) {
+      const x = ((i * 137.5 + Math.sin(t * 1.7 + i) * 10) % W + W) % W;
+      const y = ((i * 83.25 + Math.cos(t * 1.2 + i) * 10) % H + H) % H;
       ctx.beginPath();
-      ctx.arc(x, y, i % 5 === 0 ? 1.3 : 0.7, 0, Math.PI * 2);
+      ctx.arc(x, y, i % 6 === 0 ? 1.2 : 0.55, 0, Math.PI * 2);
       ctx.fill();
     }
 
     this.animId = requestAnimationFrame(() => this.draw());
+  }
+
+  private drawRibbonPath(
+    W: number,
+    H: number,
+    t: number,
+    ribbon: { base: number; amp: number; thickness: number; phase: number; speed: number; tilt: number },
+    thickness: number
+  ) {
+    const steps = 34;
+    const xPad = 140;
+    const points: { x: number; y: number }[] = [];
+
+    for (let i = 0; i <= steps; i++) {
+      const x = -xPad + (i / steps) * (W + xPad * 2);
+      const center =
+        H * ribbon.base +
+        Math.sin(x * 0.004 + t * ribbon.speed + ribbon.phase) * ribbon.amp +
+        Math.cos(x * 0.011 - t * (ribbon.speed + 0.35) + ribbon.phase) * ribbon.amp * 0.34 +
+        (x - W / 2) * ribbon.tilt;
+      const d = Math.hypot(x - this.cmx, center - this.cmy) || 1;
+      const push = Math.max(0, 1 - d / this.INFLUENCE);
+      points.push({ x, y: center + ((center - this.cmy) / d) * push * 46 });
+    }
+
+    this.ctx.beginPath();
+    if (thickness <= 0) {
+      points.forEach((p, i) => i === 0 ? this.ctx.moveTo(p.x, p.y) : this.ctx.lineTo(p.x, p.y));
+      return;
+    }
+
+    points.forEach((p, i) => i === 0 ? this.ctx.moveTo(p.x, p.y - thickness / 2) : this.ctx.lineTo(p.x, p.y - thickness / 2));
+    for (let i = points.length - 1; i >= 0; i--) {
+      const p = points[i];
+      this.ctx.lineTo(p.x, p.y + thickness / 2);
+    }
+    this.ctx.closePath();
   }
 }

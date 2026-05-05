@@ -185,7 +185,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
       period:    'Feb 2026 — Present',
       isLive:    true,
       company:   'VirtuIntelligence',
-      type:      'Contract · Part-time · Remote',
+      type:      'Part-time · Remote · Contract',
       headline:  'Angular Developer',
       bullets: [
         'Architected <strong>Symposium</strong>, a real-time AI-mediated chat platform (Angular + Ionic + Node.js + PostgreSQL) with WebSocket streaming & xAI Grok integration.',
@@ -198,7 +198,7 @@ export class ExperienceComponent implements OnChanges, AfterViewInit {
       period:    'Apr 2025 — Jan 2026',
       isLive:    false,
       company:   'VirtuIntelligence',
-      type:      'Contract · Part-time · Remote',
+      type:      'Part-time · Remote · Contract',
       headline:  'Game/App Developer',
       bullets: [
         'Shipped <strong>PathFinder</strong> — a VR self-discovery app — to the Meta Quest Store using Unreal Engine 5.5 Blueprints; built its Android companion in Unity.',
