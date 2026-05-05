@@ -205,7 +205,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
         return {
           col: month.col,
           span,
-          label: span >= 3 ? month.label : span === 2 ? month.label.slice(0, 2) : '',
+          label: span >= 2 ? month.label : '',
         };
       })
       .filter(month => month.label);
