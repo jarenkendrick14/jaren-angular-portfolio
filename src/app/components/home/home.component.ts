@@ -62,6 +62,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private _docMouseMove!: (e: MouseEvent) => void;
   private _docMouseLeave!: () => void;
   private _resizeHandler!: () => void;
+  private resizeTimer: any = null;
 
   get featuredProjects() {
     return this.featuredIndices.map(i => ({ project: this.data.projects[i], index: i }));
@@ -80,8 +81,13 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     // Initial resize — slight delay so the DOM has settled and scrollHeight is accurate
     setTimeout(() => this.resize(), 50);
 
-    this._resizeHandler = () => this.resize();
+    this._resizeHandler = () => {
+      this.resize();
+      if (this.resizeTimer) clearTimeout(this.resizeTimer);
+      this.resizeTimer = setTimeout(() => this.resize(), 180);
+    };
     window.addEventListener('resize', this._resizeHandler);
+    document.addEventListener('fullscreenchange', this._resizeHandler);
 
     this._docMouseMove = (e: MouseEvent) => {
       const rect = this.canvas.getBoundingClientRect();
@@ -101,25 +107,24 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.clockTimer) clearInterval(this.clockTimer);
+    if (this.resizeTimer) clearTimeout(this.resizeTimer);
     cancelAnimationFrame(this.animId);
     document.removeEventListener('mousemove',  this._docMouseMove);
     document.removeEventListener('mouseleave', this._docMouseLeave);
     if (this._resizeHandler) window.removeEventListener('resize', this._resizeHandler);
+    if (this._resizeHandler) document.removeEventListener('fullscreenchange', this._resizeHandler);
   }
 
   private resize() {
-    /*
-      FIX: Canvas must cover the FULL scrollable content of the page section,
-      not just the viewport-sized container. Use the scroll container's
-      scrollHeight so the grid extends behind the featured projects section.
-    */
     const section = this.canvas.closest('.page-section') as HTMLElement;
+    const page = this.canvas.closest('.page-home') as HTMLElement;
+    const content = page?.querySelector('.pin') as HTMLElement | null;
     const W = this.canvas.clientWidth || (section ? section.clientWidth : window.innerWidth);
-    const H = section
-      ? Math.max(section.scrollHeight, section.clientHeight)
-      : window.innerHeight;
+    const contentBottom = content
+      ? content.offsetTop + content.offsetHeight + parseFloat(getComputedStyle(page).paddingBottom || '0')
+      : 0;
+    const H = Math.max(section?.clientHeight || window.innerHeight, contentBottom);
 
-    // Override CSS height so the canvas physically stretches
     this.canvas.style.height = H + 'px';
     this.canvas.width  = W;
     this.canvas.height = H;
