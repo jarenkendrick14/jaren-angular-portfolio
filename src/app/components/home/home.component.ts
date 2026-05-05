@@ -51,7 +51,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     x: number;
     y: number;
     phase: number;
-    accent: 'violet' | 'teal';
+    accent: 'violet' | 'indigo';
   }[] = [];
   private latticeLinks: { a: number; b: number; weight: number }[] = [];
   private cmx = -9999;
@@ -143,7 +143,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           x,
           y,
           phase: r * 0.72 + c * 1.17,
-          accent: (r + c) % 5 === 0 ? 'teal' : 'violet',
+          accent: (r + c) % 5 === 0 ? 'indigo' : 'violet',
         });
 
         if (c > -1 && (r * 5 + c * 3) % 7 !== 0) {
@@ -178,7 +178,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     const stage = ctx.createRadialGradient(W * (0.32 + px * 0.04), H * (0.34 + py * 0.03), 0, W * 0.32, H * 0.34, Math.max(W, H) * 0.75);
     stage.addColorStop(0, isDark ? 'rgba(139,92,246,0.11)' : 'rgba(139,92,246,0.1)');
-    stage.addColorStop(0.45, isDark ? 'rgba(20,184,166,0.055)' : 'rgba(20,184,166,0.07)');
+    stage.addColorStop(0.45, isDark ? 'rgba(99,102,241,0.065)' : 'rgba(99,102,241,0.075)');
     stage.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = stage;
     ctx.fillRect(0, 0, W, H);
@@ -224,8 +224,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       const alpha = 0.14 + pulse * 0.06 + hover * 0.36;
       ctx.beginPath();
       ctx.arc(p.x, p.y, 1.45 + hover * 2.1, 0, Math.PI * 2);
-      ctx.fillStyle = p.accent === 'teal'
-        ? (isDark ? `rgba(94,234,212,${alpha})` : `rgba(15,118,110,${alpha})`)
+      ctx.fillStyle = p.accent === 'indigo'
+        ? (isDark ? `rgba(129,140,248,${alpha})` : `rgba(79,70,229,${alpha})`)
         : (isDark ? `rgba(196,181,253,${alpha})` : `rgba(109,40,217,${alpha})`);
       ctx.fill();
     }
