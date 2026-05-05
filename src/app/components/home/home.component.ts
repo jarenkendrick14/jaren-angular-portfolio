@@ -45,17 +45,20 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
   private animId = 0;
-  private pts: { ox: number; oy: number; x: number; y: number }[] = [];
-  private vx: number[] = [];
-  private vy: number[] = [];
+  private islands: {
+    cx: number;
+    cy: number;
+    rx: number;
+    ry: number;
+    rot: number;
+    phase: number;
+    drift: number;
+    rings: number;
+  }[] = [];
   private cmx = -9999;
   private cmy = -9999;
 
-  private readonly SP     = 42;
-  private readonly REPEL  = 110;
-  private readonly FORCE  = 22;
-  private readonly RESTORE = 0.07;
-  private readonly DAMP   = 0.82;
+  private readonly INFLUENCE = 190;
 
   private _docMouseMove!: (e: MouseEvent) => void;
   private _docMouseLeave!: () => void;
@@ -122,68 +125,86 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.canvas.width  = W;
     this.canvas.height = H;
 
-    this.pts = [];
-    this.vx  = [];
-    this.vy  = [];
+    this.islands = [];
+    const count = Math.max(7, Math.min(18, Math.round((W * H) / 125000)));
 
-    for (let c = 0; c <= Math.ceil(W / this.SP) + 1; c++) {
-      for (let r = 0; r <= Math.ceil(H / this.SP) + 1; r++) {
-        this.pts.push({ ox: c * this.SP, oy: r * this.SP, x: c * this.SP, y: r * this.SP });
-        this.vx.push(0);
-        this.vy.push(0);
-      }
+    for (let i = 0; i < count; i++) {
+      const band = i / Math.max(1, count - 1);
+      const sideBias = i % 3 === 0 ? -0.12 : i % 3 === 1 ? 0.12 : 0;
+      this.islands.push({
+        cx: (0.16 + ((i * 0.381966) % 0.72) + sideBias) * W,
+        cy: (0.08 + band * 0.9) * H,
+        rx: 70 + ((i * 47) % 120),
+        ry: 42 + ((i * 31) % 95),
+        rot: ((i * 29) % 180) * Math.PI / 180,
+        phase: i * 1.73,
+        drift: i % 2 === 0 ? 1 : -1,
+        rings: 4 + (i % 4),
+      });
     }
   }
 
   private draw() {
     const { ctx, canvas: { width: W, height: H } } = this;
     ctx.clearRect(0, 0, W, H);
-    const rows = Math.ceil(H / this.SP) + 2;
-    const cols = Math.ceil(W / this.SP) + 2;
-
-    this.pts.forEach((p, i) => {
-      const dx   = p.x - this.cmx;
-      const dy   = p.y - this.cmy;
-      const dist = Math.hypot(dx, dy) || 1;
-      if (dist < this.REPEL) {
-        const mag = ((this.REPEL - dist) / this.REPEL) * this.FORCE;
-        this.vx[i] += (dx / dist) * mag;
-        this.vy[i] += (dy / dist) * mag;
-      }
-      this.vx[i] += (p.ox - p.x) * this.RESTORE;
-      this.vy[i] += (p.oy - p.y) * this.RESTORE;
-      this.vx[i] *= this.DAMP;
-      this.vy[i] *= this.DAMP;
-      p.x += this.vx[i];
-      p.y += this.vy[i];
-    });
-
     const isDark = this.nav.isDark();
-    ctx.strokeStyle = isDark ? 'rgba(42,42,64,0.65)' : 'rgba(200,195,224,0.55)';
-    ctx.lineWidth = 0.8;
-    ctx.beginPath();
-    this.pts.forEach((p, i) => {
-      const c = Math.floor(i / rows);
-      const r = i % rows;
-      if (c < cols - 1) {
-        const n = this.pts[(c + 1) * rows + r];
-        if (n) { ctx.moveTo(p.x, p.y); ctx.lineTo(n.x, n.y); }
-      }
-      if (r < rows - 1) {
-        const n = this.pts[c * rows + r + 1];
-        if (n) { ctx.moveTo(p.x, p.y); ctx.lineTo(n.x, n.y); }
-      }
-    });
-    ctx.stroke();
+    const t = performance.now() * 0.00035;
 
-    this.pts.forEach(p => {
-      const d    = Math.hypot(p.x - this.cmx, p.y - this.cmy);
-      const prox = Math.max(0, 1 - d / this.REPEL);
+    const glow = ctx.createRadialGradient(W * 0.72, H * 0.18, 0, W * 0.72, H * 0.18, Math.max(W, H) * 0.75);
+    glow.addColorStop(0, isDark ? 'rgba(20,184,166,0.08)' : 'rgba(20,184,166,0.12)');
+    glow.addColorStop(0.42, isDark ? 'rgba(139,92,246,0.055)' : 'rgba(139,92,246,0.075)');
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+
+    for (const island of this.islands) {
+      const cx = island.cx + Math.sin(t * 0.7 + island.phase) * 10 * island.drift;
+      const cy = island.cy + Math.cos(t * 0.55 + island.phase) * 8;
+      const dx = cx - this.cmx;
+      const dy = cy - this.cmy;
+      const dist = Math.hypot(dx, dy) || 1;
+      const pull = Math.max(0, 1 - dist / this.INFLUENCE);
+      const px = cx + (dx / dist) * pull * 28;
+      const py = cy + (dy / dist) * pull * 28;
+
+      for (let ring = island.rings; ring >= 1; ring--) {
+        const scale = ring / island.rings;
+        const alpha = (isDark ? 0.11 : 0.16) * (1 - scale * 0.18) + pull * 0.08;
+        ctx.strokeStyle = ring === 1
+          ? `rgba(20,184,166,${alpha + 0.04})`
+          : `rgba(139,92,246,${alpha})`;
+        ctx.lineWidth = ring === 1 ? 1.1 : 0.75;
+        ctx.beginPath();
+
+        const steps = 88;
+        for (let s = 0; s <= steps; s++) {
+          const a = (s / steps) * Math.PI * 2;
+          const wobble =
+            1 +
+            Math.sin(a * 3 + island.phase + t * island.drift) * 0.08 +
+            Math.cos(a * 5 - island.phase * 0.7 + t * 1.4) * 0.045 +
+            pull * Math.sin(a - Math.atan2(dy, dx)) * 0.16;
+
+          const ex = Math.cos(a) * island.rx * scale * wobble;
+          const ey = Math.sin(a) * island.ry * scale * wobble;
+          const x = px + ex * Math.cos(island.rot) - ey * Math.sin(island.rot);
+          const y = py + ex * Math.sin(island.rot) + ey * Math.cos(island.rot);
+          s === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+    ctx.fillStyle = isDark ? 'rgba(230,225,255,0.13)' : 'rgba(71,65,102,0.13)';
+    for (let i = 0; i < 52; i++) {
+      const x = ((i * 137.5 + Math.sin(t + i) * 7) % W + W) % W;
+      const y = ((i * 83.25 + Math.cos(t * 1.3 + i) * 7) % H + H) % H;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 1.1 + prox * 3, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(139,92,246,${0.14 + prox * 0.65})`;
+      ctx.arc(x, y, i % 5 === 0 ? 1.3 : 0.7, 0, Math.PI * 2);
       ctx.fill();
-    });
+    }
 
     this.animId = requestAnimationFrame(() => this.draw());
   }
