@@ -4,6 +4,7 @@ import { Certificate } from '../../models/portfolio.models';
 import { CommonModule } from '@angular/common';
 
 interface HeatmapDay { date: string; count: number; level: number; }
+interface HeatmapMonth { col: number; span: number; label: string; }
 interface Commit { sha: string; message: string; repo: string; date: string; url: string; }
 
 @Component({
@@ -34,7 +35,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   /* ── GitHub Heatmap ── */
   readonly heatmapWeeks   = signal<HeatmapDay[][]>([]);
-  readonly heatmapMonths  = signal<{ col: number; label: string }[]>([]);
+  readonly heatmapMonths  = signal<HeatmapMonth[]>([]);
   readonly heatmapTotal   = signal(0);
   readonly heatmapLoading = signal(true);
   readonly heatmapError   = signal(false);
@@ -159,7 +160,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   private generateGrid(dayMap: Map<string, { count: number; level: number }>) {
     const WEEKS_TO_SHOW = 20;
     const weeks: HeatmapDay[][] = [];
-    const months: { col: number; label: string }[] = [];
+    const monthStarts: { col: number; label: string }[] = [];
 
     const today = new Date();
     const endOffset = 6 - today.getDay();
@@ -178,7 +179,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       const m = weekStart.getMonth();
 
       if (m !== lastMonth) {
-        months.push({ col: w, label: weekStart.toLocaleString('default', { month: 'short' }) });
+        monthStarts.push({ col: w, label: weekStart.toLocaleString('default', { month: 'short' }) });
         lastMonth = m;
       }
 
@@ -196,6 +197,18 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
       }
       weeks.push(week);
     }
+
+    const months = monthStarts
+      .map((month, i) => {
+        const nextCol = monthStarts[i + 1]?.col ?? WEEKS_TO_SHOW;
+        const span = Math.max(1, nextCol - month.col);
+        return {
+          col: month.col,
+          span,
+          label: span >= 3 ? month.label : span === 2 ? month.label.slice(0, 2) : '',
+        };
+      })
+      .filter(month => month.label);
 
     this.heatmapMonths.set(months);
     this.heatmapWeeks.set(weeks);

@@ -304,7 +304,9 @@
   margin: 0 auto 1rem auto;
   width: max-content;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
 }
 
 .heatmap-months {
@@ -328,6 +330,9 @@
   color: var(--muted);
   grid-row: 1;
   white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 .heatmap-body {

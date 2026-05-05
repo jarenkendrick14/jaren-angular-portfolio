@@ -127,7 +127,7 @@
                   <div class="hm-spacer"></div>
                   <div class="hm-months-grid">
                     @for (m of heatmapMonths(); track m.col) {
-                      <span class="hm-month" [style.grid-column]="m.col + 1">{{ m.label }}</span>
+                      <span class="hm-month" [style.grid-column]="(m.col + 1) + ' / span ' + m.span">{{ m.label }}</span>
                     }
                   </div>
                 </div>
