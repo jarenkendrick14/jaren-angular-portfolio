@@ -27,7 +27,7 @@ export class ResumeComponent {
 
   // ── Professional Summary ───────────────────────────────────
   readonly summary =
-    'Third-year BSIT student with production experience as a Full Stack and Game/App Developer at HumanSide Technologies — building Angular + Node.js web platforms and shipping VR applications to the Meta Quest Store. Seeking an internship or junior developer role to contribute to real-world software projects.';
+    'Third-year BSIT student with production experience as a Full Stack and Game/App Developer at HumanSide Technologies — building Angular + Node.js web platforms and shipping a VR app to the Meta Quest Store. Seeking an internship or junior developer role to contribute to real-world software projects.';
 
   // ── Experience ────────────────────────────────────────────
   readonly experience = [
@@ -56,10 +56,17 @@ export class ResumeComponent {
   // ── Projects (personal / academic — not covered in experience) ──
   readonly projects = [
     {
-      name: 'Travel Atelier',
-      stack: 'Vue.js 3 · Node.js · Express · JWT · MongoDB',
-      desc: 'Full-stack travel booking platform with JWT authentication, protected routing, live destination search, and a Node.js REST API backend.',
-      live: 'https://github.com/jarenkendrick14/FINALS-Travel-Atelier',
+      name: 'MonsoonAI',
+      stack: 'Node.js · TypeScript · PocketBase · SMS · Google Gemini',
+      desc: 'Disaster early-warning PWA designed with an SMS pipeline so onboarding, alerts, and checklists can keep flowing when the network drops.',
+      live: 'https://github.com/jarenkendrick14/monsoon-ai',
+      liveLabel: 'GitHub ↗',
+    },
+    {
+      name: 'TARIPA',
+      stack: 'Angular 21 · Node.js · Express · MySQL · PDFKit',
+      desc: 'Tricycle fare accountability PWA for Angeles City — auto-generates weekly PDF overcharging reports emailed to the PTRO.',
+      live: 'https://github.com/jarenkendrick14/taripa-web-app',
       liveLabel: 'GitHub ↗',
     },
     {
@@ -67,13 +74,6 @@ export class ResumeComponent {
       stack: 'Vue.js 3 · Node.js · MongoDB · Pinia · JWT',
       desc: 'E-commerce platform with a persistent cart, multi-step checkout, and a full CRUD admin dashboard for products, users, and orders.',
       live: 'https://dropifystore.netlify.app/',
-      liveLabel: 'Live ↗',
-    },
-    {
-      name: "Einstein's Art",
-      stack: 'Angular · TypeScript · Netlify',
-      desc: 'Dynamic company website using Angular client-side routing, structural directives, and a live product/employee directory. Deployed via CI/CD.',
-      live: 'https://prelim-project-einsteins-art.netlify.app',
       liveLabel: 'Live ↗',
     },
   ];

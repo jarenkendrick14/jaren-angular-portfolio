@@ -2,24 +2,39 @@
   <div class="pin">
     <div class="pheader au d0">
       <h2 class="ph2">Selected Work</h2>
-      <span class="pcnt">05 projects</span>
+      <span class="pcnt">{{ displayProjects().length.toString().padStart(2, '0') }} / {{ data.projects.length.toString().padStart(2, '0') }}</span>
       <div class="phr" aria-hidden="true"></div>
     </div>
-    
+
+    <div class="pcontrols au d0">
+      <label class="psearch">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" placeholder="Search projects, tags, category..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" aria-label="Search projects" />
+      </label>
+      <div class="psort">
+        <label for="psort-select" class="psort-label">Filter</label>
+        <select id="psort-select" [ngModel]="sortMode()" (ngModelChange)="sortMode.set($event)" aria-label="Filter projects">
+          @for (opt of sortOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
     <!-- Changed from <ul> to <div> to prevent ARIA child/parent conflicts -->
     <div class="plist">
-      @for (proj of data.projects; track proj.num; let i = $index) {
+      @for (proj of displayProjects(); track proj.num; let i = $index) {
         <!-- Changed from <li> to <div>. Classes remain identical to keep the same look/feel. -->
-        <div class="pi al" 
-            [class.d1]="i === 0" [class.d2]="i === 1" [class.d3]="i === 2" [class.d4]="i === 3" [class.d5]="i === 4"
-            (click)="projectOpened.emit(i)" 
-            (mouseenter)="previewHover.emit(i)" 
+        <div class="pi al"
+            [style.animation-delay.s]="0.12 + i * 0.1"
+            (click)="projectOpened.emit(indexOf(proj))"
+            (mouseenter)="previewHover.emit(indexOf(proj))"
             (mouseleave)="previewHover.emit(null)"
-            role="button" 
-            tabindex="0" 
-            (keydown.enter)="projectOpened.emit(i)">
+            role="button"
+            tabindex="0"
+            (keydown.enter)="projectOpened.emit(indexOf(proj))">
           
-          <span class="pnum">{{ proj.num }}</span>
+          <span class="pnum">{{ (i + 1).toString().padStart(2, '0') }}</span>
           
           <div>
             <div class="pnm">{{ proj.name }}</div>
@@ -38,6 +53,9 @@
           <!-- aria-hidden added to the decorative arrow -->
           <span class="parr" aria-hidden="true">↗</span>
         </div>
+      }
+      @if (displayProjects().length === 0) {
+        <div class="pempty">No projects match "{{ searchQuery() }}"</div>
       }
     </div>
   </div>

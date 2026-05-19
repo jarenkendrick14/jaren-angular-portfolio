@@ -28,7 +28,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   /* ── Counters ── */
   readonly counters = [
-    { target: 5,  label: 'Projects Shipped', suffix: '', current: signal(0) },
+    { target: this.data.projects.length,  label: 'Projects Shipped', suffix: '', current: signal(0) },
     { target: 13, label: 'Certifications',   suffix: '', current: signal(0) },
     { target: 2,  label: 'Years Coding',     suffix: '+', current: signal(0) },
   ];

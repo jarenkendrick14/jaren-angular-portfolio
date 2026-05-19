@@ -41,6 +41,7 @@ export class PortfolioDataService {
         'assets/images/pathfinder-2.webp',
         'assets/images/pathfinder-3.webp'
       ],
+      thumb: 'assets/images/pathfinder-1-thumb.webp',
       category: 'Game',
       outcome: 'Published on the Meta Quest Store and Google Play. Live product used by VirtuIntelligence clients — passed Meta\'s hardware and content review across Quest 2, 3, 3S, and Pro.'
     },
@@ -68,6 +69,7 @@ export class PortfolioDataService {
         'assets/images/symposium-2.webp',
         'assets/images/symposium-3.webp'
       ],
+      thumb: 'assets/images/symposium-1-thumb.webp',
       category: 'Full Stack',
       outcome: 'Live at theaisymposium.net. Deployed on Vercel + Railway — actively used by VirtuIntelligence for AI-assisted ideation sessions with real users in shared rooms.'
     },
@@ -95,6 +97,7 @@ export class PortfolioDataService {
         'assets/images/travel-atelier-2.webp',
         'assets/images/travel-atelier-3.webp'
       ],
+      thumb: 'assets/images/travel-atelier-1-thumb.webp',
       category: 'Full Stack',
       outcome: 'Live on Vercel. Demonstrates complete full-stack ownership — from database schema to a polished, animated frontend — in a single cohesive codebase.'
     },
@@ -122,6 +125,7 @@ export class PortfolioDataService {
         'assets/images/dropify-2.webp',
         'assets/images/dropify-3.webp'
       ],
+      thumb: 'assets/images/dropify-1-thumb.webp',
       category: 'Full Stack',
       outcome: 'Live at dropifystore.netlify.app. Fully functional e-commerce platform with MongoDB-backed persistent cart, CRUD admin panel, and role-based access control.'
     },
@@ -147,8 +151,126 @@ export class PortfolioDataService {
         'assets/images/einsteins-art-2.webp',
         'assets/images/einsteins-art-3.webp'
       ],
+      thumb: 'assets/images/einsteins-art-1-thumb.webp',
       category: 'Web',
       outcome: 'Live at einsteins-art.netlify.app. Production Angular site for a real local brand — shipped with CI/CD from GitHub and zero-reload routing.'
+    },
+    {
+      num: '06',
+      name: 'MonsoonAI',
+      subtitle: 'Disaster-resilient early-warning PWA for Philippine households · Node.js + PocketBase + SMS',
+      tags: ['Node.js', 'TypeScript', 'Express', 'PocketBase', 'SMS', 'WebSockets', 'Google Gemini', 'Google Maps', 'turf.js', 'Vanilla JS'],
+      purpose: 'Built a mobile-first early-warning platform for Philippine households designed to keep delivering personalized alerts when the network drops — with an SMS pipeline treated as a first-class channel, not a fallback.',
+      desc: 'MonsoonAI is a citizen-facing PWA backed by a Node.js + Express API on PocketBase. The backend fuses live data from Open-Meteo, GloFAS, PAGASA, and NASA FIRMS into a multi-hazard risk engine, with a turf.js pipeline scoring per-address flood-zone exposure. Google Gemini powers a RAG-grounded chatbot and per-alert guidance against a local disaster-preparedness corpus. An SMS pipeline is wired in alongside the PWA so onboarding, alerts, and checklists can be served over text, with durable PocketBase schema repair so session state is fail-closed rather than fail-silent.',
+      features: [
+        'Multi-hazard risk engine with priority cascade across flood, typhoon, heat, and wildfire-smoke alerts',
+        'Custom household vulnerability scoring (0–100 with tier) modeled on InaSAFE methodology',
+        'Per-address flood-zone lookup pipeline built on turf.js v7 point-in-polygon against 25-year and 100-year return-period GeoJSON layers',
+        'SMS pipeline for onboarding, alerts, and checklist requests with en/tl/vi locale support',
+        'Server-side disaster mode keeps PWA and SMS channels aligned on the same critical-scenario data',
+        'Durable PocketBase schema repair on startup — session persistence is fail-closed, not fail-silent',
+        'Mobility-aware evac routing on Google Maps + Routes API — ETA adjusts for PWD, elderly, and infant household members',
+        'RAG-grounded Gemini chatbot retrieving from a local disaster-preparedness corpus',
+        'node-cron pipeline polling Open-Meteo, GloFAS, PAGASA, and NASA FIRMS on staggered intervals',
+        'WebSocket alert push and Gemini-tagged hazard-photo reporting from the field',
+      ],
+      live: [{ name: 'Live Site ↗', url: 'https://monsoon-ai-app.netlify.app/' }],
+      github: 'https://github.com/jarenkendrick14/monsoon-ai',
+      imgs: [
+        'assets/images/monsoon-ai-1.webp',
+        'assets/images/monsoon-ai-2.webp',
+        'assets/images/monsoon-ai-3.webp'
+      ],
+      thumb: 'assets/images/monsoon-ai-1-thumb.webp',
+      category: 'Full Stack',
+      outcome: 'Designed for the exact conditions when disaster apps usually go silent — the SMS channel is wired as a peer to the PWA so households can keep receiving personalized alerts, evac routes, and checklists during network outages.'
+    },
+    {
+      num: '07',
+      name: 'TARIPA',
+      subtitle: 'Tricycle fare accountability PWA · Angular + Node.js',
+      tags: ['Angular', 'TypeScript', 'Signals', 'Node.js', 'Express', 'MySQL', 'JWT', 'PDFKit', 'Nodemailer', 'node-cron'],
+      purpose: 'Built a civic-tech PWA for Angeles City commuters that exposes tricycle overcharging, surfaces repeat offenders, and feeds weekly enforcement reports straight to the city\'s Public Transport Regulatory Office.',
+      desc: 'TARIPA (Tricycle Fare Monitoring & Accountability System) is an Angular 21 PWA backed by a Node.js + Express + MySQL API. It computes legal fares from Angeles City Ordinance No. 723, S-2024 (with regular, student, senior, and PWD tiers), lets commuters look up tricycles by body number to see overcharge history, and aggregates community reports into a terminal-hotspot map. The defining feature is a fully automated enforcement loop — every Sunday at 23:59, a cron job generates a PDFKit weekly overcharging report and emails it via Nodemailer to the PTRO, with tricycles auto-flagged after 5+ reports in 30 days.',
+      features: [
+        'Resibo fare calculator wired to Angeles City Ordinance No. 723, S-2024 — regular, student, senior, and PWD tiers',
+        'Pasaway driver lookup — search by body number, see 30-day overcharge stats and recent reports',
+        'Bantay Batas terminal alerts — MySQL ST_Distance_Sphere aggregates reports near each TODA terminal',
+        'Tamang Sukli — greedy-denomination change calculator across PHP bills and coins, built with Angular signals',
+        'Auth-gated overcharge reporting with browser geolocation for GPS-validated submissions',
+        'Automated PTRO weekly report — PDFKit-generated PDF emailed via Nodemailer every Sunday 23:59',
+        'Hourly cron auto-flags tricycles with 5+ reports in the last 30 days and refreshes terminal aggregates',
+        'Standalone Angular 21 components with lazy-loaded routes, auth/admin route guards, and signals throughout',
+        'JWT auth (bcrypt-hashed passwords), helmet, CORS, rate limiting, and express-validator on the API',
+        'Installable PWA via Angular service worker (ngsw-config) for offline-capable fare lookups on the road',
+      ],
+      live: [{ name: 'Live Site ↗', url: 'https://taripa-web-app.netlify.app/' }],
+      github: 'https://github.com/jarenkendrick14/taripa-web-app',
+      imgs: [
+        'assets/images/taripa-1.webp',
+        'assets/images/taripa-2.webp',
+        'assets/images/taripa-3.webp'
+      ],
+      thumb: 'assets/images/taripa-1-thumb.webp',
+      category: 'Full Stack',
+      outcome: 'Closes the loop between commuter and regulator — instead of overcharge complaints dying in social posts, TARIPA aggregates them into a signed weekly PDF that lands in the PTRO inbox automatically.'
+    },
+    {
+      num: '08',
+      name: 'Just Coffee',
+      subtitle: 'Animated brand site for a Pampanga coffee shop · GSAP + Vanilla JS',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
+      purpose: 'Designed and built a polished multi-page brand site for a Lubao, Pampanga specialty coffee shop, focused on motion, typography, and on-page interactivity over heavy framework tooling.',
+      desc: 'Just Coffee is a five-page static website (Home, Menu, Gallery, Join Us, Contact) for a community-oriented specialty coffee shop. The site leans on GSAP + ScrollTrigger for entrance animations and parallax, Lenis for smooth scrolling, and a custom mouse-follower cursor for desktop. Interactivity lives entirely client-side — a product menu with category filters, live search, quantity selectors, bean-rating widget, and add-to-cart toast; plus a registration form with real-time preview pane and inline validation.',
+      features: [
+        'GSAP + ScrollTrigger animations driving hero word reveals, parallax, and section entrances',
+        'Lenis smooth-scrolling layered over native scroll without breaking accessibility',
+        'Custom mouse-follower cursor (dot + ring) with hover-state morphing on desktop',
+        'Product menu with category filters, live search, quantity selector, and bean-rating widget',
+        'Add-to-cart flow with toast notification and animated cart count badge',
+        'Registration form with side-by-side live preview pane and inline field validation',
+        'Sticky header that transitions transparent-to-blurred on scroll via backdrop-filter',
+        'Fully responsive — desktop cursor and animations gracefully strip out on mobile',
+        'Embedded Google Maps for the Lubao, Pampanga storefront with a grayscale-to-color hover effect',
+      ],
+      live: [{ name: 'Live Site ↗', url: 'https://jarenkendrick14.github.io/just-coffee/' }],
+      github: 'https://github.com/jarenkendrick14/just-coffee',
+      imgs: [
+        'assets/images/just-coffee-1.webp',
+        'assets/images/just-coffee-2.webp',
+        'assets/images/just-coffee-3.webp'
+      ],
+      thumb: 'assets/images/just-coffee-1-thumb.webp',
+      category: 'Web',
+      outcome: 'A frontend-only brand site that earns its polish from craft — GSAP-driven motion, a custom cursor, and a live-preview registration form, all without a framework or build step.'
+    },
+    {
+      num: '09',
+      name: 'Cut the Cord',
+      subtitle: 'Curated wireless-gear shortlist site · HTML + CSS + Vanilla JS',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'Font Awesome', 'Intl.NumberFormat'],
+      purpose: 'Built a focused affiliate-style site that surfaces a small, opinionated shortlist of wireless mice, keyboards, and headphones — with retailer pricing and links wired through a single source-of-truth data layer.',
+      desc: 'Cut the Cord is a five-page static site (Home, Mice, Keyboards, Headphones, About) that turns a hand-picked gear shortlist into a clean comparison surface. All product prices, retailer URLs, and affiliate metadata live in one centralized PRODUCT_DATA object in site.js — the page markup is just HTML with data-attributes, and a single render pass injects formatted prices, sets external links with proper rel attributes, and auto-flags the cheapest pick in each category with a "Lowest price" badge.',
+      features: [
+        'Single source of truth for every product — prices, retailers, and links update from one file across the whole site',
+        'Automatic "Lowest price" badge that flags the cheapest pick in each category at page load',
+        'Affiliate-aware outbound links that mark Amazon URLs correctly and open in a new tab',
+        'Locale-correct USD price formatting using the browser\'s built-in number formatter',
+        'Expandable FAQ accordion with smooth open/close transitions',
+        'Autoplaying hero video with a poster image fallback for slower connections',
+        'Mobile hamburger menu that closes when you tap outside it',
+        'Five clean pages: Home, Mice, Keyboards, Headphones, and About',
+      ],
+      live: [{ name: 'Live Site ↗', url: 'https://jarenkendrick14.github.io/CTC-Website/' }],
+      github: 'https://github.com/jarenkendrick14/CTC-Website',
+      imgs: [
+        'assets/images/cut-the-cord-1.webp',
+        'assets/images/cut-the-cord-2.webp',
+        'assets/images/cut-the-cord-3.webp'
+      ],
+      thumb: 'assets/images/cut-the-cord-1-thumb.webp',
+      category: 'Web',
+      outcome: 'A small site that treats data hygiene as a feature — the price-comparison surface stays trustworthy because there\'s exactly one place to update product info, and the markup never duplicates a price string.'
     }
   ];
 

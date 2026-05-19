@@ -8,6 +8,7 @@ export interface Project {
   live: { name: string; url: string }[] | null;
   github: string | null;
   imgs: string[];
+  thumb?: string;
   subtitle: string;
   category: 'Web' | 'Game' | 'Mobile' | 'Full Stack';
   outcome?: string;

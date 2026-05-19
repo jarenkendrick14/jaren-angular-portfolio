@@ -114,6 +114,7 @@
   border: 1px solid var(--bord);
   overflow: hidden;
   background: var(--surf);
+  cursor: zoom-in;
   transition: border-color .2s;
 }
 .ov-img:hover { border-color: var(--acc); }
@@ -215,6 +216,50 @@
 .btn-fill:hover  { box-shadow: 0 8px 28px rgba(139,92,246,.35); }
 .btn-ghost { background: var(--surf); color: var(--white); border: 1px solid var(--bord); }
 .btn-ghost:hover { border-color: var(--acc); color: var(--acc); }
+
+/* ── Lightbox ───────────────────────────────────────── */
+.ov-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: rgba(0, 0, 0, .9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  cursor: zoom-out;
+  animation: lbFade .2s ease both;
+}
+.ov-lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+  cursor: default;
+}
+.ov-lightbox-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .25);
+  background: rgba(0, 0, 0, .4);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, border-color .2s;
+}
+.ov-lightbox-close:hover {
+  background: rgba(255, 255, 255, .1);
+  border-color: var(--acc);
+}
+@keyframes lbFade { from { opacity: 0; } to { opacity: 1; } }
 
 /* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 960px) {

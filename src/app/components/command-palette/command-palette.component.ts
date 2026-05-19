@@ -4,6 +4,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationService } from '../../data/navigation.service';
+import { PortfolioDataService } from '../../data/portfolio.data';
 
 interface PaletteItem {
   icon: string;
@@ -22,6 +23,7 @@ interface PaletteItem {
 })
 export class CommandPaletteComponent implements AfterViewInit, OnDestroy {
   nav = inject(NavigationService);
+  private portfolioData = inject(PortfolioDataService);
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
@@ -47,7 +49,7 @@ export class CommandPaletteComponent implements AfterViewInit, OnDestroy {
     {
       icon: 'code',
       label: 'Go to Projects',
-      description: 'Browse all 5 projects',
+      description: `Browse all ${this.portfolioData.projects.length} projects`,
       keywords: ['projects', 'work', 'portfolio', 'pathfinder', 'symposium'],
       action: () => this.navigate(2),
     },

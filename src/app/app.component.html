@@ -13,12 +13,12 @@
 <div id="cring" #cring [class.big]="cursorHover()" aria-hidden="true"><span class="cl">VIEW</span></div>
 
 <div id="prvw" #prvw [class.on]="previewActive() !== null" aria-hidden="true">
-   <!-- Loop through first 5 projects for preview -->
+   <!-- Loop through all projects for preview -->
    @for (proj of data.projects; track proj.num; let i = $index) {
      <div class="psc" [class.act]="previewActive() === i">
        <div class="psc-img-wrap">
          <!-- Shows the first image of the project -->
-         <img [src]="proj.imgs[0]" [alt]="proj.name" style="width:100%; height:100%; object-fit:cover;">
+         <img [src]="proj.thumb || proj.imgs[0]" [alt]="proj.name" style="width:100%; height:100%; object-fit:cover;">
          <div class="psc-overlay"></div>
        </div>
        <div class="psc-meta">

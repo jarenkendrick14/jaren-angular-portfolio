@@ -27,17 +27,38 @@ import os
 #        — script will render at 2× for Retina (device pixel ratio = 2)
 # ─────────────────────────────────────────────────────────────
 TARGET_SIZES = {
-    # Project carousel / overlay thumbnails
-    "pathfinder-2.png":       (630, 370),   # was 2560×976  → 4,670 KiB
-    "pathfinder-1.png":       (650, 370),   # was 2262×1440 → 3,507 KiB
-    "dropify-2.png":          (630, 380),   # was 1570×598  → 1,705 KiB
-    "dropify-1.png":          (650, 380),   # was 1487×943  →   570 KiB
-    "einsteins-art-1.png":    (710, 380),   # was 1341×850  →   549 KiB
-    "symposium-1.png":        (580, 480),   # was 789×503   →   181 KiB
-    "symposium-2.png":        (630, 620),   # was 835×317   →    40 KiB
+    # Project carousel / overlay thumbnails — sized for fullscreen lightbox
+    "pathfinder-1.png":       (1800, 1100),
+    "pathfinder-2.png":       (1800, 1100),
+    "pathfinder-3.jpg":       (1600, 800),
+    "dropify-1.png":          (1600, 1000),
+    "dropify-2.png":          (1600, 1000),
+    "dropify-3.png":          (1500, 700),
+    "einsteins-art-1.png":    (1700, 1000),
+    "einsteins-art-2.png":    (1500, 1000),
+    "einsteins-art-3.png":    (1800, 900),
+    "symposium-1.png":        (1600, 1000),
+    "symposium-2.png":        (1600, 1000),
+    "symposium-3.png":        (1600, 1000),
 
-    # Blog cover images (displayed ~473×233 → 2× = 946×466)
-    "travel-atelier-1.png":   (946, 480),   # was 1920×811  → 1,453 KiB
+    # Newly added project screenshots — keep near source res so UI text stays readable
+    "monsoon-ai-1.png":       (1600, 1000),
+    "monsoon-ai-2.png":       (1600, 1000),
+    "monsoon-ai-3.png":       (1600, 1000),
+    "taripa-1.png":           (1600, 1000),
+    "taripa-2.png":           (1600, 1000),
+    "taripa-3.png":           (1600, 1000),
+    "just-coffee-1.png":      (1800, 1000),
+    "just-coffee-2.png":      (1800, 1000),
+    "just-coffee-3.png":      (1800, 1000),
+    "cut-the-cord-1.png":     (1600, 1000),
+    "cut-the-cord-2.png":     (1600, 1000),
+    "cut-the-cord-3.png":     (1600, 1000),
+
+    # Travel Atelier project shots
+    "travel-atelier-1.png":   (2000, 1100),
+    "travel-atelier-2.png":   (2000, 1100),
+    "travel-atelier-3.png":   (2000, 1600),
 
     # Profile / avatar images
     "profile.png":            (610, 610),   # was 609×607   →   243 KiB  (LCP element)

@@ -24,7 +24,12 @@
         <!-- IMAGE STRIP -->
         <div class="ov-imgs">
           @for (img of project()!.imgs; track $index) {
-            <div class="ov-img">
+            <div class="ov-img"
+                 role="button"
+                 tabindex="0"
+                 (click)="openLightbox(img)"
+                 (keydown.enter)="openLightbox(img)"
+                 (keydown.space)="openLightbox(img); $event.preventDefault()">
               <img [src]="img" [alt]="project()!.name" loading="lazy">
             </div>
           }
@@ -77,4 +82,11 @@
       </div>
     </div>
   </div>
+
+  @if (lightboxImg(); as lbImg) {
+    <div class="ov-lightbox" (click)="closeLightbox()" role="dialog" aria-modal="true" aria-label="Image viewer">
+      <button class="ov-lightbox-close" (click)="closeLightbox(); $event.stopPropagation()" aria-label="Close image">✕</button>
+      <img [src]="lbImg" [alt]="project()!.name" (click)="$event.stopPropagation()">
+    </div>
+  }
 }
