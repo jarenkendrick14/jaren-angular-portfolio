@@ -58,6 +58,10 @@ export class TerminalComponent {
       `  <span class="tl-dim">03</span>  <span class="tl-head">Travel Atelier</span>    <span class="tl-dim">·</span> <span class="tl-val">Vue.js 3 + Node.js</span>   <span class="tl-warn">FULL-STACK</span>`,
       `  <span class="tl-dim">04</span>  <span class="tl-head">Dropify</span>           <span class="tl-dim">·</span> <span class="tl-val">Vue.js 3 + MongoDB</span>   <span class="tl-warn">E-COMMERCE</span>`,
       `  <span class="tl-dim">05</span>  <span class="tl-head">Einstein's Art</span>    <span class="tl-dim">·</span> <span class="tl-val">Angular + TypeScript</span> <span class="tl-warn">DEPLOYED</span>`,
+      `  <span class="tl-dim">06</span>  <span class="tl-head">MonsoonAI</span>         <span class="tl-dim">·</span> <span class="tl-val">Angular PWA + AI</span>     <span class="tl-warn">HACKATHON</span>`,
+      `  <span class="tl-dim">07</span>  <span class="tl-head">TARIPA</span>            <span class="tl-dim">·</span> <span class="tl-val">Angular 21 + Node</span>    <span class="tl-warn">PWA</span>`,
+      `  <span class="tl-dim">08</span>  <span class="tl-head">Just Coffee</span>       <span class="tl-dim">·</span> <span class="tl-val">HTML + GSAP</span>          <span class="tl-warn">LANDING</span>`,
+      `  <span class="tl-dim">09</span>  <span class="tl-head">Cut the Cord</span>      <span class="tl-dim">·</span> <span class="tl-val">Vanilla HTML/JS</span>      <span class="tl-warn">CAMPAIGN</span>`,
     ],
     'cat resume.txt': () => [
       ``,

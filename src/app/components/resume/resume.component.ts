@@ -16,6 +16,14 @@ export class ResumeComponent {
   data       = inject(PortfolioDataService);
   nav        = inject(NavigationService);
   downloading = signal(false);
+  plainView   = signal(false);
+
+  togglePlain() { this.plainView.update(v => !v); }
+
+  // Strip protocol and trailing slash for cleaner URL display
+  cleanUrl(url: string): string {
+    return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  }
 
   goBack() {
     if (window.innerWidth < 960 && window.history.length > 1) {
@@ -27,7 +35,7 @@ export class ResumeComponent {
 
   // ── Professional Summary ───────────────────────────────────
   readonly summary =
-    'Third-year BSIT student with production experience as a Full Stack and Game/App Developer at HumanSide Technologies — building Angular + Node.js web platforms and shipping a VR app to the Meta Quest Store. Seeking an internship or junior developer role to contribute to real-world software projects.';
+    'Third-year BSIT student with production full-stack experience at HumanSide Technologies — building Angular 21 + Node.js + PostgreSQL platforms with real-time WebSocket features and JWT-secured REST APIs. Also shipped a published VR app to the Meta Quest Store. Seeking a full-stack internship to contribute to real-world software projects.';
 
   // ── Experience ────────────────────────────────────────────
   readonly experience = [
@@ -37,8 +45,9 @@ export class ResumeComponent {
       type: 'Part-time · Remote · Contract',
       title: 'Full Stack Developer',
       bullets: [
-        'Architected and shipped <strong>Symposium</strong> — a real-time multi-AI chat platform built with Angular, Ionic, Node.js, WebSockets, and PostgreSQL.',
-        'Built production Angular components and Express API services; manages sprint tasks and code reviews across time zones.',
+        'Architected and shipped <strong>Symposium</strong> — a real-time multi-AI chat platform on Angular 21 + Ionic (Vercel) with an Express + WebSocket backend (Railway) and PostgreSQL via Prisma ORM.',
+        'Implemented streaming AI responses over WebSocket with Angular signals, JWT authentication, and a role-based admin dashboard.',
+        'Collaborates on agile sprints and code reviews across time zones; cross-platform builds via Ionic + Capacitor.',
       ],
     },
     {
@@ -47,8 +56,8 @@ export class ResumeComponent {
       type: 'Part-time · Remote · Contract',
       title: 'Game / App Developer',
       bullets: [
-        'Shipped <strong>PathFinder</strong> to the Meta Quest Store using Unreal Engine 5.5 Blueprints; built an Android companion app in Unity.',
-        'Developed <strong>Robots vs Aliens</strong>, a Unity (C#) mobile action game with procedural level generation.',
+        'Shipped <strong>PathFinder</strong> to the Meta Quest Store using Unreal Engine 5.5 Blueprints with Wit.ai speech-to-text voice journaling.',
+        'Built the Android companion app in Unity (C#); passed Meta\'s hardware and content review.',
       ],
     },
   ];
@@ -57,22 +66,37 @@ export class ResumeComponent {
   readonly projects = [
     {
       name: 'MonsoonAI',
-      stack: 'Node.js · TypeScript · PocketBase · SMS · Google Gemini',
-      desc: 'Disaster early-warning PWA designed with an SMS pipeline so onboarding, alerts, and checklists can keep flowing when the network drops.',
+      stack: 'Node.js · TypeScript · Express · PocketBase · WebSockets · Google Gemini · turf.js',
+      desc: 'Disaster early-warning PWA for Philippine households · Entry for the Asian Hackathon for Green Future.',
+      bullets: [
+        'Multi-hazard risk engine fusing live weather, flood, and wildfire data sources',
+        'RAG-grounded Gemini chatbot for personalized preparedness guidance',
+        'turf.js per-address flood-zone lookup; SMS-first alert pipeline for low-connectivity areas',
+      ],
       live: 'https://github.com/jarenkendrick14/monsoon-ai',
       liveLabel: 'GitHub ↗',
     },
     {
       name: 'TARIPA',
-      stack: 'Angular 21 · Node.js · Express · MySQL · PDFKit',
-      desc: 'Tricycle fare accountability PWA for Angeles City — auto-generates weekly PDF overcharging reports emailed to the PTRO.',
+      stack: 'Angular 21 · Signals · Node.js · Express · MySQL · JWT · PDFKit · node-cron',
+      desc: 'Civic-tech PWA for Angeles City commuters.',
+      bullets: [
+        'Auth-gated overcharge reporting with browser-geolocation validation',
+        'MySQL geospatial queries aggregating reports by transport terminal',
+        'Scheduled PDFKit + Nodemailer pipeline designed to deliver weekly summaries to the local transport office',
+      ],
       live: 'https://github.com/jarenkendrick14/taripa-web-app',
       liveLabel: 'GitHub ↗',
     },
     {
       name: 'Dropify',
-      stack: 'Vue.js 3 · Node.js · MongoDB · Pinia · JWT',
-      desc: 'E-commerce platform with a persistent cart, multi-step checkout, and a full CRUD admin dashboard for products, users, and orders.',
+      stack: 'Vue.js 3 · Composition API · Node.js · Express · MongoDB · Pinia · JWT',
+      desc: 'Full-stack e-commerce platform.',
+      bullets: [
+        'MongoDB-backed persistent cart that survives sessions and logouts',
+        'Multi-step checkout with permanent order records',
+        'CRUD admin dashboard with role-based access control and order status tracking',
+      ],
       live: 'https://dropifystore.netlify.app/',
       liveLabel: 'Live ↗',
     },
@@ -92,21 +116,18 @@ export class ResumeComponent {
   // ── Skills (grouped by category) ──────────────────────────
   readonly skillGroups = [
     { category: 'Languages',  items: ['JavaScript', 'TypeScript', 'C#'] },
-    { category: 'Frontend',   items: ['Angular', 'Vue.js 3', 'Ionic', 'HTML5', 'CSS3'] },
-    { category: 'Backend',    items: ['Node.js', 'Express.js', 'WebSockets', 'REST APIs'] },
-    { category: 'Database',   items: ['PostgreSQL', 'MongoDB', 'Prisma ORM'] },
+    { category: 'Frontend',   items: ['Angular 21 (Signals, PWA)', 'Vue.js 3 (Composition API, Pinia)', 'Ionic + Capacitor', 'HTML5', 'CSS3'] },
+    { category: 'Backend',    items: ['Node.js', 'Express.js', 'WebSockets', 'REST APIs', 'JWT', 'bcrypt', 'PDFKit', 'Nodemailer', 'node-cron'] },
+    { category: 'Database',   items: ['PostgreSQL', 'MongoDB', 'MySQL', 'Prisma ORM'] },
+    { category: 'Deployment', items: ['Git', 'Netlify', 'Vercel', 'Railway', 'CI/CD via Netlify/Vercel auto-deploy from GitHub'] },
     { category: 'Game Dev',   items: ['Unreal Engine 5.5', 'Blueprints', 'Unity'] },
-    { category: 'Tools',      items: ['Git', 'Figma', 'Netlify', 'Vercel', 'VS Code'] },
-    { category: 'Soft Skills', items: ['Remote Collaboration', 'Problem Solving', 'Self-directed Learning'] },
+    { category: 'Workflow',   items: ['Agile / Sprint Workflows', 'Code Review', 'Cross-functional Remote Collaboration'] },
   ];
 
   // ── Certifications — relevant to web & app dev field only ─
   readonly resumeCerts = this.data.certificates.filter(c => [
-    'Responsive Web Design',
-    'JavaScript Essentials 1',
     'Back End Development & APIs',
-    'Legacy JS Algorithms & Data Structures',
-    'Introduction to Figma',
+    'JS Algorithms & Data Structures',
     'Endpoint Security',
   ].includes(c.name));
 
@@ -127,18 +148,30 @@ export class ResumeComponent {
         logging: false,
       });
 
-      const imgData   = canvas.toDataURL('image/png');
-      const pdf       = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageW     = 210;
-      const pageH     = 297;
-      const imgH      = (canvas.height * pageW) / canvas.width;
+      const imgData = canvas.toDataURL('image/png');
+      const pdf     = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageW   = 210;
+      const pageH   = 297;
+      const imgH    = (canvas.height * pageW) / canvas.width;
 
-      // Scale down if taller than one A4 page
-      if (imgH > pageH) {
-        const scale = pageH / imgH;
-        pdf.addImage(imgData, 'PNG', 0, 0, pageW * scale, pageH);
+      // Fit full page width; paginate only when overflow is meaningful (>20mm),
+      // otherwise gently scale down to fit one page so we don't get a blank page 2.
+      const overflowTolerance = 20; // mm
+      if (imgH <= pageH + overflowTolerance) {
+        const fitH = Math.min(imgH, pageH);
+        const fitW = imgH > pageH ? pageW * (pageH / imgH) : pageW;
+        const xOffset = (pageW - fitW) / 2;
+        pdf.addImage(imgData, 'PNG', xOffset, 0, fitW, fitH);
       } else {
-        pdf.addImage(imgData, 'PNG', 0, 0, pageW, imgH);
+        let remaining = imgH;
+        let offset    = 0;
+        while (remaining > 0) {
+          pdf.addImage(imgData, 'PNG', 0, -offset, pageW, imgH);
+          remaining -= pageH;
+          offset    += pageH;
+          if (remaining > overflowTolerance) pdf.addPage();
+          else break;
+        }
       }
 
       pdf.save('Jaren_Kendrick_Resume.pdf');

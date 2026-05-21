@@ -306,7 +306,7 @@ export class PortfolioDataService {
       url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/back-end-development-and-apis'
     },
     {
-      name: 'Legacy JS Algorithms & Data Structures',
+      name: 'JS Algorithms & Data Structures',
       issuer: 'freeCodeCamp', abbr: 'fCC', color: '#0a0a23', date: 'Jul 2025',
       url: 'https://www.freecodecamp.org/certification/JarenKendrickYambao/javascript-algorithms-and-data-structures'
     },

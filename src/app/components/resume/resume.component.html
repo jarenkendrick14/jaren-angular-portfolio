@@ -7,6 +7,12 @@
       Back
     </button>
     <div class="res-topbar-actions">
+      <button class="res-print-btn res-print-btn--outline" (click)="togglePlain()" [class.res-print-btn--active]="plainView()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+        </svg>
+        {{ plainView() ? 'Designed View' : 'Plain (ATS)' }}
+      </button>
       <button class="res-print-btn res-print-btn--outline" (click)="printResume()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
@@ -25,13 +31,13 @@
   <!-- ══════════════════════════════════════
        THE RESUME DOCUMENT
   ══════════════════════════════════════ -->
-  <div class="resume-doc" id="resume-document">
+  <div class="resume-doc" id="resume-document" [class.plain]="plainView()">
 
     <!-- HEADER -->
     <header class="rd-header">
       <div class="rd-name-block">
         <h1 class="rd-name">Jaren Kendrick Yambao</h1>
-        <p class="rd-title">Full Stack Developer &nbsp;·&nbsp; Game / App Developer</p>
+        <p class="rd-title">Full Stack Developer</p>
       </div>
       <div class="rd-contacts">
         <a href="https://jarenkendrick.com" target="_blank" rel="noopener" class="rd-contact-item">
@@ -108,6 +114,11 @@
               </div>
               <div class="rd-proj-stack">{{ proj.stack }}</div>
               <p class="rd-proj-desc">{{ proj.desc }}</p>
+              <ul class="rd-bullets rd-proj-bullets">
+                @for (bullet of proj.bullets; track $index) {
+                  <li>{{ bullet }}</li>
+                }
+              </ul>
             </div>
           }
         </section>
