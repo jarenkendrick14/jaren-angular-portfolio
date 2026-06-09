@@ -70,7 +70,6 @@ export class ResumeComponent {
       desc: 'Disaster early-warning PWA for Philippine households · Entry for the Asian Hackathon for Green Future.',
       bullets: [
         'Multi-hazard risk engine fusing live weather, flood, and wildfire data sources',
-        'RAG-grounded Gemini chatbot for personalized preparedness guidance',
         'turf.js per-address flood-zone lookup; SMS-first alert pipeline for low-connectivity areas',
       ],
       live: 'https://github.com/jarenkendrick14/monsoon-ai',
@@ -81,7 +80,6 @@ export class ResumeComponent {
       stack: 'Angular 21 · Signals · Node.js · Express · MySQL · JWT · PDFKit · node-cron',
       desc: 'Civic-tech PWA for Angeles City commuters.',
       bullets: [
-        'Auth-gated overcharge reporting with browser-geolocation validation',
         'MySQL geospatial queries aggregating reports by transport terminal',
         'Scheduled PDFKit + Nodemailer pipeline designed to deliver weekly summaries to the local transport office',
       ],
@@ -94,7 +92,6 @@ export class ResumeComponent {
       desc: 'Full-stack e-commerce platform.',
       bullets: [
         'MongoDB-backed persistent cart that survives sessions and logouts',
-        'Multi-step checkout with permanent order records',
         'CRUD admin dashboard with role-based access control and order status tracking',
       ],
       live: 'https://dropifystore.netlify.app/',
@@ -115,13 +112,11 @@ export class ResumeComponent {
 
   // ── Skills (grouped by category) ──────────────────────────
   readonly skillGroups = [
-    { category: 'Languages',  items: ['JavaScript', 'TypeScript', 'C#'] },
-    { category: 'Frontend',   items: ['Angular 21 (Signals, PWA)', 'Vue.js 3 (Composition API, Pinia)', 'Ionic + Capacitor', 'HTML5', 'CSS3'] },
-    { category: 'Backend',    items: ['Node.js', 'Express.js', 'WebSockets', 'REST APIs', 'JWT', 'bcrypt', 'PDFKit', 'Nodemailer', 'node-cron'] },
+    { category: 'Frontend',   items: ['TypeScript', 'JavaScript', 'Angular 21 (Signals, PWA)', 'Vue.js 3 (Composition API, Pinia)', 'Ionic + Capacitor'] },
+    { category: 'Backend',    items: ['Node.js', 'Express.js', 'WebSockets', 'REST APIs', 'JWT'] },
     { category: 'Database',   items: ['PostgreSQL', 'MongoDB', 'MySQL', 'Prisma ORM'] },
     { category: 'Deployment', items: ['Git', 'Netlify', 'Vercel', 'Railway', 'CI/CD via Netlify/Vercel auto-deploy from GitHub'] },
-    { category: 'Game Dev',   items: ['Unreal Engine 5.5', 'Blueprints', 'Unity'] },
-    { category: 'Workflow',   items: ['Agile / Sprint Workflows', 'Code Review', 'Cross-functional Remote Collaboration'] },
+    { category: 'Game Dev',   items: ['C#', 'Unreal Engine 5.5', 'Blueprints', 'Unity'] },
   ];
 
   // ── Certifications — relevant to web & app dev field only ─
@@ -154,14 +149,16 @@ export class ResumeComponent {
       const pageH   = 297;
       const imgH    = (canvas.height * pageW) / canvas.width;
 
-      // Fit full page width; paginate only when overflow is meaningful (>20mm),
-      // otherwise gently scale down to fit one page so we don't get a blank page 2.
+      // Fit full page width; paginate only when overflow is meaningful (>20mm).
+      // Page margins are handled via the .resume-doc.plain CSS padding (see resume.component.css).
       const overflowTolerance = 20; // mm
       if (imgH <= pageH + overflowTolerance) {
         const fitH = Math.min(imgH, pageH);
         const fitW = imgH > pageH ? pageW * (pageH / imgH) : pageW;
         const xOffset = (pageW - fitW) / 2;
-        pdf.addImage(imgData, 'PNG', xOffset, 0, fitW, fitH);
+        // Center vertically so the top and bottom margins are symmetric.
+        const yOffset = Math.max(0, (pageH - fitH) / 2);
+        pdf.addImage(imgData, 'PNG', xOffset, yOffset, fitW, fitH);
       } else {
         let remaining = imgH;
         let offset    = 0;

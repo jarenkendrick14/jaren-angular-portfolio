@@ -393,7 +393,7 @@
 .resume-doc.plain {
   font-family: Arial, Helvetica, sans-serif;
   color: #000;
-  padding: 1rem 1.25rem;
+  padding: 1rem 2.5rem;
   line-height: 1.35;
 }
 .resume-doc.plain * {
@@ -402,16 +402,17 @@
   letter-spacing: 0 !important;
 }
 
-/* Header: name + contacts side-by-side, vertically centered */
+/* Header: centered name + title, horizontal contacts row below */
 .resume-doc.plain .rd-header {
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-bottom: .4rem;
-  margin-bottom: .5rem;
+  text-align: center;
+  gap: .35rem;
+  padding-bottom: .45rem;
+  margin-bottom: .55rem;
   border-bottom: 1px solid #000;
 }
+.resume-doc.plain .rd-name-block { align-items: center; text-align: center; }
 .resume-doc.plain .rd-name {
   font-size: 1.5rem;
   font-weight: 700;
@@ -421,9 +422,11 @@
 }
 .resume-doc.plain .rd-title { font-size: .95rem; font-weight: 500; color: #222 !important; }
 .resume-doc.plain .rd-contacts {
-  flex-direction: column;
-  align-items: flex-end;
-  gap: .1rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: .1rem .85rem;
 }
 .resume-doc.plain .rd-contact-item { font-size: .78rem; font-weight: 400; line-height: 1.35; }
 .resume-doc.plain .rd-contact-item svg { display: none; }
@@ -482,7 +485,7 @@
   color: #444 !important;
 }
 .resume-doc.plain .rd-proj-stack::before { content: '— '; color: #888 !important; }
-.resume-doc.plain .rd-proj-desc { display: block; margin-top: .1rem; margin-bottom: .05rem; font-style: italic; color: #333 !important; }
+.resume-doc.plain .rd-proj-desc { display: block; margin-top: .1rem; margin-bottom: .05rem; color: #333 !important; }
 .resume-doc.plain .rd-proj-bullets { margin-top: .1rem; }
 
 /* Plain view: clickable label only, no raw URL text */
