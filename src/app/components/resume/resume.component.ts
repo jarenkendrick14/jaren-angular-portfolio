@@ -42,7 +42,7 @@ export class ResumeComponent {
     {
       period: 'Feb 2026 — Present',
       company: 'HumanSide Technologies',
-      type: 'Part-time · Remote · Contract',
+      type: 'Contract · Remote',
       title: 'Full Stack Developer',
       bullets: [
         'Architected and shipped <strong>Symposium</strong> — a real-time multi-AI chat platform on Angular 21 + Ionic (Vercel) with an Express + WebSocket backend (Railway) and PostgreSQL via Prisma ORM.',
@@ -53,7 +53,7 @@ export class ResumeComponent {
     {
       period: 'Apr 2025 — Jan 2026',
       company: 'HumanSide Technologies',
-      type: 'Part-time · Remote · Contract',
+      type: 'Contract · Remote',
       title: 'Game / App Developer',
       bullets: [
         'Shipped <strong>PathFinder</strong> to the Meta Quest Store using Unreal Engine 5.5 Blueprints with Wit.ai speech-to-text voice journaling.',

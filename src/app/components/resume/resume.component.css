@@ -85,7 +85,7 @@
   color: #1a1824;
   border-radius: 3px;
   box-shadow: 0 12px 60px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .2);
-  padding: 2.5rem 2.75rem;
+  padding: 1.7rem 2.75rem;
   flex-shrink: 0;
 }
 
@@ -97,8 +97,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  padding-bottom: .85rem;
-  margin-bottom: 1.05rem;
+  padding-bottom: .6rem;
+  margin-bottom: .7rem;
   border-bottom: 3px solid #1a1824;
 }
 
@@ -159,9 +159,9 @@
   font-size: .78rem;
   color: #2d2b3b;
   font-weight: 400;
-  line-height: 1.65;
-  margin-bottom: 1.1rem;
-  padding-bottom: 1rem;
+  line-height: 1.6;
+  margin-bottom: .7rem;
+  padding-bottom: .65rem;
   border-bottom: 2px solid #b8b3dc;
 }
 
@@ -178,7 +178,7 @@
 /* ══════════════════════════════════════════
    SECTION
 ══════════════════════════════════════════ */
-.rd-section { margin-bottom: 1.35rem; }
+.rd-section { margin-bottom: .9rem; }
 .rd-section:last-child { margin-bottom: 0; }
 
 .rd-sec-title {
@@ -201,8 +201,8 @@
    ENTRY (job / education)
 ══════════════════════════════════════════ */
 .rd-entry {
-  margin-bottom: 1.1rem;
-  padding-bottom: 1rem;
+  margin-bottom: .7rem;
+  padding-bottom: .65rem;
   border-bottom: 1.5px solid #d8d5ee;
 }
 .rd-entry:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
@@ -248,10 +248,10 @@
 .rd-bullets {
   list-style: none;
   padding: 0;
-  margin: .45rem 0;
+  margin: .3rem 0;
   display: flex;
   flex-direction: column;
-  gap: .25rem;
+  gap: .18rem;
 }
 .rd-bullets li {
   font-size: .78rem;
@@ -285,8 +285,8 @@
    PROJECTS
 ══════════════════════════════════════════ */
 .rd-proj {
-  margin-bottom: .8rem;
-  padding-bottom: .75rem;
+  margin-bottom: .55rem;
+  padding-bottom: .5rem;
   border-bottom: 1.5px solid #d8d5ee;
 }
 .rd-proj:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
