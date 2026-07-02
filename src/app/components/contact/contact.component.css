@@ -19,7 +19,7 @@
   animation: fadeUp .55s cubic-bezier(.22,1,.36,1) ease both;
 }
 
-.cgg { display: grid; grid-template-columns: 1.45fr 1fr; gap: 5rem; width: 100%; align-items: start; }
+.cgg { display: grid; grid-template-columns: 1.45fr 1fr; gap: 4rem; width: 100%; }
 
 .cp {
   font-size: 1.1rem;
@@ -31,7 +31,11 @@
 }
 
 /* ── Right column: typographic contact block ─────────── */
-.cinfo { animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both; }
+.cinfo {
+  display: flex;
+  flex-direction: column;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .18s ease both;
+}
 
 .direct-label {
   font-family: 'JetBrains Mono', monospace;
@@ -45,12 +49,10 @@
 
 .direct-mail {
   display: block;
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
+  font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
-  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
-  line-height: 1.25;
-  letter-spacing: -.01em;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  line-height: 1.4;
   color: var(--white);
   text-decoration: none;
   word-break: break-all;
@@ -70,21 +72,47 @@
 }
 .direct-tel:hover { color: var(--acc-text); }
 
-.minihr { height: 1px; background: var(--bord); margin: 2.25rem 0; }
+.direct-soc {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  margin-top: 2.1rem;
+  text-decoration: none;
+}
 
-.molinks { display: flex; gap: 2.25rem; }
-
-.molink {
+.direct-soc-head {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
   font-family: 'JetBrains Mono', monospace;
-  font-size: .82rem;
+  font-size: .74rem;
   font-weight: 500;
-  letter-spacing: .08em;
+  letter-spacing: .09em;
   text-transform: uppercase;
   color: var(--muted);
-  text-decoration: none;
   transition: color .2s;
 }
-.molink:hover { color: var(--acc-text); }
+
+.direct-soc-ico {
+  width: 16px; height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.direct-soc-url {
+  font-size: .98rem;
+  font-weight: 400;
+  color: var(--white);
+  transition: color .2s;
+  word-break: break-all;
+}
+
+.direct-soc:hover .direct-soc-head,
+.direct-soc:hover .direct-soc-url { color: var(--acc-text); }
 
 /* ── Form (no card — sits on the page) ───────────────── */
 .cform {
@@ -122,7 +150,7 @@ input, textarea {
 }
 input::placeholder, textarea::placeholder { color: var(--muted); }
 input:focus, textarea:focus { border-color: var(--acc); }
-textarea { min-height: 180px; }
+textarea { min-height: 150px; }
 
 .btn {
   display: inline-flex; align-items: center; gap: .6rem; justify-content: center;
@@ -253,7 +281,7 @@ textarea { min-height: 180px; }
   flex: 1;
   padding: 1.1rem 1.25rem;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: .75rem;
   transition: background .2s;
 }
@@ -274,7 +302,6 @@ textarea { min-height: 180px; }
   display: flex; align-items: center; justify-content: center;
   color: var(--acc);
   flex-shrink: 0;
-  margin-top: .1rem;
 }
 
 .wte-text { display: flex; flex-direction: column; gap: .2rem; }
