@@ -32,20 +32,13 @@
         <div class="tl-row al" [style.animation-delay]="(0.3 + i * 0.15) + 's'">
 
           <!-- Node hidden from scanner -->
-          <div class="tl-node" [class.live]="job.isLive" aria-hidden="true">
-            @if (job.isLive) { <span class="live-ring"></span> }
-          </div>
+          <div class="tl-node" [class.live]="job.isLive" aria-hidden="true"></div>
 
           <!-- Card -->
           <div class="tl-card">
             <div class="tl-card-head">
               <div class="tl-meta">
                 <span class="tl-period">{{ job.period }}</span>
-                @if (job.isLive) {
-                  <span class="live-badge">
-                    <span class="live-dot" aria-hidden="true"></span>CURRENTLY HERE
-                  </span>
-                }
               </div>
               <p class="tl-org">{{ job.type }}</p>
             </div>
@@ -93,99 +86,18 @@
 
     </div><!-- /tl-wrap -->
 
-    <!-- ── Skill Radar Chart ─────────────────────────────────────── -->
-    <div class="radar-section au" [style.animation-delay]="'0.55s'">
-      <div class="radar-wrap">
-        <div class="radar-left">
-          <p class="radar-label">Skill Radar</p>
-          <canvas #radarCanvas width="300" height="300" class="radar-canvas" aria-label="Skill radar chart"></canvas>
-        </div>
-        <div class="radar-legend">
-          @for (ax of radarAxes; track ax.label) {
-            <div class="radar-leg-item">
-              <div class="radar-leg-bar">
-                <div class="radar-leg-fill" [style.--target-w]="(ax.value * 100) + '%'" [style.animation-play-state]="barsReady() ? 'running' : 'paused'"></div>
-              </div>
-              <span class="radar-leg-label">{{ ax.label }}</span>
-              <span class="radar-leg-pct">{{ (ax.value * 100).toFixed(0) }}%</span>
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-
     <!-- ── Skills ────────────────────────────────────────────────── -->
-    <div class="skills-section au" [style.animation-delay]="'0.6s'">
-      <div class="skills-header">
-        <h3 class="skills-title">Technical Proficiency</h3>
-        <span class="skills-sub">Self-assessed · relative to production use</span>
-      </div>
-
-      <div class="skills-grid">
-
-        <!-- Web Dev column -->
-        <div class="skill-col">
-          <div class="skill-col-label">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            Web Development
+    <section class="skills-section au" [style.animation-delay]="'0.55s'" aria-labelledby="skills-title">
+      <h3 class="skills-title" id="skills-title">Skills</h3>
+      <dl class="skill-groups">
+        @for (group of data.skillGroups; track group.category) {
+          <div class="skill-group">
+            <dt class="skill-cat">{{ group.category }}</dt>
+            <dd class="skill-items">{{ group.items.join(', ') }}</dd>
           </div>
-          <ul class="skl" role="list">
-            @for (sk of webSkills; track sk.name; let i = $index) {
-              <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
-                <div class="sk-info">
-                  <span>{{ sk.name }}</span>
-                  <span class="sk-time">{{ sk.time }}</span>
-                </div>
-                <div class="sk-bar">
-                  <div class="sk-fill"
-                    [style.--target-width]="sk.pct + '%'"
-                    [style.animation-play-state]="barsReady() ? 'running' : 'paused'"
-                    [style.animation-delay]="(i * 0.09) + 's'">
-                  </div>
-                </div>
-              </li>
-            }
-          </ul>
-        </div>
-
-        <!-- Game Dev column -->
-        <div class="skill-col">
-          <div class="skill-col-label">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h2M15 13h2"/></svg>
-            Game Development
-          </div>
-          <ul class="skl" role="list">
-            @for (sk of gameSkills; track sk.name; let i = $index) {
-              <li class="sk-item" [style.animation-delay]="(i * 0.08) + 's'">
-                <div class="sk-info">
-                  <span>{{ sk.name }}</span>
-                  <span class="sk-time">{{ sk.time }}</span>
-                </div>
-                <div class="sk-bar">
-                  <div class="sk-fill game-fill"
-                    [style.--target-width]="sk.pct + '%'"
-                    [style.animation-play-state]="barsReady() ? 'running' : 'paused'"
-                    [style.animation-delay]="(i * 0.09) + 's'">
-                  </div>
-                </div>
-              </li>
-            }
-          </ul>
-        </div>
-
-      </div><!-- /skills-grid -->
-
-      <!-- Tools chip list -->
-      <div class="tools-wrap">
-        <span class="tools-label">Tools &amp; Workflow</span>
-        <div class="tools-chips">
-          @for (tool of tools; track tool) {
-            <span class="ptag">{{ tool }}</span>
-          }
-        </div>
-      </div>
-
-    </div><!-- /skills-section -->
+        }
+      </dl>
+    </section>
 
     <!-- ── What I Bring ─────────────────────────────────────── -->
     <div class="wib-section au" [style.animation-delay]="'0.7s'">
@@ -195,8 +107,8 @@
           <div class="wib-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </div>
-          <h4 class="wib-title">Self-Directed Learner</h4>
-          <p class="wib-desc">I've picked up most of my stack — Angular, Node.js, Unreal Engine — outside of class by building things and seeing what breaks. That process is still very much ongoing.</p>
+          <h4 class="wib-title">Engineering Around AI</h4>
+          <p class="wib-desc">Many AI vendors behind one interface, a cost on every call with limits so spending can't spiral, and failures that show up as failures instead of confident wrong answers.</p>
         </div>
         <div class="wib-card">
           <div class="wib-icon" aria-hidden="true">
@@ -210,7 +122,7 @@
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </div>
           <h4 class="wib-title">Shipping Experience</h4>
-          <p class="wib-desc">PathFinder is live on the Meta Quest Store and Symposium runs in production. I've gotten a taste of what it takes to take something from idea to deployed — and I want more of it.</p>
+          <p class="wib-desc">PathFinder is live on the Meta Quest Store, Symposium runs in production, and I shipped features on two production platforms during my internship at Symph. I know what it takes to get from idea to deployed.</p>
         </div>
       </div>
     </div>

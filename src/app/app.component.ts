@@ -23,14 +23,14 @@ import { CommandPaletteComponent } from './components/command-palette/command-pa
 // ─── Per-page metadata ────────────────────────────────────────────────────────
 const PAGE_META: { title: string; description: string }[] = [
   {
-    title: 'Jaren Kendrick — Full Stack Developer & VR Engineer',
+    title: 'Jaren Kendrick — AI Developer',
     description:
-      'Portfolio of Jaren Kendrick Yambao — a 20-year-old Full Stack Developer from Pampanga, PH. Builds web apps in Angular & Node.js, and ships VR experiences to the Meta Quest Store.',
+      'Portfolio of Jaren Kendrick Yambao — a 21-year-old AI Developer from Pampanga, PH. Builds multi-AI platforms in Angular & Node.js, and ships VR experiences to the Meta Quest Store.',
   },
   {
     title: 'About — Jaren Kendrick',
     description:
-      'Learn about Jaren Kendrick: BS IT student at Holy Angel University, part-time Game/App Developer at VirtuIntelligence, and aspiring Full Stack intern with skills in Angular, Node.js, and Unreal Engine.',
+      'Learn about Jaren Kendrick: fourth-year BS IT student at Holy Angel University, AI Developer at HumanSide Technologies, and former Web and App Developer intern at Symph.',
   },
   {
     title: 'Projects — Jaren Kendrick',
@@ -40,7 +40,7 @@ const PAGE_META: { title: string; description: string }[] = [
   {
     title: 'Experience — Jaren Kendrick',
     description:
-      'Jaren\'s professional experience as a Game/App Developer at VirtuIntelligence — shipping VR apps in Unreal Engine 5.5 and building full-stack platforms with Angular and Node.js.',
+      'Jaren\'s professional experience — AI Developer at HumanSide Technologies building Symposium, Web and App Developer intern at Symph, and Game Developer shipping VR to the Meta Quest Store.',
   },
   {
     title: 'Blog — Jaren Kendrick',
@@ -55,12 +55,12 @@ const PAGE_META: { title: string; description: string }[] = [
   {
     title: 'Contact — Jaren Kendrick',
     description:
-      'Get in touch with Jaren Kendrick for internship opportunities, freelance web development, or collaboration on full-stack or VR projects.',
+      'Get in touch with Jaren Kendrick for job opportunities, freelance web development, or collaboration on AI and full-stack projects.',
   },
   {
     title: 'Resume — Jaren Kendrick',
     description:
-      'View the professional resume of Jaren Kendrick Yambao — Full Stack Developer and Game/App Developer with experience in Angular, Node.js, and Unreal Engine.',
+      'View the professional resume of Jaren Kendrick Yambao — AI Developer with experience in Angular, Node.js, Next.js, Flutter, and Unreal Engine.',
   },
 ];
 // ─────────────────────────────────────────────────────────────────────────────

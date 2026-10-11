@@ -37,9 +37,9 @@
 
       <!-- Bio Text -->
       <div class="intro-right abio au d3">
-        <p>Hello! My name is Jaren. I'm a <strong>20-year-old developer</strong> at Holy Angel University (Pampanga, PH), currently pursuing a Bachelor's in Information Technology with a specialization in Web Development.</p>
-        <p>While balancing my studies, I work as a Game/App Developer at VirtuIntelligence. I have built VR experiences in Unreal Engine and full-stack web applications using Angular, Node.js, and PostgreSQL. My academic background gives me a strong foundation in systems architecture, while my professional work teaches me how to ship real products.</p>
-        <p>I am actively looking for a <strong>Full Stack Internship</strong> where I can apply my skills in a professional team environment.</p>
+        <p>Hello! My name is Jaren. I'm a <strong>21-year-old developer</strong> and fourth-year BSIT student at Holy Angel University (Pampanga, PH), specializing in Web Development.</p>
+        <p>I'm an <strong>AI Developer at HumanSide Technologies</strong>, where I build Symposium, a platform where people and multiple AI models deliberate, investigate and research together in real time. I recently finished a four-month internship at <strong>Symph</strong> as a Web and App Developer, working on an AI content-automation platform and a property management app on web and Flutter. Before all that, I shipped a VR app to the Meta Quest Store.</p>
+        <p>What I've learned most is the engineering around AI models rather than the models themselves: keeping many vendors behind one interface, tracking what every AI call costs and setting limits so spending can't spiral, and making sure a failure shows up as a failure instead of a confident wrong answer.</p>
         
         <div style="margin-top:2rem;">
           <button type="button" class="btn btn-fill" (click)="resumeOpened.emit()">
@@ -63,30 +63,26 @@
       <div class="blk dash-skills au d4">
         <div class="blkh">
           Technical Skills
-          <button class="skill-toggle-btn" (click)="toggleSkills()">
-            @if (skillsExpanded()) { ← Show Sphere } @else { Show Proficiency → }
+          <button class="skill-toggle-btn" (click)="toggleSkills()" [attr.aria-pressed]="skillsExpanded()">
+            @if (skillsExpanded()) { Show sphere } @else { Show as list }
           </button>
         </div>
 
-        <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'" aria-hidden="true">
-          <div #sphereContainer style="position: absolute; top: 50%; left: 50%; width: 0; height: 0;"></div>
+        <div class="skill-sphere-wrap" #sphereWrap [style.display]="skillsExpanded() ? 'none' : 'flex'"
+             role="img" [attr.aria-label]="'Skills: ' + sphereLabel">
+          <div #sphereContainer class="sphere-origin"></div>
           <div class="sphere-hint">drag to spin</div>
         </div>
 
         @if (skillsExpanded()) {
-          <ul class="skl" role="list">
-            @for (sk of skills; track sk.name; let i = $index) {
-              <li class="sk-item au" [style.animation-delay]="(i * 0.1) + 's'">
-                <div class="sk-info">
-                  <span>{{ sk.name }}</span>
-                  <span class="sk-time">{{ sk.time }}</span>
-                </div>
-                <div class="sk-bar">
-                  <div class="sk-fill" [style.--target-width]="sk.pct + '%'" [style.animation-delay]="(i * 0.1 + 0.2) + 's'"></div>
-                </div>
-              </li>
+          <dl class="skill-groups">
+            @for (group of data.skillGroups; track group.category) {
+              <div class="skill-group">
+                <dt class="skill-cat">{{ group.category }}</dt>
+                <dd class="skill-items">{{ group.items.join(', ') }}</dd>
+              </div>
             }
-          </ul>
+          </dl>
         }
       </div>
 

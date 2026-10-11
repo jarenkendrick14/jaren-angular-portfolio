@@ -42,6 +42,11 @@ export interface Testimonial {
   img?: string; // Optional image path
 }
 
+export interface SkillGroup {
+  category: string;
+  items: string[];
+}
+
 export interface NavItem {
   label: string;
   short: string;

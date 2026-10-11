@@ -244,6 +244,20 @@
   white-space: nowrap;
 }
 
+/* Roles grouped under one company */
+.rd-role { margin-top: .4rem; }
+.rd-role-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.rd-role-title {
+  font-size: .85rem;
+  font-weight: 600;
+  color: #2d2b3b;
+}
+
 /* BULLETS */
 .rd-bullets {
   list-style: none;
@@ -533,6 +547,8 @@
 /* Project / education detail */
 .resume-doc.plain .rd-proj-desc,
 .resume-doc.plain .rd-edu-courses { font-size: .82rem; font-weight: 400; line-height: 1.35; margin-top: .1rem; }
+.resume-doc.plain .rd-role { margin-top: .15rem; }
+.resume-doc.plain .rd-role-title { font-size: .9rem; font-weight: 600; line-height: 1.25; }
 
 /* Skills: inline categories */
 .resume-doc.plain .rd-skill-group { margin-bottom: .08rem; line-height: 1.35; }

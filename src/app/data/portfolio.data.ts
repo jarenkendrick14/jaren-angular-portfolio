@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Project, Certificate, BlogPost, Testimonial, NavItem } from '../models/portfolio.models';
+import { Project, Certificate, BlogPost, Testimonial, NavItem, SkillGroup } from '../models/portfolio.models';
 
 @Injectable({ providedIn: 'root' })
 export class PortfolioDataService {
@@ -13,6 +13,17 @@ export class PortfolioDataService {
     { label: 'Testimonials', short: 'reviews', index: 5 },
     { label: 'Contact', short: 'Contact', index: 6 },
     { label: 'Resume', short: 'Resume', index: 7, hidden: true },
+  ];
+
+  // Single source for the skills list on About, Experience, Resume and the terminal
+  readonly skillGroups: SkillGroup[] = [
+    { category: 'AI Engineering', items: ['Multi-provider LLM integration', 'Streaming & tool use', 'RAG', 'Prompt caching', 'Cost telemetry & spend limits'] },
+    { category: 'Frontend',       items: ['TypeScript', 'Angular 21 (Signals, PWA)', 'Next.js / React', 'Ionic + Capacitor', 'Flutter (Dart)', 'Vue.js 3'] },
+    { category: 'Backend',        items: ['Node.js', 'Express.js', 'WebSockets', 'REST APIs', 'Redis + BullMQ', 'Stripe'] },
+    { category: 'Database',       items: ['PostgreSQL', 'Prisma ORM', 'Firebase', 'MongoDB', 'MySQL'] },
+    { category: 'Cloud',          items: ['Azure', 'Google Cloud Run', 'Vercel', 'Netlify'] },
+    { category: 'Game Dev',       items: ['C#', 'Unreal Engine 5.5', 'Blueprints', 'Unity'] },
+    { category: 'Tools',          items: ['Git & GitHub', 'Figma'] },
   ];
 
   readonly projects: Project[] = [
@@ -48,19 +59,19 @@ export class PortfolioDataService {
     {
       num: '02',
       name: 'Symposium',
-      subtitle: 'Real-time multi-AI group chat platform · Angular + Node.js',
-      tags: ['Angular', 'Ionic', 'Node.js', 'PostgreSQL', 'WebSockets', 'Express', 'Prisma', 'TypeScript'],
-      purpose: 'Architected a full-stack real-time platform for VirtuIntelligence where humans collaborate with AI personas in shared chat rooms.',
-      desc: 'Symposium is a real-time multi-AI group chat platform where human users converse with AI participants in shared rooms. The frontend is built with Angular 21 and Ionic, deployed on Vercel; the backend is an Express + WebSocket server on Railway, backed by a PostgreSQL database managed via Prisma ORM. The system supports streaming AI responses, room creation with invite links, turn management, and a role-based admin dashboard.',
+      subtitle: 'Multi-AI deliberation platform · Angular + Node.js',
+      tags: ['Angular', 'Ionic', 'Node.js', 'Express', 'WebSockets', 'PostgreSQL', 'Prisma', 'Redis', 'Azure', 'TypeScript'],
+      purpose: 'Building HumanSide\'s platform where people and multiple AI models deliberate, investigate and research together in real time.',
+      desc: 'Symposium is a real-time platform where people and multiple AI models deliberate, investigate and research together in shared rooms. It started with a single model and now puts more than 15 AI providers from 10+ countries behind one interface, plus bring-your-own-AI endpoints. The frontend is Angular 21 and Ionic; the backend is Node.js, Express and WebSockets over PostgreSQL (Prisma) and Redis, running on Azure. Behind the AI features sits the engineering that keeps them honest and affordable: cost telemetry on every call, spend ceilings, and reconciliation between what providers bill and what the platform logs.',
       features: [
-        'Real-time WebSocket messaging with low-latency streaming AI responses',
-        'Multi-AI integration — human users interact with distinct AI personas in shared rooms',
-        'Room system with invite links, join flows, and admin-level user management',
-        '@mention system with a live-filtered dropdown for addressing AI or human participants',
-        'Cross-platform deployment via Ionic + Capacitor (web, iOS, Android)',
-        'Role-based admin dashboard for user oversight and room management',
-        'PostgreSQL persistence via Prisma ORM with automatic hourly cleanup of inactive rooms',
-        'Rate limiting, CORS allowlist, and JWT authentication for secure API access',
+        '15+ AI providers (Claude, GPT, Gemini, Grok, Mistral, DeepSeek and more) behind one interface, with streaming, tool use, web search, citations and per-seat reasoning controls',
+        'AI-to-AI debate, AI reactions and slash commands, plus a document RAG pipeline for PDF, DOCX, XLSX and PPTX',
+        'Structured deliberation workspaces: Investigation (evidence wall, anomalies, voting), Jury Chamber and Treaty Table',
+        'White Paper: parallel deep-research AI seats answer independently, challenge each other over four rounds, and produce a cited paper with a claim ledger and graded evidence',
+        'Publishing and forking of rooms and papers with server-side rendering, SEO, share cards and PDF export',
+        'Subscription tiers and a credit system on Stripe and RevenueCat, with per-provider cost telemetry, spend ceilings, billed-versus-logged cost reconciliation and prompt-caching optimization',
+        'Sentinel Watch for scheduled AI monitoring, and meeting transcript ingestion',
+        'OAuth sign-in, Redis + BullMQ scaling, and an admin console with a model registry, audit log and security monitoring',
       ],
       live: [{ name: 'Live Site ↗', url: 'https://www.theaisymposium.net/' }],
       github: null,
@@ -71,7 +82,7 @@ export class PortfolioDataService {
       ],
       thumb: 'assets/images/symposium-1-thumb.webp',
       category: 'Full Stack',
-      outcome: 'Live at theaisymposium.net. Deployed on Vercel + Railway — actively used by VirtuIntelligence for AI-assisted ideation sessions with real users in shared rooms.'
+      outcome: 'Live at theaisymposium.net. Grew from a single model to 15+ AI providers, with paid subscriptions, credits and spend controls running in production.'
     },
     {
       num: '03',
@@ -339,6 +350,16 @@ export class PortfolioDataService {
       name: 'SEO',
       issuer: 'HubSpot Academy', abbr: 'HS', color: '#ff7a59', date: 'Jan 2026',
       url: 'https://app-na2.hubspot.com/academy/achievements/k55jkfw9/en/1/jaren-kendrick-yambao/seo'
+    },
+    {
+      name: 'Claude Certified Architect – Foundations',
+      issuer: 'Anthropic', abbr: 'ANTH', color: '#d97757', date: 'Aug 2026',
+      url: 'https://www.linkedin.com/in/jarenkendrick/details/certifications/'
+    },
+    {
+      name: 'Cyber Threat Management',
+      issuer: 'Cisco', abbr: 'CSCO', color: '#1ba0d7', date: 'Sep 2026',
+      url: 'https://www.linkedin.com/in/jarenkendrick/details/certifications/'
     },
   ];
 

@@ -29,7 +29,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   /* ── Counters ── */
   readonly counters = [
     { target: this.data.projects.length,  label: 'Projects Shipped', suffix: '', current: signal(0) },
-    { target: 13, label: 'Certifications',   suffix: '', current: signal(0) },
+    { target: this.data.certificates.length, label: 'Certifications', suffix: '', current: signal(0) },
     { target: 2,  label: 'Years Coding',     suffix: '+', current: signal(0) },
   ];
 
@@ -44,31 +44,25 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   readonly recentCommits  = signal<Commit[]>([]);
   readonly commitsLoading = signal(true);
 
-  readonly skills = [
-    { name: 'JavaScript',        time: '2 yrs',   pct: 85 },
-    { name: 'TypeScript',        time: '1.5 yrs', pct: 80 },
-    { name: 'Angular',           time: '1 yr',    pct: 75 },
-    { name: 'Node.js & Express', time: '1 yr',    pct: 75 },
-    { name: 'Vue.js 3',          time: '1 yr',    pct: 70 },
-    { name: 'C#',                time: '1 yr',    pct: 70 },
-    { name: 'MongoDB',           time: '1 yr',    pct: 65 },
-    { name: 'PostgreSQL',        time: '6 mo',    pct: 55 },
-  ];
-
+  // Brand-tinted tags; only front-facing tags show their color
   readonly sphereTags = [
-    { text: 'Angular',    color: '#ff5c78' }, { text: 'Vue.js 3',   color: '#5cd4a0' },
-    { text: 'Node.js',    color: '#5ed65e' }, { text: 'MongoDB',    color: '#60c460' },
-    { text: 'TypeScript', color: '#6baeed' }, { text: 'C#',         color: '#c57ae0' },
-    { text: 'Unity',      color: '#a78bfa' }, { text: 'Express.js', color: '#a8a8c8' },
-    { text: 'REST APIs',  color: '#7db8fc' }, { text: 'Git',        color: '#ff7a5c' },
-    { text: 'PostgreSQL', color: '#5b9fcc' }, { text: 'Prisma',     color: '#9eb0fa' },
-    { text: 'Ionic',      color: '#6aa3ff' }, { text: 'WebSockets', color: '#f59e0b' },
+    { text: 'Angular',       color: '#ff5c78' }, { text: 'TypeScript', color: '#6baeed' },
+    { text: 'Node.js',       color: '#5ed65e' }, { text: 'Express.js', color: '#a8a8c8' },
+    { text: 'WebSockets',    color: '#f59e0b' }, { text: 'PostgreSQL', color: '#5b9fcc' },
+    { text: 'Prisma',        color: '#9eb0fa' }, { text: 'Redis',      color: '#ff6b5c' },
+    { text: 'Next.js',       color: '#c8c8e0' }, { text: 'Flutter',    color: '#5ec8f5' },
+    { text: 'Firebase',      color: '#ffb84d' }, { text: 'Ionic',      color: '#6aa3ff' },
+    { text: 'Azure',         color: '#4aa8ff' }, { text: 'Vue.js 3',   color: '#5cd4a0' },
+    { text: 'MongoDB',       color: '#60c460' }, { text: 'C#',         color: '#c57ae0' },
+    { text: 'Unity',         color: '#a78bfa' }, { text: 'Unreal Engine', color: '#d4d4e8' },
+    { text: 'REST APIs',     color: '#7db8fc' }, { text: 'Git',        color: '#ff7a5c' },
   ];
+  readonly sphereLabel = this.sphereTags.map(t => t.text).join(', ');
 
   readonly softSkills = [
     { name: 'Self-Directed Learning', desc: 'Continuously picking up new frameworks and game engines outside of university coursework.' },
     { name: 'Adaptability', desc: 'Comfortable context-switching between game development (C#) and full-stack web architectures (TypeScript).' },
-    { name: 'Time Management', desc: 'Successfully balancing a full-time IT degree with part-time professional shipping deadlines.' },
+    { name: 'Time Management', desc: 'Balanced a full-time IT degree with a part-time AI developer role and a 360-hour internship at Symph.' },
     { name: 'Communication', desc: 'Providing clear asynchronous updates and proactive blocking-issue reports in a remote team.' },
     { name: 'Problem Solving', desc: 'Breaking down complex features (like real-time AI streaming) into actionable, scalable code.' }
   ];
@@ -76,10 +70,14 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   get currentCert(): Certificate { return this.data.certificates[this.certIndex()]; }
   get certTotal(): number { return this.data.certificates.length; }
 
+  /* ── Sphere state ── */
   private animId = 0;
   private rotX = 0.4; private rotY = 0;
-  private isDrag = false; private lx = 0; private ly = 0;
-  private velX = 0; private velY = 0.004;
+  private velX = 0; private velY = 0;
+  private dragging = false; private hovering = false;
+  private lx = 0; private ly = 0;
+  private sphereRadius = 150;
+  private sphereTeardown: (() => void)[] = [];
 
   toggleSkills() { this.skillsExpanded.update(v => !v); }
 
@@ -106,7 +104,10 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() { cancelAnimationFrame(this.animId); }
+  ngOnDestroy() {
+    cancelAnimationFrame(this.animId);
+    this.sphereTeardown.forEach(fn => fn());
+  }
 
   private animateCounters() {
     this.counters.forEach(c => {
@@ -265,62 +266,103 @@ export class AboutComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   private initSphere() {
-    const RADIUS = 150;
+    const wrap   = this.sphereWrap?.nativeElement;
+    const origin = this.sphereContainer?.nativeElement;
+    if (!wrap || !origin) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const AUTO_SPIN = reduceMotion ? 0 : 0.0035;
+    this.velY = AUTO_SPIN;
+
+    // Fibonacci lattice spreads the tags evenly over the sphere
+    const n = this.sphereTags.length;
     const items = this.sphereTags.map((tag, i) => {
-      const phi   = Math.acos(1 - 2 * (i + 0.5) / this.sphereTags.length);
+      const phi   = Math.acos(1 - 2 * (i + 0.5) / n);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const el    = document.createElement('span');
-      el.className          = 'sphere-tag';
-      el.textContent        = tag.text;
-      el.style.color        = tag.color;
-      
-      el.style.position     = 'absolute';
+      const el = document.createElement('span');
+      el.className = 'sphere-tag';
+      el.textContent = tag.text;
+      el.style.setProperty('--tag-color', tag.color);
       el.setAttribute('aria-hidden', 'true');
-      if (this.sphereContainer?.nativeElement) {
-        this.sphereContainer.nativeElement.appendChild(el);
-      }
-      return { el, phi, theta };
+      origin.appendChild(el);
+      return { el, x: Math.sin(phi) * Math.cos(theta), y: Math.cos(phi), z: Math.sin(phi) * Math.sin(theta) };
     });
 
     const render = () => {
       const cosRX = Math.cos(this.rotX), sinRX = Math.sin(this.rotX);
       const cosRY = Math.cos(this.rotY), sinRY = Math.sin(this.rotY);
-      items.forEach(item => {
-        const x  = Math.sin(item.phi) * Math.cos(item.theta);
-        const y  = Math.cos(item.phi);
-        const z  = Math.sin(item.phi) * Math.sin(item.theta);
-        const x2 = x * cosRY - z * sinRY;
-        const z2 = x * sinRY + z * cosRY;
-        const y3 = y * cosRX - z2 * sinRX;
-        const z3 = y * sinRX + z2 * cosRX;
-        const scale = (z3 + 2.2) / 3.2;
-        item.el.style.transform   = `translate(-50%,-50%) translate(${x2 * RADIUS}px,${y3 * RADIUS}px)`;
-        item.el.style.opacity     = Math.max(0.85, scale).toString();
-        item.el.style.zIndex      = Math.round(scale * 20).toString();
-        // Front-facing tags get a purple border tint; back-facing revert to CSS var(--bord)
-        item.el.style.borderColor = z3 > 0 ? 'rgba(139,92,246,0.55)' : '';
-      });
+      const r = this.sphereRadius;
+      for (const item of items) {
+        const x2 = item.x * cosRY - item.z * sinRY;
+        const z2 = item.x * sinRY + item.z * cosRY;
+        const y3 = item.y * cosRX - z2 * sinRX;
+        const z3 = item.y * sinRX + z2 * cosRX;
+        const depth = (z3 + 1) / 2; // 0 = back, 1 = front
+        const { style } = item.el;
+        style.transform = `translate(-50%,-50%) translate3d(${(x2 * r).toFixed(1)}px,${(y3 * r).toFixed(1)}px,0) scale(${(0.6 + depth * 0.5).toFixed(3)})`;
+        style.opacity   = (0.22 + depth * 0.78).toFixed(3);
+        style.filter    = depth < 0.3 ? `blur(${((0.3 - depth) * 5).toFixed(2)}px)` : '';
+        style.zIndex    = String(Math.round(depth * 100));
+        item.el.classList.toggle('front', z3 > 0.2);
+      }
     };
 
-    const animate = () => {
-      if (!this.isDrag) { this.rotY += this.velY; this.rotX += this.velX; this.velX *= 0.97; }
+    const tick = () => {
+      if (!this.dragging) {
+        // Flings coast back to the idle spin; hovering slows it so tags can be read
+        const target = this.hovering ? AUTO_SPIN * 0.2 : AUTO_SPIN;
+        this.velY += (target - this.velY) * 0.03;
+        this.velX *= 0.95;
+        this.rotY += this.velY;
+        this.rotX += this.velX;
+      }
       render();
-      this.animId = requestAnimationFrame(animate);
+      this.animId = requestAnimationFrame(tick);
     };
+    const start = () => { if (!this.animId) this.animId = requestAnimationFrame(tick); };
+    const stop  = () => { cancelAnimationFrame(this.animId); this.animId = 0; };
 
-    const wrap = this.sphereWrap?.nativeElement;
-    if (wrap) {
-      wrap.addEventListener('mousedown', e => { this.isDrag = true; this.lx = e.clientX; this.ly = e.clientY; });
-      document.addEventListener('mousemove', e => {
-        if (!this.isDrag) return;
-        this.velY = (e.clientX - this.lx) * 0.006;
-        this.velX = (e.clientY - this.ly) * 0.006;
-        this.rotY += this.velY; this.rotX += this.velX;
-        this.lx = e.clientX; this.ly = e.clientY;
-      });
-      document.addEventListener('mouseup', () => this.isDrag = false);
-    }
-    animate();
+    const onDown = (e: PointerEvent) => {
+      this.dragging = true;
+      this.lx = e.clientX; this.ly = e.clientY;
+      wrap.setPointerCapture(e.pointerId);
+      wrap.classList.add('dragging');
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!this.dragging) return;
+      this.velY = (e.clientX - this.lx) * 0.006;
+      this.velX = (e.clientY - this.ly) * 0.006;
+      this.rotY += this.velY; this.rotX += this.velX;
+      this.lx = e.clientX; this.ly = e.clientY;
+    };
+    const onUp = () => { this.dragging = false; wrap.classList.remove('dragging'); };
+    const onEnter = (e: PointerEvent) => { if (e.pointerType === 'mouse') this.hovering = true; };
+    const onLeave = () => { this.hovering = false; };
 
+    const listeners: [string, (e: any) => void][] = [
+      ['pointerdown', onDown], ['pointermove', onMove], ['pointerup', onUp],
+      ['pointercancel', onUp], ['pointerenter', onEnter], ['pointerleave', onLeave],
+    ];
+    listeners.forEach(([type, fn]) => wrap.addEventListener(type, fn));
+
+    // Size the sphere to its box so tags never clip at the edges
+    const resize = new ResizeObserver(() => {
+      const { width, height } = wrap.getBoundingClientRect();
+      if (!width || !height) return;
+      this.sphereRadius = Math.max(80, Math.min(190, width / 2 - 64, height / 2 - 30));
+      render();
+    });
+    resize.observe(wrap);
+
+    // Only spin while the sphere is on screen
+    const visibility = new IntersectionObserver(([entry]) => entry.isIntersecting ? start() : stop());
+    visibility.observe(wrap);
+
+    render();
+    this.sphereTeardown.push(
+      () => listeners.forEach(([type, fn]) => wrap.removeEventListener(type, fn)),
+      () => resize.disconnect(),
+      () => visibility.disconnect(),
+    );
   }
 }

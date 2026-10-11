@@ -1,5 +1,6 @@
 import { Component, signal, ViewChild, ElementRef, effect, inject } from '@angular/core';
 import { NavigationService } from '../../data/navigation.service';
+import { PortfolioDataService } from '../../data/portfolio.data';
 
 interface TermLine { html: string; }
 
@@ -14,6 +15,7 @@ export class TerminalComponent {
   @ViewChild('termInput') termInput!: ElementRef<HTMLInputElement>;
 
   nav = inject(NavigationService);
+  data = inject(PortfolioDataService);
   isOpen = this.nav.terminalOpen;
 
   readonly lines = signal<TermLine[]>([]);
@@ -29,7 +31,7 @@ export class TerminalComponent {
     `<span class="tl-dim">──────────────────────────────────────────</span>`,
     `<span class="tl-dim">  System:</span> <span class="tl-val">Full Stack Portfolio • Angular 21</span>`,
     `<span class="tl-dim">  Location:</span> <span class="tl-val">Pampanga, Philippines</span> 🇵🇭`,
-    `<span class="tl-dim">  Status:</span> <span class="tl-ok">● seeking internship</span>`,
+    `<span class="tl-dim">  Status:</span> <span class="tl-ok">● open to opportunities</span>`,
     `<span class="tl-dim">──────────────────────────────────────────</span>`,
     `  Type <span class="tl-acc">help</span> to see available commands.`,
   ];
@@ -68,44 +70,41 @@ export class TerminalComponent {
       `<span class="tl-head">  ╔══════════════════════════════════╗</span>`,
       `<span class="tl-head">  ║   JAREN KENDRICK YAMBAO          ║</span>`,
       `<span class="tl-head">  ╚══════════════════════════════════╝</span>`,
-      `  <span class="tl-dim">Full Stack Developer · Game/App Developer · HAU IT Student</span>`,
+      `  <span class="tl-dim">AI Developer · HAU IT Student (4th year)</span>`,
       ``,
       `  <span class="tl-warn">▸ EXPERIENCE</span>`,
-      `  <span class="tl-acc">  Full Stack Developer</span> <span class="tl-dim">@ VirtuIntelligence</span>  <span class="tl-dim">Feb 2026 – Present</span>`,
-      `    <span class="tl-val">• Building Symposium real-time AI chat (Angular + Node.js)</span>`,
-      `    <span class="tl-val">• Shipping Angular components & Node.js services</span>`,
-      `  <span class="tl-acc">  Game/App Developer</span> <span class="tl-dim">@ VirtuIntelligence</span>  <span class="tl-dim">Apr 2025 – Jan 2026</span>`,
+      `  <span class="tl-acc">  AI Developer</span> <span class="tl-dim">@ HumanSide Technologies</span>  <span class="tl-dim">Feb 2026 – Present</span>`,
+      `    <span class="tl-val">• Building Symposium, a multi-AI deliberation platform</span>`,
+      `    <span class="tl-val">• 15+ AI providers behind one interface, with cost telemetry & spend ceilings</span>`,
+      `  <span class="tl-acc">  Web and App Developer</span> <span class="tl-dim">@ Symph (Internship)</span>  <span class="tl-dim">Jul 2026 – Oct 2026</span>`,
+      `    <span class="tl-val">• Brand intake pipeline & AI generation quality gates for Echoic</span>`,
+      `    <span class="tl-val">• Property management platform on web & Flutter mobile</span>`,
+      `  <span class="tl-acc">  Game Developer</span> <span class="tl-dim">@ HumanSide Technologies</span>  <span class="tl-dim">Apr 2025 – Feb 2026</span>`,
       `    <span class="tl-val">• Shipped PathFinder to Meta Quest (Unreal 5.5 + Unity)</span>`,
       `    <span class="tl-val">• Developed Robots vs Aliens mobile game (Unity + C#)</span>`,
       ``,
       `  <span class="tl-warn">▸ STACK</span>`,
-      `    <span class="tl-val">Angular · Vue.js 3 · Node.js · PostgreSQL · MongoDB · C# · TypeScript</span>`,
+      `    <span class="tl-val">Angular · Node.js · TypeScript · PostgreSQL · Redis · Next.js · Flutter · C#</span>`,
       ``,
       `  <span class="tl-warn">▸ LOOKING FOR</span>`,
-      `    <span class="tl-val">Full-stack internship</span> <span class="tl-acc">→ jarenkendricky@gmail.com</span>`,
+      `    <span class="tl-val">AI developer opportunities</span> <span class="tl-acc">→ jarenkendricky@gmail.com</span>`,
     ],
     skills: () => [
       ``,
       `  <span class="tl-head">Technical Stack</span>`,
       `<span class="tl-dim">  ──────────────────────────────</span>`,
-      `  <span class="tl-val">JavaScript</span>  <span class="tl-acc">█████████░</span> <span class="tl-head">85%</span>  <span class="tl-dim">2 yrs</span>`,
-      `  <span class="tl-val">TypeScript</span>  <span class="tl-acc">████████░░</span> <span class="tl-head">80%</span>  <span class="tl-dim">1.5 yrs</span>`,
-      `  <span class="tl-val">Angular</span>     <span class="tl-acc">████████░░</span> <span class="tl-head">75%</span>  <span class="tl-dim">1 yr</span>`,
-      `  <span class="tl-val">Node.js</span>     <span class="tl-acc">████████░░</span> <span class="tl-head">75%</span>  <span class="tl-dim">1 yr</span>`,
-      `  <span class="tl-val">Vue.js 3</span>    <span class="tl-acc">███████░░░</span> <span class="tl-head">70%</span>  <span class="tl-dim">1 yr</span>`,
-      `  <span class="tl-val">C#</span>          <span class="tl-acc">███████░░░</span> <span class="tl-head">70%</span>  <span class="tl-dim">1 yr</span>`,
-      `  <span class="tl-val">MongoDB</span>     <span class="tl-acc">███████░░░</span> <span class="tl-head">65%</span>  <span class="tl-dim">1 yr</span>`,
-      `  <span class="tl-val">PostgreSQL</span>  <span class="tl-acc">██████░░░░</span> <span class="tl-head">55%</span>  <span class="tl-dim">6 mo</span>`,
+      ...this.data.skillGroups.map(g =>
+        `  <span class="tl-acc">${g.category.padEnd(15)}</span><span class="tl-val">${this.esc(g.items.join(' · '))}</span>`),
     ],
     whoami: () => [
       ``,
       `  <span class="tl-head">jaren kendrick yambao</span>`,
       `<span class="tl-dim">  ──────────────────────────────</span>`,
-      `  <span class="tl-acc">Role</span>      <span class="tl-val">Full Stack Developer + Game/App Dev</span>`,
-      `  <span class="tl-acc">Age</span>       <span class="tl-val">20 years old</span>`,
+      `  <span class="tl-acc">Role</span>      <span class="tl-val">AI Developer @ HumanSide Technologies</span>`,
+      `  <span class="tl-acc">Age</span>       <span class="tl-val">21 years old</span>`,
       `  <span class="tl-acc">Location</span>  <span class="tl-val">Pampanga, Philippines</span> 🇵🇭`,
       `  <span class="tl-acc">Uni</span>       <span class="tl-val">Holy Angel University (2027)</span>`,
-      `  <span class="tl-acc">Status</span>    <span class="tl-ok">● Open to internship</span>`,
+      `  <span class="tl-acc">Status</span>    <span class="tl-ok">● Open to opportunities</span>`,
       ``,
       `  <span class="tl-quote">"I pick it up. I figure it out. I ship it."</span>`,
     ],
